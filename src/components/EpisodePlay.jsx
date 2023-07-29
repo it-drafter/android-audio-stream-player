@@ -12,6 +12,7 @@ import {useFocusEffect} from '@react-navigation/native';
 import RNFS from 'react-native-fs';
 import * as Progress from 'react-native-progress';
 import IconMaterialCommunity from 'react-native-vector-icons/MaterialCommunityIcons';
+import IconFeather from 'react-native-vector-icons/Feather';
 import ControlCenter from './ControlCenter';
 import GlobalContext from '../util/context';
 import {useNetInfo} from '@react-native-community/netinfo';
@@ -176,7 +177,7 @@ const EpisodePlay = ({route}) => {
     !route.params.title.includes('Večernja škola rokenrola')
   ) {
     podcastUploadInfo = (
-      <Text style={styles.durationArtistText(globalCtx.colorSchemeValue)}>
+      <Text style={styles.insignificantDetailsText(globalCtx.colorSchemeValue)}>
         (pre {diffInDays}{' '}
         {diffInDays === 1 ||
         (diffInDays >= 21 &&
@@ -259,13 +260,40 @@ const EpisodePlay = ({route}) => {
     }
 
     podcastUploadInfo = (
-      <Text style={styles.durationArtistText(globalCtx.colorSchemeValue)}>
+      <Text style={styles.insignificantDetailsText(globalCtx.colorSchemeValue)}>
         {`(${day}, ${
           route.params.pubDate[5] !== '0'
             ? route.params.pubDate.substring(5, 7)
             : route.params.pubDate.substring(6, 7)
         }. ${month} ${route.params.pubDate.substring(12, 16)}.)`}
       </Text>
+    );
+  }
+
+  let musicOnOffInfo;
+
+  if (route.params.url.endsWith('bm.mp3')) {
+    musicOnOffInfo = (
+      <IconMaterialCommunity
+        style={styles.icon(globalCtx.colorSchemeValue)}
+        name="music-off"
+        size={20}
+      />
+    );
+  } else if (
+    !route.params.title.includes('Sportski Pozdrav') &&
+    !route.params.title.includes('Večernja škola rokenrola') &&
+    !route.params.title.includes('Tople Ljucke Priče') &&
+    !route.params.title.includes('Na ivici ofsajda') &&
+    !route.params.title.includes('Ljudi iz podzemlja') &&
+    !route.params.title.includes('Rastrojavanje')
+  ) {
+    musicOnOffInfo = (
+      <IconFeather
+        style={styles.icon(globalCtx.colorSchemeValue)}
+        name="music"
+        size={20}
+      />
     );
   }
 
@@ -298,9 +326,9 @@ const EpisodePlay = ({route}) => {
       </View>
 
       <Text style={styles.descriptionText(globalCtx.colorSchemeValue)}>
-        {route.params?.description}
+        {route.params?.description} {musicOnOffInfo}
       </Text>
-      <Text style={styles.durationArtistText(globalCtx.colorSchemeValue)}>
+      <Text style={styles.insignificantDetailsText(globalCtx.colorSchemeValue)}>
         {route.params?.title}
       </Text>
       {podcastUploadInfo}
@@ -420,7 +448,7 @@ const styles = StyleSheet.create({
       fontWeight: 'bold',
     };
   },
-  durationArtistText: colorScheme => {
+  insignificantDetailsText: colorScheme => {
     return {
       color: colorSchemeObj[colorScheme].light80,
       textAlign: 'center',

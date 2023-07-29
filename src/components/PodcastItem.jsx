@@ -1,6 +1,7 @@
 import React, {useState, memo, useCallback, useContext} from 'react';
 import {View, Text, StyleSheet, Pressable, Dimensions} from 'react-native';
 import IconMaterialCommunity from 'react-native-vector-icons/MaterialCommunityIcons';
+import IconFeather from 'react-native-vector-icons/Feather';
 import RNFS from 'react-native-fs';
 import {useFocusEffect} from '@react-navigation/native';
 import {localStorage} from '../util/http';
@@ -49,7 +50,8 @@ function PodcastItem(props) {
 
   if (
     !props.title.includes('Sportski Pozdrav') &&
-    !props.title.includes('Večernja škola rokenrola')
+    !props.title.includes('Večernja škola rokenrola') &&
+    !props.title.includes('Tople Ljucke Priče')
   ) {
     podcastUploadInfo = (
       <Text style={styles.infoText(globalCtx.colorSchemeValue)}>
@@ -148,6 +150,45 @@ function PodcastItem(props) {
     );
   }
 
+  let musicOnOffInfo;
+
+  if (props.url.endsWith('bm.mp3')) {
+    musicOnOffInfo = (
+      <Text
+        style={[
+          styles.infoText(globalCtx.colorSchemeValue),
+          styles.musicOffOn,
+        ]}>
+        <IconMaterialCommunity
+          style={styles.icon(globalCtx.colorSchemeValue)}
+          name="music-off"
+          size={20}
+        />
+      </Text>
+    );
+  } else if (
+    !props.title.includes('Sportski Pozdrav') &&
+    !props.title.includes('Večernja škola rokenrola') &&
+    !props.title.includes('Tople Ljucke Priče') &&
+    !props.title.includes('Na ivici ofsajda') &&
+    !props.title.includes('Ljudi iz podzemlja') &&
+    !props.title.includes('Rastrojavanje')
+  ) {
+    musicOnOffInfo = (
+      <Text
+        style={[
+          styles.infoText(globalCtx.colorSchemeValue),
+          styles.musicOffOn,
+        ]}>
+        <IconFeather
+          style={styles.icon(globalCtx.colorSchemeValue)}
+          name="music"
+          size={20}
+        />
+      </Text>
+    );
+  }
+
   return (
     <Pressable
       android_ripple={{
@@ -185,10 +226,10 @@ function PodcastItem(props) {
               )}
             </Text>
 
-            <Text
+            {/* <Text
               style={[
                 styles.infoText(globalCtx.colorSchemeValue),
-                styles.musicOff,
+                styles.musicOffOn,
               ]}>
               {props.url.endsWith('bm.mp3') ? (
                 <IconMaterialCommunity
@@ -199,7 +240,8 @@ function PodcastItem(props) {
               ) : (
                 ''
               )}
-            </Text>
+            </Text> */}
+            {musicOnOffInfo}
 
             <Text style={styles.infoText(globalCtx.colorSchemeValue)}>
               {props.duration}
@@ -254,7 +296,7 @@ const styles = StyleSheet.create({
       color: colorSchemeObj[colorScheme].light20,
     };
   },
-  musicOff: {
+  musicOffOn: {
     marginHorizontal: 5,
   },
 });
