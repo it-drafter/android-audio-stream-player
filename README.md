@@ -34,7 +34,7 @@ The list goes on...
 
 ## Screenshots & .apk binary
 
-Screenshots of the app and the .apk binary file available for download** [HERE](https://it-drafter.github.io/android-audio-stream-player/ 'HERE')**.
+Screenshots of the app and the .apk binary file available for download **[HERE](https://it-drafter.github.io/android-audio-stream-player/ 'HERE')**.
 
 ---
 
