@@ -16,6 +16,7 @@ const Main = () => {
   return (
     <TabTop.Navigator
       initialRouteName="Stream"
+      backBehavior="history"
       screenOptions={{
         tabBarLabelStyle: {fontSize: 12, fontWeight: 'bold'},
         tabBarActiveTintColor:
