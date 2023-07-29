@@ -226,7 +226,10 @@ const Settings = () => {
                   Broj preuzetih podkasta: {folderContent?.length}
                 </Text>
                 <Text style={styles.regularText(globalCtx.colorSchemeValue)}>
-                  Ukupna veličina: {(folderSize / 1000 / 1000).toFixed(2)} MB
+                  Ukupna veličina:{' '}
+                  {folderSize < 1000000000
+                    ? `${(folderSize / 1000 / 1000).toFixed(2)} MB`
+                    : `${(folderSize / 1000 / 1000 / 1000).toFixed(2)} GB`}
                 </Text>
               </View>
             </View>
@@ -299,7 +302,7 @@ const Settings = () => {
             O aplikaciji:
           </Text>
           <Text style={styles.regularText(globalCtx.colorSchemeValue)}>
-            Verzija: 1.2.202307291338-b
+            Verzija: 1.2.202307291528-b
           </Text>
           <Text style={styles.regularText(globalCtx.colorSchemeValue)}>
             Autor: Roćko
@@ -465,12 +468,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#4285f4',
   },
   colorBoxPink: {
-    backgroundColor: '#b3446c',
+    backgroundColor: '#e936a7',
   },
   colorBoxGreen: {
-    backgroundColor: '#367c2b',
+    backgroundColor: '#138808',
   },
   colorBoxOrange: {
-    backgroundColor: '#d2691e',
+    backgroundColor: '#ef5d22',
   },
 });

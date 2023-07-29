@@ -226,21 +226,6 @@ function PodcastItem(props) {
               )}
             </Text>
 
-            {/* <Text
-              style={[
-                styles.infoText(globalCtx.colorSchemeValue),
-                styles.musicOffOn,
-              ]}>
-              {props.url.endsWith('bm.mp3') ? (
-                <IconMaterialCommunity
-                  style={styles.icon(globalCtx.colorSchemeValue)}
-                  name="music-off"
-                  size={20}
-                />
-              ) : (
-                ''
-              )}
-            </Text> */}
             {musicOnOffInfo}
 
             <Text style={styles.infoText(globalCtx.colorSchemeValue)}>
