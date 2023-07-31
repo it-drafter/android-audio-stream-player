@@ -19,8 +19,7 @@ export const colorSchemeObj = {
     dark60: '#2c1a4d',
     dark70: '#21143a',
     dark80: '#160d27',
-    // dark90: '',
-    dark90: '#1f1f29',
+    dark90: '#1f1f29', //common background for all color schemes
     dark100: '#000000',
   },
 
@@ -44,8 +43,7 @@ export const colorSchemeObj = {
     dark60: '#1a3562',
     dark70: '#142849',
     dark80: '#0d1b31',
-    // dark90: '',
-    dark90: '#1f1f29',
+    dark90: '#1f1f29', //common background for all color schemes
     dark100: '#000000',
   },
 
@@ -69,8 +67,7 @@ export const colorSchemeObj = {
     dark60: '#5d1643',
     dark70: '#461032',
     dark80: '#2f0b21',
-    // dark90: '',
-    dark90: '#1f1f29',
+    dark90: '#1f1f29', //common background for all color schemes
     dark100: '#000000',
   },
 
@@ -94,8 +91,7 @@ export const colorSchemeObj = {
     dark60: '#083603',
     dark70: '#062902',
     dark80: '#041b02',
-    // dark90: '',
-    dark90: '#1f1f29',
+    dark90: '#1f1f29', //common background for all color schemes
     dark100: '#000000',
   },
 
@@ -119,8 +115,7 @@ export const colorSchemeObj = {
     dark60: '#60250e',
     dark70: '#481c0a',
     dark80: '#301307',
-    // dark90: '',
-    dark90: '#1f1f29',
+    dark90: '#1f1f29', //common background for all color schemes
     dark100: '#000000',
   },
 };

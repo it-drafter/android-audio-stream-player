@@ -1,4 +1,3 @@
-import {StyleSheet} from 'react-native';
 import React, {useContext} from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import GlobalContext from '../util/context';
@@ -38,5 +37,3 @@ const Podcast = () => {
 };
 
 export default Podcast;
-
-const styles = StyleSheet.create({});

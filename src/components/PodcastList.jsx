@@ -1,9 +1,18 @@
-import {StyleSheet, Text, View, Dimensions, Alert} from 'react-native';
-import {OptimizedFlatList} from 'react-native-optimized-flatlist';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Dimensions,
+  Alert,
+  Pressable,
+  FlatList,
+} from 'react-native';
 import React, {useState, useCallback, useContext} from 'react';
-
 import {useFocusEffect} from '@react-navigation/native';
 import {useNetInfo} from '@react-native-community/netinfo';
+import BouncyCheckbox from 'react-native-bouncy-checkbox';
+import IconFeather from 'react-native-vector-icons/Feather';
+
 import {fetchEpisodes} from '../util/http';
 import {localStorage} from '../util/http';
 import GlobalContext from '../util/context';
@@ -23,6 +32,59 @@ const PodcastList = ({navigation}) => {
   const [fetchedEpisodes, setFetchedEpisodes] = useState([]);
   const [delayComplete, setDelayComplete] = useState(false);
   const [userRefreshed, setUserRefreshed] = useState(false);
+
+  const [isOpenFilter, setIsOpenFilter] = useState(false);
+
+  const [isCheckedAlarmSaMuzikom, setIsCheckedAlarmSaMuzikom] = useState(
+    localStorage.getBoolean('isCheckedAlarmSaMuzikom') === undefined ||
+      localStorage.getBoolean('isCheckedAlarmSaMuzikom') === true
+      ? true
+      : false,
+  );
+  const [isCheckedAlarmBezMuzike, setIsCheckedAlarmBezMuzike] = useState(
+    localStorage.getBoolean('isCheckedAlarmBezMuzike') === undefined ||
+      localStorage.getBoolean('isCheckedAlarmBezMuzike') === true
+      ? true
+      : false,
+  );
+  const [isCheckedLjudiIzPodzemlja, setIsCheckedLjudiIzPodzemlja] = useState(
+    localStorage.getBoolean('isCheckedLjudiIzPodzemlja') === undefined ||
+      localStorage.getBoolean('isCheckedLjudiIzPodzemlja') === true
+      ? true
+      : false,
+  );
+  const [isCheckedVecernjaSkolaRokenrola, setIsCheckedVecernjaSkolaRokenrola] =
+    useState(
+      localStorage.getBoolean('isCheckedVecernjaSkolaRokenrola') ===
+        undefined ||
+        localStorage.getBoolean('isCheckedVecernjaSkolaRokenrola') === true
+        ? true
+        : false,
+    );
+  const [isCheckedNaIviciOfsajda, setIsCheckedNaIviciOfsajda] = useState(
+    localStorage.getBoolean('isCheckedNaIviciOfsajda') === undefined ||
+      localStorage.getBoolean('isCheckedNaIviciOfsajda') === true
+      ? true
+      : false,
+  );
+  const [isCheckedSportskiPozdrav, setIsCheckedSportskiPozdrav] = useState(
+    localStorage.getBoolean('isCheckedSportskiPozdrav') === undefined ||
+      localStorage.getBoolean('isCheckedSportskiPozdrav') === true
+      ? true
+      : false,
+  );
+  const [isCheckedTopleLjuckePrice, setIsCheckedTopleLjuckePrice] = useState(
+    localStorage.getBoolean('isCheckedTopleLjuckePrice') === undefined ||
+      localStorage.getBoolean('isCheckedTopleLjuckePrice') === true
+      ? true
+      : false,
+  );
+  const [isCheckedRastrojavanje, setIsCheckedRastrojavanje] = useState(
+    localStorage.getBoolean('isCheckedRastrojavanje') === undefined ||
+      localStorage.getBoolean('isCheckedRastrojavanje') === true
+      ? true
+      : false,
+  );
 
   useFocusEffect(
     useCallback(() => {
@@ -98,8 +160,386 @@ const PodcastList = ({navigation}) => {
     index,
   });
 
+  const fetchedEpisodesOnlyAlarmSaMuzikom = [
+    ...fetchedEpisodes.filter(
+      episode =>
+        !episode.url.toLowerCase().endsWith('bm.mp3'.toLowerCase()) &&
+        !episode.title
+          .toLowerCase()
+          .includes('Ljudi iz podzemlja'.toLowerCase()) &&
+        !episode.title
+          .toLowerCase()
+          .includes('Večernja škola rokenrola'.toLowerCase()) &&
+        !episode.title
+          .toLowerCase()
+          .includes('Na ivici ofsajda'.toLowerCase()) &&
+        !episode.title
+          .toLowerCase()
+          .includes('Sportski Pozdrav'.toLowerCase()) &&
+        !episode.title
+          .toLowerCase()
+          .includes('Tople Ljucke Priče'.toLowerCase()) &&
+        !episode.title.toLowerCase().includes('Rastrojavanje'.toLowerCase()),
+    ),
+  ];
+
+  const fetchedEpisodesOnlyAlarmBezMuzike = [
+    ...fetchedEpisodes.filter(
+      episode =>
+        episode.url.toLowerCase().endsWith('bm.mp3'.toLowerCase()) &&
+        !episode.title
+          .toLowerCase()
+          .includes('Ljudi iz podzemlja'.toLowerCase()) &&
+        !episode.title
+          .toLowerCase()
+          .includes('Večernja škola rokenrola'.toLowerCase()) &&
+        !episode.title
+          .toLowerCase()
+          .includes('Na ivici ofsajda'.toLowerCase()) &&
+        !episode.title
+          .toLowerCase()
+          .includes('Sportski Pozdrav'.toLowerCase()) &&
+        !episode.title
+          .toLowerCase()
+          .includes('Tople Ljucke Priče'.toLowerCase()) &&
+        !episode.title.toLowerCase().includes('Rastrojavanje'.toLowerCase()),
+    ),
+  ];
+
+  const fetchedEpisodesOnlyLjudiIzPodzemlja = [
+    ...fetchedEpisodes.filter(episode =>
+      episode.title.toLowerCase().includes('Ljudi iz podzemlja'.toLowerCase()),
+    ),
+  ];
+
+  const fetchedEpisodesOnlyVecernjaSkolaRokenrola = [
+    ...fetchedEpisodes.filter(episode =>
+      episode.title
+        .toLowerCase()
+        .includes('Večernja škola rokenrola'.toLowerCase()),
+    ),
+  ];
+
+  const fetchedEpisodesOnlyNaIviciOfsajda = [
+    ...fetchedEpisodes.filter(episode =>
+      episode.title.toLowerCase().includes('Na ivici ofsajda'.toLowerCase()),
+    ),
+  ];
+
+  const fetchedEpisodesOnlySportskiPozdrav = [
+    ...fetchedEpisodes.filter(episode =>
+      episode.title.toLowerCase().includes('Sportski Pozdrav'.toLowerCase()),
+    ),
+  ];
+
+  const fetchedEpisodesOnlyTopleLjuckePrice = [
+    ...fetchedEpisodes.filter(episode =>
+      episode.title.toLowerCase().includes('Tople Ljucke Priče'.toLowerCase()),
+    ),
+  ];
+
+  const fetchedEpisodesOnlyRastrojavanje = [
+    ...fetchedEpisodes.filter(episode =>
+      episode.title.toLowerCase().includes('Rastrojavanje'.toLowerCase()),
+    ),
+  ];
+
+  const fetchedEpisodesUnsorted = [];
+
+  isCheckedAlarmSaMuzikom &&
+    fetchedEpisodesUnsorted.push(...fetchedEpisodesOnlyAlarmSaMuzikom);
+  isCheckedAlarmBezMuzike &&
+    fetchedEpisodesUnsorted.push(...fetchedEpisodesOnlyAlarmBezMuzike);
+  isCheckedLjudiIzPodzemlja &&
+    fetchedEpisodesUnsorted.push(...fetchedEpisodesOnlyLjudiIzPodzemlja);
+  isCheckedVecernjaSkolaRokenrola &&
+    fetchedEpisodesUnsorted.push(...fetchedEpisodesOnlyVecernjaSkolaRokenrola);
+  isCheckedNaIviciOfsajda &&
+    fetchedEpisodesUnsorted.push(...fetchedEpisodesOnlyNaIviciOfsajda);
+  isCheckedSportskiPozdrav &&
+    fetchedEpisodesUnsorted.push(...fetchedEpisodesOnlySportskiPozdrav);
+  isCheckedTopleLjuckePrice &&
+    fetchedEpisodesUnsorted.push(...fetchedEpisodesOnlyTopleLjuckePrice);
+  isCheckedRastrojavanje &&
+    fetchedEpisodesUnsorted.push(...fetchedEpisodesOnlyRastrojavanje);
+
+  const fetchedEpisodesToDisplay = fetchedEpisodesUnsorted.sort((a, b) => {
+    let da = new Date(a.pubDate),
+      db = new Date(b.pubDate);
+    return db - da;
+  });
+
   return (
     <View style={styles.container(globalCtx.colorSchemeValue)}>
+      <View style={styles.filterButtonContainer(globalCtx.colorSchemeValue)}>
+        <Pressable
+          onPress={() => setIsOpenFilter(!isOpenFilter)}
+          style={({pressed}) => pressed && styles.pressedItem}>
+          <View style={styles.filterIconsContainer}>
+            <IconFeather
+              style={styles.icon(globalCtx.colorSchemeValue)}
+              name="filter"
+              size={40}
+            />
+            <IconFeather
+              style={styles.icon(globalCtx.colorSchemeValue)}
+              name={isOpenFilter ? 'chevron-up' : 'chevron-down'}
+              size={30}
+            />
+          </View>
+        </Pressable>
+      </View>
+
+      {isOpenFilter && (
+        <View style={styles.checkboxContainer(globalCtx.colorSchemeValue)}>
+          <View style={styles.checkboxColumn}>
+            <BouncyCheckbox
+              size={20}
+              fillColor={colorSchemeObj[globalCtx.colorSchemeValue].light50}
+              unfillColor={colorSchemeObj[globalCtx.colorSchemeValue].light30}
+              text="Alarm - sa muzikom"
+              iconStyle={{
+                borderColor: colorSchemeObj[globalCtx.colorSchemeValue].base,
+              }}
+              innerIconStyle={{borderWidth: 2}}
+              textStyle={{
+                textDecorationLine: 'none',
+                color: isCheckedAlarmSaMuzikom
+                  ? colorSchemeObj[globalCtx.colorSchemeValue].light50
+                  : colorSchemeObj[globalCtx.colorSchemeValue].light30,
+              }}
+              isChecked={isCheckedAlarmSaMuzikom}
+              disableBuiltInState
+              onPress={() => {
+                localStorage.set(
+                  'isCheckedAlarmSaMuzikom',
+                  !isCheckedAlarmSaMuzikom,
+                );
+
+                setIsCheckedAlarmSaMuzikom(!isCheckedAlarmSaMuzikom);
+              }}
+              textContainerStyle={{
+                marginLeft: 5,
+              }}
+              style={{marginTop: 7}}
+            />
+            <BouncyCheckbox
+              size={20}
+              fillColor={colorSchemeObj[globalCtx.colorSchemeValue].light50}
+              unfillColor={colorSchemeObj[globalCtx.colorSchemeValue].light30}
+              text="Alarm - bez muzike"
+              iconStyle={{
+                borderColor: colorSchemeObj[globalCtx.colorSchemeValue].base,
+              }}
+              innerIconStyle={{borderWidth: 2}}
+              textStyle={{
+                textDecorationLine: 'none',
+                color: isCheckedAlarmBezMuzike
+                  ? colorSchemeObj[globalCtx.colorSchemeValue].light50
+                  : colorSchemeObj[globalCtx.colorSchemeValue].light30,
+              }}
+              isChecked={isCheckedAlarmBezMuzike}
+              disableBuiltInState
+              onPress={() => {
+                localStorage.set(
+                  'isCheckedAlarmBezMuzike',
+                  !isCheckedAlarmBezMuzike,
+                );
+
+                setIsCheckedAlarmBezMuzike(!isCheckedAlarmBezMuzike);
+              }}
+              textContainerStyle={{
+                marginLeft: 5,
+              }}
+              style={{marginTop: 7}}
+            />
+            <BouncyCheckbox
+              size={20}
+              fillColor={colorSchemeObj[globalCtx.colorSchemeValue].light50}
+              unfillColor={colorSchemeObj[globalCtx.colorSchemeValue].light30}
+              text="Ljudi iz podzemlja"
+              iconStyle={{
+                borderColor: colorSchemeObj[globalCtx.colorSchemeValue].base,
+              }}
+              innerIconStyle={{borderWidth: 2}}
+              textStyle={{
+                textDecorationLine: 'none',
+                color: isCheckedLjudiIzPodzemlja
+                  ? colorSchemeObj[globalCtx.colorSchemeValue].light50
+                  : colorSchemeObj[globalCtx.colorSchemeValue].light30,
+              }}
+              isChecked={isCheckedLjudiIzPodzemlja}
+              disableBuiltInState
+              onPress={() => {
+                localStorage.set(
+                  'isCheckedLjudiIzPodzemlja',
+                  !isCheckedLjudiIzPodzemlja,
+                );
+                setIsCheckedLjudiIzPodzemlja(!isCheckedLjudiIzPodzemlja);
+              }}
+              textContainerStyle={{
+                marginLeft: 5,
+              }}
+              style={{marginTop: 7}}
+            />
+            <BouncyCheckbox
+              size={20}
+              fillColor={colorSchemeObj[globalCtx.colorSchemeValue].light50}
+              unfillColor={colorSchemeObj[globalCtx.colorSchemeValue].light30}
+              text="Večernja škola rokenrola"
+              iconStyle={{
+                borderColor: colorSchemeObj[globalCtx.colorSchemeValue].base,
+              }}
+              innerIconStyle={{borderWidth: 2}}
+              textStyle={{
+                textDecorationLine: 'none',
+                color: isCheckedVecernjaSkolaRokenrola
+                  ? colorSchemeObj[globalCtx.colorSchemeValue].light50
+                  : colorSchemeObj[globalCtx.colorSchemeValue].light30,
+              }}
+              isChecked={isCheckedVecernjaSkolaRokenrola}
+              disableBuiltInState
+              onPress={() => {
+                localStorage.set(
+                  'isCheckedVecernjaSkolaRokenrola',
+                  !isCheckedVecernjaSkolaRokenrola,
+                );
+
+                setIsCheckedVecernjaSkolaRokenrola(
+                  !isCheckedVecernjaSkolaRokenrola,
+                );
+              }}
+              textContainerStyle={{
+                marginLeft: 5,
+              }}
+              style={{marginTop: 7}}
+            />
+          </View>
+          <View style={styles.checkboxColumn}>
+            <BouncyCheckbox
+              size={20}
+              fillColor={colorSchemeObj[globalCtx.colorSchemeValue].light50}
+              unfillColor={colorSchemeObj[globalCtx.colorSchemeValue].light30}
+              text="Na ivici ofsajda"
+              iconStyle={{
+                borderColor: colorSchemeObj[globalCtx.colorSchemeValue].base,
+              }}
+              innerIconStyle={{borderWidth: 2}}
+              textStyle={{
+                textDecorationLine: 'none',
+                color: isCheckedNaIviciOfsajda
+                  ? colorSchemeObj[globalCtx.colorSchemeValue].light50
+                  : colorSchemeObj[globalCtx.colorSchemeValue].light30,
+              }}
+              isChecked={isCheckedNaIviciOfsajda}
+              disableBuiltInState
+              onPress={() => {
+                localStorage.set(
+                  'isCheckedNaIviciOfsajda',
+                  !isCheckedNaIviciOfsajda,
+                );
+
+                setIsCheckedNaIviciOfsajda(!isCheckedNaIviciOfsajda);
+              }}
+              textContainerStyle={{
+                marginLeft: 5,
+              }}
+              style={{marginTop: 7}}
+            />
+            <BouncyCheckbox
+              size={20}
+              fillColor={colorSchemeObj[globalCtx.colorSchemeValue].light50}
+              unfillColor={colorSchemeObj[globalCtx.colorSchemeValue].light30}
+              text="Sportski Pozdrav"
+              iconStyle={{
+                borderColor: colorSchemeObj[globalCtx.colorSchemeValue].base,
+              }}
+              innerIconStyle={{borderWidth: 2}}
+              textStyle={{
+                textDecorationLine: 'none',
+                color: isCheckedSportskiPozdrav
+                  ? colorSchemeObj[globalCtx.colorSchemeValue].light50
+                  : colorSchemeObj[globalCtx.colorSchemeValue].light30,
+              }}
+              isChecked={isCheckedSportskiPozdrav}
+              disableBuiltInState
+              onPress={() => {
+                localStorage.set(
+                  'isCheckedSportskiPozdrav',
+                  !isCheckedSportskiPozdrav,
+                );
+
+                setIsCheckedSportskiPozdrav(!isCheckedSportskiPozdrav);
+              }}
+              textContainerStyle={{
+                marginLeft: 5,
+              }}
+              style={{marginTop: 7}}
+            />
+            <BouncyCheckbox
+              size={20}
+              fillColor={colorSchemeObj[globalCtx.colorSchemeValue].light50}
+              unfillColor={colorSchemeObj[globalCtx.colorSchemeValue].light30}
+              text="Tople Ljucke Priče"
+              iconStyle={{
+                borderColor: colorSchemeObj[globalCtx.colorSchemeValue].base,
+              }}
+              innerIconStyle={{borderWidth: 2}}
+              textStyle={{
+                textDecorationLine: 'none',
+                color: isCheckedTopleLjuckePrice
+                  ? colorSchemeObj[globalCtx.colorSchemeValue].light50
+                  : colorSchemeObj[globalCtx.colorSchemeValue].light30,
+              }}
+              isChecked={isCheckedTopleLjuckePrice}
+              disableBuiltInState
+              onPress={() => {
+                localStorage.set(
+                  'isCheckedTopleLjuckePrice',
+                  !isCheckedTopleLjuckePrice,
+                );
+
+                setIsCheckedTopleLjuckePrice(!isCheckedTopleLjuckePrice);
+              }}
+              textContainerStyle={{
+                marginLeft: 5,
+              }}
+              style={{marginTop: 7}}
+            />
+            <BouncyCheckbox
+              size={20}
+              fillColor={colorSchemeObj[globalCtx.colorSchemeValue].light50}
+              unfillColor={colorSchemeObj[globalCtx.colorSchemeValue].light30}
+              text="Rastrojavanje"
+              iconStyle={{
+                borderColor: colorSchemeObj[globalCtx.colorSchemeValue].base,
+              }}
+              innerIconStyle={{borderWidth: 2}}
+              textStyle={{
+                textDecorationLine: 'none',
+                color: isCheckedRastrojavanje
+                  ? colorSchemeObj[globalCtx.colorSchemeValue].light50
+                  : colorSchemeObj[globalCtx.colorSchemeValue].light30,
+              }}
+              isChecked={isCheckedRastrojavanje}
+              disableBuiltInState
+              onPress={() => {
+                localStorage.set(
+                  'isCheckedRastrojavanje',
+                  !isCheckedRastrojavanje,
+                );
+
+                setIsCheckedRastrojavanje(!isCheckedRastrojavanje);
+              }}
+              textContainerStyle={{
+                marginLeft: 5,
+              }}
+              style={{marginTop: 7}}
+            />
+          </View>
+        </View>
+      )}
+
       <View style={styles.tipsContainer(globalCtx.colorSchemeValue)}>
         {error ? (
           <Text style={styles.errorText(globalCtx.colorSchemeValue)}>
@@ -118,15 +558,15 @@ const PodcastList = ({navigation}) => {
         )}
       </View>
 
-      <OptimizedFlatList
-        data={fetchedEpisodes}
+      <FlatList
+        data={fetchedEpisodesToDisplay}
         renderItem={renderItem}
         keyExtractor={item => {
           return item.url;
         }}
         refreshing={isRefreshing}
         onRefresh={onRefresh}
-        extraData={fetchedEpisodes}
+        extraData={fetchedEpisodesToDisplay}
         contentContainerStyle={styles.containerFlatList(
           globalCtx.colorSchemeValue,
         )}
@@ -189,5 +629,37 @@ const styles = StyleSheet.create({
       borderTopColor: colorSchemeObj[colorScheme].light40,
       borderBottomColor: colorSchemeObj[colorScheme].light40,
     };
+  },
+  icon: colorScheme => {
+    return {
+      color: colorSchemeObj[colorScheme].light20,
+    };
+  },
+  filterButtonContainer: colorScheme => {
+    return {
+      alignItems: 'center',
+      justifyContent: 'center',
+      paddingTop: 5,
+      borderTopWidth: 1,
+      borderTopColor: colorSchemeObj[colorScheme].light40,
+      flexDirection: 'row',
+    };
+  },
+  filterIconsContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  pressedItem: {
+    opacity: 0.5,
+  },
+  checkboxContainer: colorScheme => {
+    return {
+      justifyContent: 'space-evenly',
+      flexDirection: 'row',
+      paddingBottom: 15,
+    };
+  },
+  checkboxColumn: {
+    justifyContent: 'space-between',
   },
 });

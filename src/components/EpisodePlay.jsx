@@ -173,8 +173,12 @@ const EpisodePlay = ({route}) => {
   let podcastUploadInfo;
 
   if (
-    !route.params.title.includes('Sportski Pozdrav') &&
-    !route.params.title.includes('Večernja škola rokenrola')
+    !route.params.title
+      .toLowerCase()
+      .includes('Sportski Pozdrav'.toLowerCase()) &&
+    !route.params.title
+      .toLowerCase()
+      .includes('Večernja škola rokenrola'.toLowerCase())
   ) {
     podcastUploadInfo = (
       <Text style={styles.insignificantDetailsText(globalCtx.colorSchemeValue)}>
@@ -272,7 +276,25 @@ const EpisodePlay = ({route}) => {
 
   let musicOnOffInfo;
 
-  if (route.params.url.endsWith('bm.mp3')) {
+  if (
+    route.params.url.toLowerCase().endsWith('bm.mp3'.toLowerCase()) &&
+    !route.params.title
+      .toLowerCase()
+      .includes('Ljudi iz podzemlja'.toLowerCase()) &&
+    !route.params.title
+      .toLowerCase()
+      .includes('Večernja škola rokenrola'.toLowerCase()) &&
+    !route.params.title
+      .toLowerCase()
+      .includes('Na ivici ofsajda'.toLowerCase()) &&
+    !route.params.title
+      .toLowerCase()
+      .includes('Sportski Pozdrav'.toLowerCase()) &&
+    !route.params.title
+      .toLowerCase()
+      .includes('Tople Ljucke Priče'.toLowerCase()) &&
+    !route.params.title.toLowerCase().includes('Rastrojavanje'.toLowerCase())
+  ) {
     musicOnOffInfo = (
       <IconMaterialCommunity
         style={styles.icon(globalCtx.colorSchemeValue)}
@@ -281,12 +303,22 @@ const EpisodePlay = ({route}) => {
       />
     );
   } else if (
-    !route.params.title.includes('Sportski Pozdrav') &&
-    !route.params.title.includes('Večernja škola rokenrola') &&
-    !route.params.title.includes('Tople Ljucke Priče') &&
-    !route.params.title.includes('Na ivici ofsajda') &&
-    !route.params.title.includes('Ljudi iz podzemlja') &&
-    !route.params.title.includes('Rastrojavanje')
+    !route.params.title
+      .toLowerCase()
+      .includes('Sportski Pozdrav'.toLowerCase()) &&
+    !route.params.title
+      .toLowerCase()
+      .includes('Večernja škola rokenrola'.toLowerCase()) &&
+    !route.params.title
+      .toLowerCase()
+      .includes('Tople Ljucke Priče'.toLowerCase()) &&
+    !route.params.title
+      .toLowerCase()
+      .includes('Na ivici ofsajda'.toLowerCase()) &&
+    !route.params.title
+      .toLowerCase()
+      .includes('Ljudi iz podzemlja'.toLowerCase()) &&
+    !route.params.title.toLowerCase().includes('Rastrojavanje'.toLowerCase())
   ) {
     musicOnOffInfo = (
       <IconFeather

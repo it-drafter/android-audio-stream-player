@@ -18,7 +18,7 @@ This is a [**React Native**](https://reactnative.dev) project, bootstrapped usin
 Some of the libraries and techniques used in this project:
 
 - **react-native-track-player** - the central focus point of this app - provides all the tools necessary to work with audio files
-- **react-native-optimized-flatlist** - thousands of items from the API this app is using are loaded efficiently thanks to this library
+- **React Native FlatList** - thousands of items from the API this app is using are loaded efficiently thanks to this interface
 - **react-native-mmkv** - the fastest key/value storage framework for React Native - used for the app's progress tracking feature
 - **react-native-fs** - provides native filesystem access - used for the app's saving podcasts locally feature
 - **netinfo** - for detecting and reacting to different connectivity states

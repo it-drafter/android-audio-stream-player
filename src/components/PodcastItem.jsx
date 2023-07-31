@@ -49,9 +49,11 @@ function PodcastItem(props) {
   let podcastUploadInfo;
 
   if (
-    !props.title.includes('Sportski Pozdrav') &&
-    !props.title.includes('Večernja škola rokenrola') &&
-    !props.title.includes('Tople Ljucke Priče')
+    !props.title.toLowerCase().includes('Sportski Pozdrav'.toLowerCase()) &&
+    !props.title
+      .toLowerCase()
+      .includes('Večernja škola rokenrola'.toLowerCase()) &&
+    !props.title.toLowerCase().includes('Tople Ljucke Priče'.toLowerCase())
   ) {
     podcastUploadInfo = (
       <Text style={styles.infoText(globalCtx.colorSchemeValue)}>
@@ -152,7 +154,17 @@ function PodcastItem(props) {
 
   let musicOnOffInfo;
 
-  if (props.url.endsWith('bm.mp3')) {
+  if (
+    props.url.toLowerCase().endsWith('bm.mp3'.toLowerCase()) &&
+    !props.title.toLowerCase().includes('Ljudi iz podzemlja'.toLowerCase()) &&
+    !props.title
+      .toLowerCase()
+      .includes('Večernja škola rokenrola'.toLowerCase()) &&
+    !props.title.toLowerCase().includes('Na ivici ofsajda'.toLowerCase()) &&
+    !props.title.toLowerCase().includes('Sportski Pozdrav'.toLowerCase()) &&
+    !props.title.toLowerCase().includes('Tople Ljucke Priče'.toLowerCase()) &&
+    !props.title.toLowerCase().includes('Rastrojavanje'.toLowerCase())
+  ) {
     musicOnOffInfo = (
       <Text
         style={[
@@ -167,12 +179,14 @@ function PodcastItem(props) {
       </Text>
     );
   } else if (
-    !props.title.includes('Sportski Pozdrav') &&
-    !props.title.includes('Večernja škola rokenrola') &&
-    !props.title.includes('Tople Ljucke Priče') &&
-    !props.title.includes('Na ivici ofsajda') &&
-    !props.title.includes('Ljudi iz podzemlja') &&
-    !props.title.includes('Rastrojavanje')
+    !props.title.toLowerCase().includes('Sportski Pozdrav'.toLowerCase()) &&
+    !props.title
+      .toLowerCase()
+      .includes('Večernja škola rokenrola'.toLowerCase()) &&
+    !props.title.toLowerCase().includes('Tople Ljucke Priče'.toLowerCase()) &&
+    !props.title.toLowerCase().includes('Na ivici ofsajda'.toLowerCase()) &&
+    !props.title.toLowerCase().includes('Ljudi iz podzemlja'.toLowerCase()) &&
+    !props.title.toLowerCase().includes('Rastrojavanje'.toLowerCase())
   ) {
     musicOnOffInfo = (
       <Text
