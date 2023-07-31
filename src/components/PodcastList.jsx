@@ -304,6 +304,7 @@ const PodcastList = ({navigation}) => {
               innerIconStyle={{borderWidth: 2}}
               textStyle={{
                 textDecorationLine: 'none',
+                fontSize: 14,
                 color: isCheckedAlarmSaMuzikom
                   ? colorSchemeObj[globalCtx.colorSchemeValue].light50
                   : colorSchemeObj[globalCtx.colorSchemeValue].light30,
@@ -334,6 +335,7 @@ const PodcastList = ({navigation}) => {
               innerIconStyle={{borderWidth: 2}}
               textStyle={{
                 textDecorationLine: 'none',
+                fontSize: 14,
                 color: isCheckedAlarmBezMuzike
                   ? colorSchemeObj[globalCtx.colorSchemeValue].light50
                   : colorSchemeObj[globalCtx.colorSchemeValue].light30,
@@ -364,6 +366,7 @@ const PodcastList = ({navigation}) => {
               innerIconStyle={{borderWidth: 2}}
               textStyle={{
                 textDecorationLine: 'none',
+                fontSize: 14,
                 color: isCheckedLjudiIzPodzemlja
                   ? colorSchemeObj[globalCtx.colorSchemeValue].light50
                   : colorSchemeObj[globalCtx.colorSchemeValue].light30,
@@ -393,6 +396,7 @@ const PodcastList = ({navigation}) => {
               innerIconStyle={{borderWidth: 2}}
               textStyle={{
                 textDecorationLine: 'none',
+                fontSize: 14,
                 color: isCheckedVecernjaSkolaRokenrola
                   ? colorSchemeObj[globalCtx.colorSchemeValue].light50
                   : colorSchemeObj[globalCtx.colorSchemeValue].light30,
@@ -427,6 +431,7 @@ const PodcastList = ({navigation}) => {
               innerIconStyle={{borderWidth: 2}}
               textStyle={{
                 textDecorationLine: 'none',
+                fontSize: 14,
                 color: isCheckedNaIviciOfsajda
                   ? colorSchemeObj[globalCtx.colorSchemeValue].light50
                   : colorSchemeObj[globalCtx.colorSchemeValue].light30,
@@ -457,6 +462,7 @@ const PodcastList = ({navigation}) => {
               innerIconStyle={{borderWidth: 2}}
               textStyle={{
                 textDecorationLine: 'none',
+                fontSize: 14,
                 color: isCheckedSportskiPozdrav
                   ? colorSchemeObj[globalCtx.colorSchemeValue].light50
                   : colorSchemeObj[globalCtx.colorSchemeValue].light30,
@@ -487,6 +493,7 @@ const PodcastList = ({navigation}) => {
               innerIconStyle={{borderWidth: 2}}
               textStyle={{
                 textDecorationLine: 'none',
+                fontSize: 14,
                 color: isCheckedTopleLjuckePrice
                   ? colorSchemeObj[globalCtx.colorSchemeValue].light50
                   : colorSchemeObj[globalCtx.colorSchemeValue].light30,
@@ -517,6 +524,7 @@ const PodcastList = ({navigation}) => {
               innerIconStyle={{borderWidth: 2}}
               textStyle={{
                 textDecorationLine: 'none',
+                fontSize: 14,
                 color: isCheckedRastrojavanje
                   ? colorSchemeObj[globalCtx.colorSchemeValue].light50
                   : colorSchemeObj[globalCtx.colorSchemeValue].light30,
