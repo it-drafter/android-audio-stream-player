@@ -271,6 +271,24 @@ const PodcastList = ({navigation}) => {
 
   return (
     <View style={styles.container(globalCtx.colorSchemeValue)}>
+      <View style={styles.tipsContainer(globalCtx.colorSchemeValue)}>
+        {error ? (
+          <Text style={styles.errorText(globalCtx.colorSchemeValue)}>
+            Lista nije ažurirana. Greška u konekciji sa serverom.
+          </Text>
+        ) : userRefreshed ? (
+          <Text style={styles.successText(globalCtx.colorSchemeValue)}>
+            Lista je uspešno ažurirana!
+          </Text>
+        ) : (
+          <Text style={styles.tipsText(globalCtx.colorSchemeValue)}>
+            {delayComplete
+              ? 'Povuci dole za update / refresh'
+              : 'Podkast lista'}
+          </Text>
+        )}
+      </View>
+
       <View style={styles.filterButtonContainer(globalCtx.colorSchemeValue)}>
         <Pressable
           onPress={() => setIsOpenFilter(!isOpenFilter)}
@@ -279,12 +297,12 @@ const PodcastList = ({navigation}) => {
             <IconFeather
               style={styles.icon(globalCtx.colorSchemeValue)}
               name="filter"
-              size={40}
+              size={25}
             />
             <IconFeather
               style={styles.icon(globalCtx.colorSchemeValue)}
               name={isOpenFilter ? 'chevron-up' : 'chevron-down'}
-              size={30}
+              size={22}
             />
           </View>
         </Pressable>
@@ -548,24 +566,6 @@ const PodcastList = ({navigation}) => {
         </View>
       )}
 
-      <View style={styles.tipsContainer(globalCtx.colorSchemeValue)}>
-        {error ? (
-          <Text style={styles.errorText(globalCtx.colorSchemeValue)}>
-            Lista nije ažurirana. Greška u konekciji sa serverom.
-          </Text>
-        ) : userRefreshed ? (
-          <Text style={styles.successText(globalCtx.colorSchemeValue)}>
-            Lista je uspešno ažurirana!
-          </Text>
-        ) : (
-          <Text style={styles.tipsText(globalCtx.colorSchemeValue)}>
-            {delayComplete
-              ? 'Povuci dole za update / refresh'
-              : 'Podkast lista'}
-          </Text>
-        )}
-      </View>
-
       <FlatList
         data={fetchedEpisodesToDisplay}
         renderItem={renderItem}
@@ -648,8 +648,8 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       justifyContent: 'center',
       paddingTop: 5,
-      borderTopWidth: 1,
-      borderTopColor: colorSchemeObj[colorScheme].light40,
+      borderBottomWidth: 1,
+      borderBottomColor: colorSchemeObj[colorScheme].light40,
       flexDirection: 'row',
     };
   },
@@ -665,6 +665,8 @@ const styles = StyleSheet.create({
       justifyContent: 'space-evenly',
       flexDirection: 'row',
       paddingBottom: 15,
+      borderBottomWidth: 1,
+      borderBottomColor: colorSchemeObj[colorScheme].light40,
     };
   },
   checkboxColumn: {
