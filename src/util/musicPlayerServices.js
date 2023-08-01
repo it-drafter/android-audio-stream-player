@@ -123,4 +123,22 @@ export async function playbackService() {
     remoteProgressSave();
     await TrackPlayer.pause();
   });
+
+  setInterval(async () => {
+    const position = await TrackPlayer.getPosition();
+    const buffered = await TrackPlayer.getBufferedPosition();
+    const duration = await TrackPlayer.getDuration();
+
+    if (
+      position &&
+      buffered &&
+      position < duration - 10 &&
+      position > buffered - 10
+    ) {
+      remoteProgressSave();
+      (async () => {
+        await TrackPlayer.pause();
+      })();
+    }
+  }, 6000);
 }
