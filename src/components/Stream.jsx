@@ -129,6 +129,15 @@ const Stream = () => {
           return;
         }
       }
+
+      // Need to decide if live stream stays stopped after connection is gone
+      // Uncomment if needed:
+      // if (
+      //   connectionState.isInternetReachable === false &&
+      //   infoData[0]?.url.endsWith('stream')
+      // ) {
+      //   await TrackPlayer.reset();
+      // }
     });
   }, []);
 

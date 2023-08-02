@@ -50,10 +50,8 @@ function App() {
   useEffect(() => {
     setup();
 
-    return () => {
-      try {
-        TrackPlayer.reset();
-      } catch (error) {}
+    return async () => {
+      await TrackPlayer.reset();
     };
   }, []);
 

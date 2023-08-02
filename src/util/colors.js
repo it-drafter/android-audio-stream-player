@@ -23,6 +23,30 @@ export const colorSchemeObj = {
     dark100: '#000000',
   },
 
+  crimsonRed: {
+    base: '#990000',
+    light10: '#a31919',
+    light20: '#ad3333',
+    light30: '#b84d4d',
+    light40: '#c26666',
+    light50: '#cc8080',
+    light60: '#d69999',
+    light70: '#e0b3b3',
+    light80: '#ebcccc',
+    light90: '#f5e6e6',
+    light100: '#ffffff',
+    dark10: '#8a0000',
+    dark20: '#7a0000',
+    dark30: '#6b0000',
+    dark40: '#5c0000',
+    dark50: '#4d0000',
+    dark60: '#3d0000',
+    dark70: '#2e0000',
+    dark80: '#1f0000',
+    dark90: '#1f1f29', //common background for all color schemes
+    dark100: '#000000',
+  },
+
   blue: {
     base: '#4285f4',
     light10: '#5591f5',

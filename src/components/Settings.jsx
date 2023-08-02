@@ -16,11 +16,18 @@ import {useFocusEffect} from '@react-navigation/native';
 import IconMaterialCommunity from 'react-native-vector-icons/MaterialCommunityIcons';
 import {colorSchemeObj} from '../util/colors';
 import GlobalContext from '../util/context';
+import TrackPlayer, {
+  usePlaybackState,
+  useProgress,
+  State,
+} from 'react-native-track-player';
 
 const {width, height} = Dimensions.get('window');
 
 const Settings = () => {
   const globalCtx = useContext(GlobalContext);
+  const playBackState = usePlaybackState();
+  const {position} = useProgress();
 
   const [isWiFiOnlyEnabledRadio, setIsWiFiOnlyEnabledRadio] = useState(
     localStorage.getBoolean('isWiFiOnlyEnabledForRadio') ?? true,
@@ -107,6 +114,10 @@ const Settings = () => {
   const handlePressViolet = () => {
     localStorage.set('colorScheme', 'violet');
     globalCtx.setColorSchemeFn('violet');
+  };
+  const handlePressCrimsonRed = () => {
+    localStorage.set('colorScheme', 'crimsonRed');
+    globalCtx.setColorSchemeFn('crimsonRed');
   };
   const handlePressBlue = () => {
     localStorage.set('colorScheme', 'blue');
@@ -237,7 +248,44 @@ const Settings = () => {
 
           <View style={styles.buttonContainer}>
             <Pressable
-              onPress={() => RNExitApp.exitApp()}
+              onPress={async () => {
+                const currentTrack = await TrackPlayer.getCurrentTrack();
+
+                if (currentTrack !== null) {
+                  if (
+                    playBackState === State.Playing &&
+                    !globalCtx.fileNameLoadedToTrackValue.endsWith('stream') &&
+                    localStorage.getString('localProgressMap')
+                  ) {
+                    const localStorageData = JSON.parse(
+                      localStorage.getString('localProgressMap'),
+                    );
+                    localStorageData[globalCtx.fileNameLoadedToTrackValue] =
+                      position;
+                    localStorage.set(
+                      'localProgressMap',
+                      JSON.stringify(localStorageData),
+                    );
+                  } else if (
+                    playBackState === State.Playing &&
+                    !globalCtx.fileNameLoadedToTrackValue.endsWith('stream') &&
+                    !localStorage.getString('localProgressMap')
+                  ) {
+                    localStorage.set(
+                      'localProgressMap',
+                      JSON.stringify({
+                        [globalCtx.fileNameLoadedToTrackValue]: position,
+                      }),
+                    );
+                  }
+                }
+
+                await TrackPlayer.reset();
+
+                setTimeout(() => {
+                  RNExitApp.exitApp();
+                }, 800);
+              }}
               style={({pressed}) => [
                 styles.button(globalCtx.colorSchemeValue),
                 pressed && styles.pressedItem,
@@ -263,6 +311,14 @@ const Settings = () => {
                   onPress={handlePressViolet}
                   style={({pressed}) => pressed && styles.pressedItem}>
                   <View style={[styles.colorBox, styles.colorBoxViolet]}></View>
+                </Pressable>
+              </View>
+              <View>
+                <Pressable
+                  onPress={handlePressCrimsonRed}
+                  style={({pressed}) => pressed && styles.pressedItem}>
+                  <View
+                    style={[styles.colorBox, styles.colorBoxCrimsonRed]}></View>
                 </Pressable>
               </View>
               <View>
@@ -302,7 +358,7 @@ const Settings = () => {
             O aplikaciji:
           </Text>
           <Text style={styles.regularText(globalCtx.colorSchemeValue)}>
-            Verzija: 1.3.20230801-b
+            Verzija: 1.3.20230802-b
           </Text>
           <Text style={styles.regularText(globalCtx.colorSchemeValue)}>
             Autor: Roćko
@@ -457,12 +513,15 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   colorBox: {
-    width: 50,
-    height: 50,
-    marginRight: 15,
+    width: 40,
+    height: 40,
+    marginRight: 12,
   },
   colorBoxViolet: {
     backgroundColor: '#6f42c1',
+  },
+  colorBoxCrimsonRed: {
+    backgroundColor: '#990000',
   },
   colorBoxBlue: {
     backgroundColor: '#4285f4',
