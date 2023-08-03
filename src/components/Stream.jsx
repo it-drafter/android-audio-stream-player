@@ -58,8 +58,8 @@ const Stream = () => {
       await TrackPlayer.add([
         {
           id: 'stream',
-          title: 'Live Stream',
-          artist: 'Daško i Mlađa',
+          title: metaData.title ?? 'Live Stream',
+          artist: metaData.artist ?? 'Daško i Mlađa',
           url: 'https://stream.daskoimladja.com:9000/stream',
           artwork: artworkImgStream,
         },
@@ -129,15 +129,6 @@ const Stream = () => {
           return;
         }
       }
-
-      // Need to decide if live stream stays stopped after connection is gone
-      // Uncomment if needed:
-      // if (
-      //   connectionState.isInternetReachable === false &&
-      //   infoData[0]?.url.endsWith('stream')
-      // ) {
-      //   await TrackPlayer.reset();
-      // }
     });
   }, []);
 
@@ -147,19 +138,9 @@ const Stream = () => {
 
       async params => {
         setMetaData({
-          title: params?.title ?? 'Live Stream',
-          artist: params?.artist ?? 'Daško i Mlađa',
+          title: params?.title,
+          artist: params?.artist,
         });
-
-        try {
-          await TrackPlayer.updateMetadataForTrack(0, {
-            id: 'stream',
-            title: params?.title ?? 'Live Stream',
-            artist: params?.artist ?? 'Daško i Mlađa',
-            url: 'https://stream.daskoimladja.com:9000/stream',
-            artwork: artworkImgStream,
-          });
-        } catch (error) {}
       },
     );
   }, []);

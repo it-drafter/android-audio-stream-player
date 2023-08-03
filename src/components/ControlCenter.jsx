@@ -396,7 +396,7 @@ const ControlCenter = props => {
             name={
               playBackState === State.Playing &&
               globalCtx.fileNameLoadedToTrackValue === props.fileNameFromNav
-                ? 'pause-circle'
+                ? 'stop-circle'
                 : 'play-circle'
             }
             size={60}
