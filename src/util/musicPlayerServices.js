@@ -124,6 +124,7 @@ export async function playbackService() {
     await TrackPlayer.pause();
   });
 
+  // save progress when internet connection is lost:
   setInterval(async () => {
     const position = await TrackPlayer.getPosition();
     const buffered = await TrackPlayer.getBufferedPosition();

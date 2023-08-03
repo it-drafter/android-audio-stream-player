@@ -296,7 +296,7 @@ const ControlCenter = props => {
             );
           }
 
-          await TrackPlayer.pause();
+          await TrackPlayer.reset();
 
           break;
 
