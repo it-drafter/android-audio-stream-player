@@ -8,6 +8,8 @@ import TrackPlayer, {
 import {localStorage} from '../util/http';
 import NetInfo from '@react-native-community/netinfo';
 
+import artworkImgStream from '../assets/artwork-stream.png';
+
 export async function setupPlayer() {
   let isSetup = false;
   try {
@@ -123,6 +125,22 @@ export async function playbackService() {
     remoteProgressSave();
     await TrackPlayer.pause();
   });
+
+  TrackPlayer.addEventListener(
+    Event.PlaybackMetadataReceived,
+
+    async params => {
+      try {
+        await TrackPlayer.updateMetadataForTrack(0, {
+          id: 'stream',
+          title: params?.title ?? 'Live Stream',
+          artist: params?.artist ?? 'Daško i Mlađa',
+          url: 'https://stream.daskoimladja.com:9000/stream',
+          artwork: artworkImgStream,
+        });
+      } catch (error) {}
+    },
+  );
 
   // save progress when internet connection is lost:
   setInterval(async () => {
