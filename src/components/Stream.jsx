@@ -58,8 +58,8 @@ const Stream = () => {
       await TrackPlayer.add([
         {
           id: 'stream',
-          title: metaData.title ?? 'Live Stream',
-          artist: metaData.artist ?? 'Daško i Mlađa',
+          title: 'Live Stream',
+          artist: 'Daško i Mlađa',
           url: 'https://stream.daskoimladja.com:9000/stream',
           artwork: artworkImgStream,
         },
