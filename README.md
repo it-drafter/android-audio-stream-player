@@ -10,7 +10,7 @@ This is a [**React Native**](https://reactnative.dev) project, bootstrapped usin
 
 ---
 
-- It is designed for a local internet radio station in my city. With some modifications - it can play just about any internet radio and/or online podcast.
+- It is designed for a local internet radio station in my city. With some modifications - it can play any internet radio and/or online podcast.
 - Just make sure you change all the API specific code, and adjust the design to your project.
 
 ---
@@ -78,7 +78,7 @@ This is one way to run your app — you can also run it directly from within And
 
 Now that you have successfully run the app, let's modify it.
 
-1. Open `App.jsx` in your text editor of choice and edit some lines.
+1. Open `App.jsx` (located in the 'src' folder) in your text editor of choice and edit some lines.
 2. Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Developer Menu** (<kbd>Ctrl</kbd> + <kbd>M</kbd> (on Window and Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (on macOS)) to see your changes!
 
 ## Congratulations!

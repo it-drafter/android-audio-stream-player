@@ -145,11 +145,21 @@ const Stream = () => {
     TrackPlayer.addEventListener(
       Event.PlaybackMetadataReceived,
 
-      params => {
+      async params => {
         setMetaData({
           title: params?.title ?? 'Live Stream',
           artist: params?.artist ?? 'Daško i Mlađa',
         });
+
+        try {
+          await TrackPlayer.updateMetadataForTrack(0, {
+            id: 'stream',
+            title: params?.title ?? 'Live Stream',
+            artist: params?.artist ?? 'Daško i Mlađa',
+            url: 'https://stream.daskoimladja.com:9000/stream',
+            artwork: artworkImgStream,
+          });
+        } catch (error) {}
       },
     );
   }, []);
