@@ -70,6 +70,16 @@ export async function playbackService() {
     const trackNameFromUrl = infoDataUrlArr[infoDataUrlArr.length - 1];
     if (trackNameFromUrl.endsWith('stream')) {
       await TrackPlayer.reset();
+
+      await TrackPlayer.add([
+        {
+          id: 'stream',
+          title: 'Live Stream',
+          artist: 'Daško i Mlađa',
+          url: 'https://stream.daskoimladja.com:9000/stream',
+          artwork: artworkImgStream,
+        },
+      ]);
     }
   });
 
@@ -161,6 +171,16 @@ export async function playbackService() {
     const trackNameFromUrl = infoDataUrlArr[infoDataUrlArr.length - 1];
     if (trackNameFromUrl.endsWith('stream')) {
       await TrackPlayer.reset();
+
+      await TrackPlayer.add([
+        {
+          id: 'stream',
+          title: 'Live Stream',
+          artist: 'Daško i Mlađa',
+          url: 'https://stream.daskoimladja.com:9000/stream',
+          artwork: artworkImgStream,
+        },
+      ]);
     }
   });
 
