@@ -91,6 +91,18 @@ export async function playbackService() {
       switch (true) {
         case connectionState.type === 'wifi' &&
           trackNameFromUrl.endsWith('stream'):
+          await TrackPlayer.reset();
+
+          await TrackPlayer.add([
+            {
+              id: 'stream',
+              title: 'Live Stream',
+              artist: 'Daško i Mlađa',
+              url: 'https://stream.daskoimladja.com:9000/stream',
+              artwork: artworkImgStream,
+            },
+          ]);
+
           await TrackPlayer.play();
           break;
 
@@ -102,6 +114,18 @@ export async function playbackService() {
         case connectionState.type !== 'wifi' &&
           trackNameFromUrl.endsWith('stream') &&
           localStorage.getBoolean('isWiFiOnlyEnabledForRadio') === false:
+          await TrackPlayer.reset();
+
+          await TrackPlayer.add([
+            {
+              id: 'stream',
+              title: 'Live Stream',
+              artist: 'Daško i Mlađa',
+              url: 'https://stream.daskoimladja.com:9000/stream',
+              artwork: artworkImgStream,
+            },
+          ]);
+
           await TrackPlayer.play();
           break;
 
@@ -156,7 +180,8 @@ export async function playbackService() {
     },
   );
 
-  // save progress when internet connection is lost:
+  // save progress when internet connection is lost
+  // it affect only podcasts
   setInterval(async () => {
     const position = await TrackPlayer.getPosition();
     const buffered = await TrackPlayer.getBufferedPosition();
