@@ -64,6 +64,13 @@ export async function playbackService() {
   TrackPlayer.addEventListener(Event.RemotePause, async () => {
     remoteProgressSave();
     await TrackPlayer.pause();
+
+    const infoData = await TrackPlayer.getQueue();
+    const infoDataUrlArr = (infoData[0]?.url).split('/');
+    const trackNameFromUrl = infoDataUrlArr[infoDataUrlArr.length - 1];
+    if (trackNameFromUrl.endsWith('stream')) {
+      await TrackPlayer.reset();
+    }
   });
 
   TrackPlayer.addEventListener(Event.RemotePlay, async () => {
@@ -124,6 +131,13 @@ export async function playbackService() {
   TrackPlayer.addEventListener(Event.RemoteDuck, async event => {
     remoteProgressSave();
     await TrackPlayer.pause();
+
+    const infoData = await TrackPlayer.getQueue();
+    const infoDataUrlArr = (infoData[0]?.url).split('/');
+    const trackNameFromUrl = infoDataUrlArr[infoDataUrlArr.length - 1];
+    if (trackNameFromUrl.endsWith('stream')) {
+      await TrackPlayer.reset();
+    }
   });
 
   TrackPlayer.addEventListener(
@@ -157,6 +171,9 @@ export async function playbackService() {
       remoteProgressSave();
       (async () => {
         await TrackPlayer.pause();
+        try {
+          await TrackPlayer.reset();
+        } catch (error) {}
       })();
     }
   }, 6000);
