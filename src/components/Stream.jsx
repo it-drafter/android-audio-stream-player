@@ -278,6 +278,7 @@ const Stream = () => {
           loadTrackUrlToCtx();
         } else {
           await TrackPlayer.reset();
+          addTrack();
         }
       }
     }
