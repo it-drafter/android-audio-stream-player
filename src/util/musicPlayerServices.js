@@ -191,8 +191,8 @@ export async function playbackService() {
       try {
         await TrackPlayer.updateMetadataForTrack(0, {
           id: 'stream',
-          title: params?.title ?? 'Live Stream',
-          artist: params?.artist ?? 'Daško i Mlađa',
+          title: params?.title || 'Live Stream',
+          artist: params?.artist || 'Daško i Mlađa',
           url: 'https://stream.daskoimladja.com:9000/stream',
           artwork: artworkImgStream,
         });
@@ -201,7 +201,7 @@ export async function playbackService() {
   );
 
   // save progress when internet connection is lost
-  // it affect only podcasts
+  // it only affect podcasts
   setInterval(async () => {
     const position = await TrackPlayer.getPosition();
     const buffered = await TrackPlayer.getBufferedPosition();

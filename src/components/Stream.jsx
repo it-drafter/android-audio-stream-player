@@ -129,15 +129,6 @@ const Stream = () => {
           return;
         }
       }
-
-      // Need to decide if live stream stays stopped after connection is gone
-      // Uncomment if needed:
-      // if (
-      //   connectionState.isInternetReachable === false &&
-      //   infoData[0]?.url.endsWith('stream')
-      // ) {
-      //   await TrackPlayer.reset();
-      // }
     });
   }, []);
 
@@ -291,8 +282,8 @@ const Stream = () => {
     globalCtx.fileNameLoadedToTrackValue.endsWith('stream') &&
     listenersCountAutodj.trim() !== '0'
   ) {
-    streamInfoTitleToDisplay = metaData.title ?? 'Live Stream';
-    streamInfoArtistToDisplay = metaData.artist ?? 'Daško i Mlađa';
+    streamInfoTitleToDisplay = metaData.title || 'Live Stream';
+    streamInfoArtistToDisplay = metaData.artist || 'Daško i Mlađa';
   } else if (
     playBackState === State.Playing &&
     !globalCtx.fileNameLoadedToTrackValue.endsWith('stream')
