@@ -269,7 +269,20 @@ const Stream = () => {
           loadTrackUrlToCtx();
         } else {
           await TrackPlayer.reset();
+
           addTrack();
+
+          setTimeout(async () => {
+            try {
+              await TrackPlayer.updateMetadataForTrack(0, {
+                id: 'stream',
+                title: 'Live Stream',
+                artist: 'Daško i Mlađa',
+                url: 'https://stream.daskoimladja.com:9000/stream',
+                artwork: artworkImgStream,
+              });
+            } catch (error) {}
+          }, 800);
         }
       }
     }
