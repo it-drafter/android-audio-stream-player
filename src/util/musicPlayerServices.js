@@ -80,18 +80,6 @@ export async function playbackService() {
           artwork: artworkImgStream,
         },
       ]);
-
-      setTimeout(async () => {
-        try {
-          await TrackPlayer.updateMetadataForTrack(0, {
-            id: 'stream',
-            title: 'Live Stream',
-            artist: 'Daško i Mlađa',
-            url: 'https://stream.daskoimladja.com:9000/stream',
-            artwork: artworkImgStream,
-          });
-        } catch (error) {}
-      }, 800);
     }
   });
 
@@ -193,18 +181,6 @@ export async function playbackService() {
           artwork: artworkImgStream,
         },
       ]);
-
-      setTimeout(async () => {
-        try {
-          await TrackPlayer.updateMetadataForTrack(0, {
-            id: 'stream',
-            title: 'Live Stream',
-            artist: 'Daško i Mlađa',
-            url: 'https://stream.daskoimladja.com:9000/stream',
-            artwork: artworkImgStream,
-          });
-        } catch (error) {}
-      }, 800);
     }
   });
 
