@@ -3,6 +3,7 @@ import TrackPlayer, {
   RepeatMode,
   AppKilledPlaybackBehavior,
   Capability,
+  State,
 } from 'react-native-track-player';
 
 import {localStorage} from '../util/http';
@@ -189,19 +190,29 @@ export async function playbackService() {
 
     async params => {
       try {
-        await TrackPlayer.updateMetadataForTrack(0, {
-          id: 'stream',
-          title: params?.title || 'Live Stream',
-          artist: params?.artist || 'Daško i Mlađa',
-          url: 'https://stream.daskoimladja.com:9000/stream',
-          artwork: artworkImgStream,
-        });
+        if ((await TrackPlayer.getState()) === State.Playing) {
+          await TrackPlayer.updateMetadataForTrack(0, {
+            id: 'stream',
+            title: params?.title || 'Live Stream',
+            artist: params?.artist || 'Daško i Mlađa',
+            url: 'https://stream.daskoimladja.com:9000/stream',
+            artwork: artworkImgStream,
+          });
+        } else {
+          await TrackPlayer.updateMetadataForTrack(0, {
+            id: 'stream',
+            title: 'Live Stream',
+            artist: 'Daško i Mlađa',
+            url: 'https://stream.daskoimladja.com:9000/stream',
+            artwork: artworkImgStream,
+          });
+        }
       } catch (error) {}
     },
   );
 
   // save progress when internet connection is lost
-  // it only affect podcasts
+  // it only affect podcasts - as intended
   setInterval(async () => {
     const position = await TrackPlayer.getPosition();
     const buffered = await TrackPlayer.getBufferedPosition();
