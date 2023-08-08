@@ -358,7 +358,7 @@ const Settings = () => {
             O aplikaciji:
           </Text>
           <Text style={styles.regularText(globalCtx.colorSchemeValue)}>
-            Verzija: 1.3.202308081445
+            Verzija: 1.3.20230809
           </Text>
           <Text style={styles.regularText(globalCtx.colorSchemeValue)}>
             Autor: Roćko

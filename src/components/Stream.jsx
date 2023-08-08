@@ -308,6 +308,24 @@ const Stream = () => {
     iconName = 'stop-circle-outline';
   }
 
+  let numberOfListenersValueToDisplay = '0';
+
+  if ((listenersCountAutodj ? listenersCountAutodj.trim() : '0') === '0') {
+    if ((listenersCountLive ? listenersCountLive.trim() : '0') === '0') {
+      numberOfListenersValueToDisplay = listenersCountStream
+        ? listenersCountStream.trim()
+        : '0';
+    } else {
+      numberOfListenersValueToDisplay = listenersCountLive
+        ? listenersCountLive.trim()
+        : '0';
+    }
+  } else {
+    numberOfListenersValueToDisplay = listenersCountAutodj
+      ? listenersCountAutodj.trim()
+      : '0';
+  }
+
   return (
     <View style={styles.container(globalCtx.colorSchemeValue)}>
       <View style={styles.detailsContainer}>
@@ -377,11 +395,7 @@ const Stream = () => {
             Online slušalaca:
           </Text>
           <Text style={styles.textlistenersCount(globalCtx.colorSchemeValue)}>
-            {listenersCountAutodj.trim() === '0'
-              ? listenersCountLive.trim() === '0'
-                ? listenersCountStream.trim()
-                : listenersCountLive.trim()
-              : listenersCountAutodj.trim()}
+            {numberOfListenersValueToDisplay}
           </Text>
         </View>
 
