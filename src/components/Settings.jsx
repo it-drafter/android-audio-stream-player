@@ -21,6 +21,10 @@ import TrackPlayer, {
   useProgress,
   State,
 } from 'react-native-track-player';
+import FastImage from 'react-native-fast-image';
+
+import developerIcon from '../assets/developericon.png';
+import buyMeACoffee from '../assets/buymeacoffee.png';
 
 const {width, height} = Dimensions.get('window');
 
@@ -358,11 +362,24 @@ const Settings = () => {
             O aplikaciji:
           </Text>
           <Text style={styles.regularText(globalCtx.colorSchemeValue)}>
-            Verzija: 1.3.20230809
+            Verzija: 1.3.20230814
           </Text>
-          <Text style={styles.regularText(globalCtx.colorSchemeValue)}>
-            Autor: Roćko
-          </Text>
+          <View style={styles.contactContainer}>
+            <Text style={styles.regularText(globalCtx.colorSchemeValue)}>
+              Autor:&nbsp;
+            </Text>
+            <FastImage
+              style={{
+                width: 20,
+                height: 20,
+              }}
+              source={developerIcon}
+              resizeMode={FastImage.resizeMode.cover}
+            />
+            <Text style={styles.regularText(globalCtx.colorSchemeValue)}>
+              &nbsp;Roćko
+            </Text>
+          </View>
           <View style={styles.contactContainer}>
             <Text style={styles.regularText(globalCtx.colorSchemeValue)}>
               Kontakt:
@@ -370,13 +387,34 @@ const Settings = () => {
             <View style={styles.pressableContainer}>
               <Pressable
                 onPress={() =>
-                  Linking.openURL('https://discord.com/invite/aJa7fS3')
+                  Linking.openURL('https://discord.com/invite/8MtjZG2Vsd')
                 }
                 style={({pressed}) => pressed && styles.pressedItem}>
                 <IconMaterialCommunity
                   style={styles.icon(globalCtx.colorSchemeValue)}
                   name={'discord'}
                   size={30}
+                />
+              </Pressable>
+            </View>
+          </View>
+          <View style={styles.contactContainer}>
+            <Text style={styles.regularText(globalCtx.colorSchemeValue)}>
+              Časti me kafom:
+            </Text>
+            <View style={styles.pressableContainer}>
+              <Pressable
+                onPress={() =>
+                  Linking.openURL('https://www.buymeacoffee.com/rotjko')
+                }
+                style={({pressed}) => pressed && styles.pressedItem}>
+                <FastImage
+                  style={{
+                    width: 96,
+                    height: 27,
+                  }}
+                  source={buyMeACoffee}
+                  resizeMode={FastImage.resizeMode.cover}
                 />
               </Pressable>
             </View>
