@@ -41,23 +41,30 @@ export async function addTrack() {
 async function remoteProgressSave() {
   const position = await TrackPlayer.getPosition();
   const infoData = await TrackPlayer.getQueue();
-  const infoDataUrlArr = (infoData[0]?.url).split('/');
-  const trackNameFromUrl = infoDataUrlArr[infoDataUrlArr.length - 1];
+  try {
+    const infoDataUrlArr = (infoData[0]?.url).split('/');
+    const trackNameFromUrl = infoDataUrlArr[infoDataUrlArr.length - 1];
 
-  if (!trackNameFromUrl.endsWith('stream')) {
-    if (localStorage.getString('localProgressMap')) {
-      const localStorageData = JSON.parse(
-        localStorage.getString('localProgressMap'),
-      );
-      localStorageData[trackNameFromUrl] = position;
-      localStorage.set('localProgressMap', JSON.stringify(localStorageData));
-    } else {
-      localStorage.set(
-        'localProgressMap',
-        JSON.stringify({[trackNameFromUrl]: position}),
-      );
+    if (!trackNameFromUrl.endsWith('stream')) {
+      if (localStorage.getString('localProgressMap')) {
+        const localStorageData = JSON.parse(
+          localStorage.getString('localProgressMap'),
+        );
+
+        if (localStorageData[trackNameFromUrl] === position) {
+          return;
+        }
+
+        localStorageData[trackNameFromUrl] = position;
+        localStorage.set('localProgressMap', JSON.stringify(localStorageData));
+      } else {
+        localStorage.set(
+          'localProgressMap',
+          JSON.stringify({[trackNameFromUrl]: position}),
+        );
+      }
     }
-  }
+  } catch (error) {}
 }
 
 export async function playbackService() {
@@ -66,100 +73,104 @@ export async function playbackService() {
     await TrackPlayer.pause();
 
     const infoData = await TrackPlayer.getQueue();
-    const infoDataUrlArr = (infoData[0]?.url).split('/');
-    const trackNameFromUrl = infoDataUrlArr[infoDataUrlArr.length - 1];
-    if (trackNameFromUrl.endsWith('stream')) {
-      await TrackPlayer.reset();
+    try {
+      const infoDataUrlArr = (infoData[0]?.url).split('/');
+      const trackNameFromUrl = infoDataUrlArr[infoDataUrlArr.length - 1];
+      if (trackNameFromUrl.endsWith('stream')) {
+        await TrackPlayer.reset();
 
-      await TrackPlayer.add([
-        {
-          id: 'stream',
-          title: 'Live Stream',
-          artist: 'Daško i Mlađa',
-          url: 'https://stream.daskoimladja.com:9000/stream',
-          artwork: artworkImgStream,
-        },
-      ]);
-    }
+        await TrackPlayer.add([
+          {
+            id: 'stream',
+            title: 'Live Stream',
+            artist: 'Daško i Mlađa',
+            url: 'https://stream.daskoimladja.com:9000/stream',
+            artwork: artworkImgStream,
+          },
+        ]);
+      }
+    } catch (error) {}
   });
 
   TrackPlayer.addEventListener(Event.RemotePlay, async () => {
     const infoData = await TrackPlayer.getQueue();
 
-    const infoDataUrlArr = infoData[0]?.url
-      ? (infoData[0]?.url).split('/')
-      : [];
-    const trackNameFromUrl = infoDataUrlArr?.[infoDataUrlArr.length - 1];
+    try {
+      const infoDataUrlArr = infoData[0]?.url
+        ? (infoData[0]?.url).split('/')
+        : [];
+      const trackNameFromUrl = infoDataUrlArr?.[infoDataUrlArr.length - 1];
 
-    const connectionState = await NetInfo.fetch();
+      const connectionState = await NetInfo.fetch();
 
-    if (!trackNameFromUrl) {
-      return;
-    }
-
-    if (connectionState.isInternetReachable === true) {
-      switch (true) {
-        case connectionState.type === 'wifi' &&
-          trackNameFromUrl.endsWith('stream'):
-          await TrackPlayer.reset();
-
-          await TrackPlayer.add([
-            {
-              id: 'stream',
-              title: 'Live Stream',
-              artist: 'Daško i Mlađa',
-              url: 'https://stream.daskoimladja.com:9000/stream',
-              artwork: artworkImgStream,
-            },
-          ]);
-
-          await TrackPlayer.play();
-          break;
-
-        case connectionState.type === 'wifi' &&
-          !trackNameFromUrl.endsWith('stream'):
-          await TrackPlayer.play();
-          break;
-
-        case connectionState.type !== 'wifi' &&
-          trackNameFromUrl.endsWith('stream') &&
-          localStorage.getBoolean('isWiFiOnlyEnabledForRadio') === false:
-          await TrackPlayer.reset();
-
-          await TrackPlayer.add([
-            {
-              id: 'stream',
-              title: 'Live Stream',
-              artist: 'Daško i Mlađa',
-              url: 'https://stream.daskoimladja.com:9000/stream',
-              artwork: artworkImgStream,
-            },
-          ]);
-
-          await TrackPlayer.play();
-          break;
-
-        case connectionState.type !== 'wifi' &&
-          !trackNameFromUrl.endsWith('stream') &&
-          infoData[0]?.url.startsWith('file://'):
-          await TrackPlayer.play();
-          break;
-
-        case connectionState.type !== 'wifi' &&
-          !trackNameFromUrl.endsWith('stream') &&
-          localStorage.getBoolean('isWiFiOnlyEnabledForPodcast') === false:
-          await TrackPlayer.play();
-          break;
-
-        default:
-          break;
+      if (!trackNameFromUrl) {
+        return;
       }
-    } else if (
-      !trackNameFromUrl.endsWith('stream') &&
-      infoData[0]?.url.startsWith('file://')
-    ) {
-      await TrackPlayer.play();
-    }
+
+      if (connectionState.isInternetReachable === true) {
+        switch (true) {
+          case connectionState.type === 'wifi' &&
+            trackNameFromUrl.endsWith('stream'):
+            await TrackPlayer.reset();
+
+            await TrackPlayer.add([
+              {
+                id: 'stream',
+                title: 'Live Stream',
+                artist: 'Daško i Mlađa',
+                url: 'https://stream.daskoimladja.com:9000/stream',
+                artwork: artworkImgStream,
+              },
+            ]);
+
+            await TrackPlayer.play();
+            break;
+
+          case connectionState.type === 'wifi' &&
+            !trackNameFromUrl.endsWith('stream'):
+            await TrackPlayer.play();
+            break;
+
+          case connectionState.type !== 'wifi' &&
+            trackNameFromUrl.endsWith('stream') &&
+            localStorage.getBoolean('isWiFiOnlyEnabledForRadio') === false:
+            await TrackPlayer.reset();
+
+            await TrackPlayer.add([
+              {
+                id: 'stream',
+                title: 'Live Stream',
+                artist: 'Daško i Mlađa',
+                url: 'https://stream.daskoimladja.com:9000/stream',
+                artwork: artworkImgStream,
+              },
+            ]);
+
+            await TrackPlayer.play();
+            break;
+
+          case connectionState.type !== 'wifi' &&
+            !trackNameFromUrl.endsWith('stream') &&
+            infoData[0]?.url.startsWith('file://'):
+            await TrackPlayer.play();
+            break;
+
+          case connectionState.type !== 'wifi' &&
+            !trackNameFromUrl.endsWith('stream') &&
+            localStorage.getBoolean('isWiFiOnlyEnabledForPodcast') === false:
+            await TrackPlayer.play();
+            break;
+
+          default:
+            break;
+        }
+      } else if (
+        !trackNameFromUrl.endsWith('stream') &&
+        infoData[0]?.url.startsWith('file://')
+      ) {
+        await TrackPlayer.play();
+      }
+    } catch (error) {}
   });
 
   TrackPlayer.addEventListener(Event.RemoteDuck, async event => {
@@ -167,21 +178,24 @@ export async function playbackService() {
     await TrackPlayer.pause();
 
     const infoData = await TrackPlayer.getQueue();
-    const infoDataUrlArr = (infoData[0]?.url).split('/');
-    const trackNameFromUrl = infoDataUrlArr[infoDataUrlArr.length - 1];
-    if (trackNameFromUrl.endsWith('stream')) {
-      await TrackPlayer.reset();
 
-      await TrackPlayer.add([
-        {
-          id: 'stream',
-          title: 'Live Stream',
-          artist: 'Daško i Mlađa',
-          url: 'https://stream.daskoimladja.com:9000/stream',
-          artwork: artworkImgStream,
-        },
-      ]);
-    }
+    try {
+      const infoDataUrlArr = (infoData[0]?.url).split('/');
+      const trackNameFromUrl = infoDataUrlArr[infoDataUrlArr.length - 1];
+      if (trackNameFromUrl.endsWith('stream')) {
+        await TrackPlayer.reset();
+
+        await TrackPlayer.add([
+          {
+            id: 'stream',
+            title: 'Live Stream',
+            artist: 'Daško i Mlađa',
+            url: 'https://stream.daskoimladja.com:9000/stream',
+            artwork: artworkImgStream,
+          },
+        ]);
+      }
+    } catch (error) {}
   });
 
   TrackPlayer.addEventListener(
@@ -222,4 +236,10 @@ export async function playbackService() {
       })();
     }
   }, 6000);
+
+  // save podcast progress every 30s in case of an unexpected playback interruption
+  // e.g. app crash or headset plugged out
+  setInterval(() => {
+    remoteProgressSave();
+  }, 30000);
 }

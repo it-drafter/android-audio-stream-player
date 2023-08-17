@@ -48,12 +48,14 @@ const ControlCenter = props => {
 
   async function loadTrackNameToCtx() {
     const infoData = await TrackPlayer.getQueue();
-    const infoDataUrlArr = (infoData[0]?.url).split('/');
-    const trackNameFromUrl = infoDataUrlArr[infoDataUrlArr.length - 1];
+    try {
+      const infoDataUrlArr = (infoData[0]?.url).split('/');
+      const trackNameFromUrl = infoDataUrlArr[infoDataUrlArr.length - 1];
 
-    globalCtx.setfileNameLoadedToTrackFn(trackNameFromUrl);
+      globalCtx.setfileNameLoadedToTrackFn(trackNameFromUrl);
 
-    localStorage.set('lastPlayedPodcast', trackNameFromUrl);
+      localStorage.set('lastPlayedPodcast', trackNameFromUrl);
+    } catch (error) {}
   }
 
   const seekToJumpTo = async fileNameFromNav => {
