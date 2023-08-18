@@ -1,6 +1,6 @@
 import Slider from '@react-native-community/slider';
 import React, {useState, useContext, useEffect} from 'react';
-import {View, StyleSheet, Text, Dimensions} from 'react-native';
+import {View, StyleSheet, Text, Dimensions, AppState} from 'react-native';
 import TrackPlayer, {
   useProgress,
   State,
@@ -17,6 +17,7 @@ const ProgressSlider = props => {
   const {position} = useProgress();
   const playBackState = usePlaybackState();
   const [progressValToDisplay, setProgressValToDisplay] = useState(0);
+  const [forceUpdateValue, setForceUpdateValue] = useState(0);
 
   const handleSlidingComplete = async value => {
     await TrackPlayer.seekTo(value);
@@ -59,6 +60,13 @@ const ProgressSlider = props => {
   useEffect(() => {
     progressValueCalculate();
   }, [position]);
+
+  // force rerender to show correct progress after bringing the app to foreground from background mode
+  useEffect(() => {
+    AppState.addEventListener('focus', () => {
+      setForceUpdateValue(prevValue => prevValue + 1);
+    });
+  }, []);
 
   const durationCalculated = () => {
     const hms = props.trackInfoFromNav.duration ?? '00:00:00';
