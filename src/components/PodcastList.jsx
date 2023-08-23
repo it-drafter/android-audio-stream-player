@@ -2,7 +2,7 @@ import {
   StyleSheet,
   Text,
   View,
-  Dimensions,
+  useWindowDimensions,
   Alert,
   Pressable,
   FlatList,
@@ -21,9 +21,8 @@ import {colorSchemeObj} from '../util/colors';
 import PodcastItem from './PodcastItem';
 import Loading from './Loading';
 
-const {width} = Dimensions.get('window');
-
 const PodcastList = ({navigation}) => {
+  const {width} = useWindowDimensions();
   const globalCtx = useContext(GlobalContext);
   const netInfo = useNetInfo();
 
@@ -273,11 +272,11 @@ const PodcastList = ({navigation}) => {
     <View style={styles.container(globalCtx.colorSchemeValue)}>
       <View style={styles.tipsContainer(globalCtx.colorSchemeValue)}>
         {error ? (
-          <Text style={styles.errorText(globalCtx.colorSchemeValue)}>
+          <Text style={styles.errorText(globalCtx.colorSchemeValue, width)}>
             Lista nije ažurirana. Greška u konekciji sa serverom.
           </Text>
         ) : userRefreshed ? (
-          <Text style={styles.successText(globalCtx.colorSchemeValue)}>
+          <Text style={styles.successText(globalCtx.colorSchemeValue, width)}>
             Lista je uspešno ažurirana!
           </Text>
         ) : (
@@ -593,6 +592,7 @@ const styles = StyleSheet.create({
   container: colorScheme => {
     return {
       height: '100%',
+      lignItems: 'center',
       backgroundColor: colorSchemeObj[colorScheme].dark90,
     };
   },
@@ -605,23 +605,25 @@ const styles = StyleSheet.create({
   },
   loading: {
     flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   tipsText: colorScheme => {
     return {
       color: colorSchemeObj[colorScheme].light70,
     };
   },
-  errorText: colorScheme => {
+  errorText: (colorScheme, screenWidth) => {
     return {
-      width: width,
+      width: screenWidth,
       backgroundColor: colorSchemeObj[colorScheme].dark30,
       textAlign: 'center',
       color: 'red',
     };
   },
-  successText: colorScheme => {
+  successText: (colorScheme, screenWidth) => {
     return {
-      width: width,
+      width: screenWidth,
       backgroundColor: colorSchemeObj[colorScheme].dark30,
       textAlign: 'center',
       color: colorSchemeObj[colorScheme].light70,

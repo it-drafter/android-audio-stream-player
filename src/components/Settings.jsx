@@ -3,7 +3,7 @@ import {
   Text,
   View,
   Switch,
-  Dimensions,
+  useWindowDimensions,
   Pressable,
   Linking,
   ScrollView,
@@ -26,9 +26,8 @@ import FastImage from 'react-native-fast-image';
 import developerIcon from '../assets/developericon.png';
 import buyMeACoffee from '../assets/buymeacoffee.png';
 
-const {width, height} = Dimensions.get('window');
-
 const Settings = () => {
+  const {width, height} = useWindowDimensions();
   const globalCtx = useContext(GlobalContext);
   const playBackState = usePlaybackState();
   const {position} = useProgress();
@@ -143,7 +142,7 @@ const Settings = () => {
   return (
     <ScrollView contentContainerStyle={styles.wrapper}>
       <View style={styles.container(globalCtx.colorSchemeValue)}>
-        <View style={styles.titleContainer}>
+        <View style={styles.titleContainer(width, height)}>
           <IconMaterialCommunity
             style={styles.icon(globalCtx.colorSchemeValue)}
             name={'cogs'}
@@ -156,7 +155,7 @@ const Settings = () => {
 
         <View style={styles.middleContainer}>
           <View style={styles.switchWrapper}>
-            <View style={styles.switchContainer}>
+            <View style={styles.switchContainer(width, height)}>
               <Text style={styles.regularText(globalCtx.colorSchemeValue)}>
                 Slušaj live radio samo preko WiFi
               </Text>
@@ -174,7 +173,7 @@ const Settings = () => {
                 value={isWiFiOnlyEnabledRadio}
               />
             </View>
-            <View style={styles.switchContainer}>
+            <View style={styles.switchContainer(width, height)}>
               <Text style={styles.regularText(globalCtx.colorSchemeValue)}>
                 Slušaj online podkast samo preko WiFi
               </Text>
@@ -192,7 +191,7 @@ const Settings = () => {
                 value={isWiFiOnlyEnabledPodcast}
               />
             </View>
-            <View style={styles.switchContainer}>
+            <View style={styles.switchContainer(width, height)}>
               <Text style={styles.regularText(globalCtx.colorSchemeValue)}>
                 Downloaduj podkaste samo preko WiFi
               </Text>
@@ -212,7 +211,7 @@ const Settings = () => {
             </View>
           </View>
 
-          <View style={styles.buttonContainer}>
+          <View style={styles.buttonContainer(width, height)}>
             <Pressable
               onPressOut={handleDeleteFiles}
               style={({pressed}) => [
@@ -250,7 +249,7 @@ const Settings = () => {
             </View>
           </View>
 
-          <View style={styles.buttonContainer}>
+          <View style={styles.buttonContainer(width, height)}>
             <Pressable
               onPress={async () => {
                 const currentTrack = await TrackPlayer.getCurrentTrack();
@@ -305,7 +304,7 @@ const Settings = () => {
             </Pressable>
           </View>
 
-          <View style={styles.colorsContainer}>
+          <View style={styles.colorsContainer(width, height)}>
             <Text style={styles.aboutTextHeading(globalCtx.colorSchemeValue)}>
               Boja:
             </Text>
@@ -357,12 +356,12 @@ const Settings = () => {
           </View>
         </View>
 
-        <View style={styles.aboutContainer}>
+        <View style={styles.aboutContainer(width, height)}>
           <Text style={styles.aboutTextHeading(globalCtx.colorSchemeValue)}>
             O aplikaciji:
           </Text>
           <Text style={styles.regularText(globalCtx.colorSchemeValue)}>
-            Verzija: 1.3.20230818
+            Verzija: 1.3.20230825
           </Text>
           <View style={styles.contactContainer}>
             <Text style={styles.regularText(globalCtx.colorSchemeValue)}>
@@ -429,7 +428,7 @@ export default Settings;
 
 const styles = StyleSheet.create({
   wrapper: {
-    height: height * 1.2,
+    height: 'auto',
   },
   container: colorScheme => {
     return {
@@ -441,33 +440,42 @@ const styles = StyleSheet.create({
   },
   switchWrapper: {
     marginVertical: 10,
-  },
-  switchContainer: {
-    flexDirection: 'row',
-    width: width,
-    paddingHorizontal: '2%',
-    paddingVertical: 7,
-    justifyContent: 'space-between',
-  },
-  titleContainer: {
-    width: width,
-    paddingHorizontal: '2%',
-    flexDirection: 'row',
     alignItems: 'center',
-    marginVertical: 5,
   },
-  aboutContainer: {
-    width: width,
-    paddingHorizontal: '2%',
-    paddingVertical: 7,
-    marginTop: 5,
+  switchContainer: (screenWidth, screenHeight) => {
+    return {
+      flexDirection: 'row',
+      width: screenWidth > screenHeight ? screenHeight : screenWidth,
+      paddingHorizontal: '2%',
+      paddingVertical: 7,
+      justifyContent: 'space-between',
+    };
   },
-  buttonContainer: {
-    alignItems: 'flex-start',
-    width: width,
-    paddingHorizontal: '2%',
-    paddingTop: 25,
-    paddingBottom: 15,
+  titleContainer: (screenWidth, screenHeight) => {
+    return {
+      width: screenWidth > screenHeight ? screenHeight : screenWidth,
+      paddingHorizontal: '2%',
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginVertical: 5,
+    };
+  },
+  aboutContainer: (screenWidth, screenHeight) => {
+    return {
+      width: screenWidth > screenHeight ? screenHeight : screenWidth,
+      paddingHorizontal: '2%',
+      paddingVertical: 7,
+      marginTop: 5,
+    };
+  },
+  buttonContainer: (screenWidth, screenHeight) => {
+    return {
+      alignItems: 'flex-start',
+      width: screenWidth > screenHeight ? screenHeight : screenWidth,
+      paddingHorizontal: '2%',
+      paddingTop: 25,
+      paddingBottom: 15,
+    };
   },
   middleContainer: {
     justifyContent: 'space-between',
@@ -541,10 +549,12 @@ const styles = StyleSheet.create({
   pressableContainer: {
     marginLeft: 5,
   },
-  colorsContainer: {
-    width: width,
-    paddingHorizontal: '2%',
-    marginVertical: 20,
+  colorsContainer: (screenWidth, screenHeight) => {
+    return {
+      width: screenWidth > screenHeight ? screenHeight : screenWidth,
+      paddingHorizontal: '2%',
+      marginVertical: 20,
+    };
   },
   colorPickerContainer: {
     flexDirection: 'row',

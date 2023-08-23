@@ -100,7 +100,7 @@ const ControlCenter = props => {
           ) {
             Alert.alert(
               'Ne mogu da pustim podkast.',
-              'U podešavanjima je uključena opcija "Slušaj online podkast samo preko WiFi.\n\nIsključi tu opciju ako želiš da dozvoliš slušanje podkasta i preko mobilnog interneta.',
+              'U podešavanjima ove aplikacije je uključena opcija "Slušaj online podkast samo preko WiFi.\n\nIsključi tu opciju ako želiš da dozvoliš slušanje podkasta i preko mobilnog interneta.',
             );
 
             return;
@@ -141,7 +141,7 @@ const ControlCenter = props => {
           ) {
             Alert.alert(
               'Ne mogu da pustim podkast.',
-              'U podešavanjima je uključena opcija "Slušaj online podkast samo preko WiFi.\n\nIsključi tu opciju ako želiš da dozvoliš slušanje podkasta i preko mobilnog interneta.',
+              'U podešavanjima ove aplikacije je uključena opcija "Slušaj online podkast samo preko WiFi.\n\nIsključi tu opciju ako želiš da dozvoliš slušanje podkasta i preko mobilnog interneta.',
             );
 
             return;
@@ -182,7 +182,7 @@ const ControlCenter = props => {
           ) {
             Alert.alert(
               'Ne mogu da pustim podkast.',
-              'U podešavanjima je uključena opcija "Slušaj online podkast samo preko WiFi.\n\nIsključi tu opciju ako želiš da dozvoliš slušanje podkasta i preko mobilnog interneta.',
+              'U podešavanjima ove aplikacije je uključena opcija "Slušaj online podkast samo preko WiFi.\n\nIsključi tu opciju ako želiš da dozvoliš slušanje podkasta i preko mobilnog interneta.',
             );
 
             return;
@@ -221,7 +221,7 @@ const ControlCenter = props => {
           ) {
             Alert.alert(
               'Ne mogu da pustim podkast.',
-              'U podešavanjima je uključena opcija "Slušaj online podkast samo preko WiFi.\n\nIsključi tu opciju ako želiš da dozvoliš slušanje podkasta i preko mobilnog interneta.',
+              'U podešavanjima ove aplikacije je uključena opcija "Slušaj online podkast samo preko WiFi.\n\nIsključi tu opciju ako želiš da dozvoliš slušanje podkasta i preko mobilnog interneta.',
             );
 
             return;
@@ -261,7 +261,7 @@ const ControlCenter = props => {
           ) {
             Alert.alert(
               'Ne mogu da pustim podkast.',
-              'U podešavanjima je uključena opcija "Slušaj online podkast samo preko WiFi.\n\nIsključi tu opciju ako želiš da dozvoliš slušanje podkasta i preko mobilnog interneta.',
+              'U podešavanjima ove aplikacije je uključena opcija "Slušaj online podkast samo preko WiFi.\n\nIsključi tu opciju ako želiš da dozvoliš slušanje podkasta i preko mobilnog interneta.',
             );
 
             return;
@@ -345,7 +345,7 @@ const ControlCenter = props => {
           ) {
             Alert.alert(
               'Ne mogu da pustim podkast.',
-              'U podešavanjima je uključena opcija "Slušaj online podkast samo preko WiFi.\n\nIsključi tu opciju ako želiš da dozvoliš slušanje podkasta i preko mobilnog interneta.',
+              'U podešavanjima ove aplikacije je uključena opcija "Slušaj online podkast samo preko WiFi.\n\nIsključi tu opciju ako želiš da dozvoliš slušanje podkasta i preko mobilnog interneta.',
             );
 
             return;
@@ -370,7 +370,7 @@ const ControlCenter = props => {
   };
 
   return (
-    <>
+    <View style={styles.wrapper}>
       <ProgressSlider
         trackInfoFromNav={props.trackInfoFromNav}
         fileNameFromNav={props.fileNameFromNav}
@@ -418,11 +418,14 @@ const ControlCenter = props => {
             </Pressable>
           )}
       </View>
-    </>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
+  wrapper: {
+    alignItems: 'center',
+  },
   container: {
     flexDirection: 'row',
     alignItems: 'center',

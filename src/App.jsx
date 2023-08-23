@@ -4,10 +4,10 @@ import {
   SafeAreaView,
   StatusBar,
   StyleSheet,
-  Dimensions,
+  useWindowDimensions,
   View,
 } from 'react-native';
-import {NavigationContainer} from '@react-navigation/native';
+import {DefaultTheme, NavigationContainer} from '@react-navigation/native';
 import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
 import TrackPlayer from 'react-native-track-player';
 import {setupPlayer, addTrack} from './util/musicPlayerServices';
@@ -21,10 +21,11 @@ import Loading from './components/Loading';
 import {localStorage} from './util/http';
 import {colorSchemeObj} from './util/colors';
 
-const screenWidth = Dimensions.get('window').width;
 const TabBottom = createMaterialBottomTabNavigator();
 
 function App() {
+  const {width} = useWindowDimensions();
+
   const [isPlayerReady, setIsPlayerReady] = useState(false);
   const [fileNameLoadedToTrack, setFileNameLoadedToTrack] = useState('');
   const [swipeEnabled, setSwipeEnabled] = useState(true);
@@ -67,12 +68,20 @@ function App() {
     return (
       <SafeAreaView style={styles.container}>
         <StatusBar />
-        <View style={styles.loadingContainer(colorScheme)}>
+        <View style={styles.loadingContainer(colorScheme, width)}>
           <Loading />
         </View>
       </SafeAreaView>
     );
   }
+
+  const navTheme = {
+    ...DefaultTheme,
+    colors: {
+      ...DefaultTheme.colors,
+      background: colorSchemeObj[colorScheme].dark90,
+    },
+  };
 
   return (
     <GlobalContext.Provider
@@ -89,7 +98,7 @@ function App() {
       <SafeAreaView style={styles.container}>
         <StatusBar barStyle={'light-content'} />
 
-        <NavigationContainer>
+        <NavigationContainer theme={navTheme}>
           <TabBottom.Navigator
             initialRouteName="Main"
             backBehavior="history"
@@ -158,7 +167,7 @@ const styles = StyleSheet.create({
       color: colorSchemeObj[colorScheme].light20,
     };
   },
-  loadingContainer: colorScheme => {
+  loadingContainer: (colorScheme, screenWidth) => {
     return {
       height: '100%',
       padding: 10,

@@ -3,8 +3,9 @@ import {
   Text,
   View,
   Alert,
-  Dimensions,
+  useWindowDimensions,
   Pressable,
+  ScrollView,
 } from 'react-native';
 import React, {useState, useContext, useCallback} from 'react';
 import TrackPlayer, {State, usePlaybackState} from 'react-native-track-player';
@@ -20,8 +21,6 @@ import {localStorage} from '../util/http';
 import FastImage from 'react-native-fast-image';
 import {colorSchemeObj} from '../util/colors';
 
-const screenWidth = Dimensions.get('window').width;
-
 import daSwirl from '../assets/da-swirl.gif';
 import mlSwirl from '../assets/ml-swirl.gif';
 import daSpin from '../assets/da-spin.gif';
@@ -29,6 +28,7 @@ import mlSpin from '../assets/ml-spin.gif';
 import artworkImgPodcast from '../assets/artwork-podcast.jpg';
 
 const EpisodePlay = ({route}) => {
+  const {width, height} = useWindowDimensions();
   const globalCtx = useContext(GlobalContext);
   const netInfo = useNetInfo();
   const playBackState = usePlaybackState();
@@ -329,9 +329,17 @@ const EpisodePlay = ({route}) => {
     );
   }
 
-  return (
-    <View style={styles.container(globalCtx.colorSchemeValue)}>
-      <View style={styles.headsContainer}>
+  const iconPodcastComponent = (
+    <IconMaterialCommunity
+      style={styles.icon(globalCtx.colorSchemeValue)}
+      name="podcast"
+      size={40}
+    />
+  );
+
+  const mainViewToDisplayComponent = (
+    <View style={styles.container(globalCtx.colorSchemeValue, width, height)}>
+      <View style={styles.headsContainer(width)}>
         <FastImage
           style={{
             width: 50,
@@ -341,11 +349,17 @@ const EpisodePlay = ({route}) => {
           resizeMode={FastImage.resizeMode.cover}
         />
 
-        <IconMaterialCommunity
-          style={styles.icon(globalCtx.colorSchemeValue)}
-          name="podcast"
-          size={40}
-        />
+        {width > height ? (
+          <ControlCenter
+            addTrack={addTrack}
+            trackInfoFromNav={route.params}
+            isAlreadyDownloaded={isAlreadyDownloaded}
+            fileNameFromNav={fileName}
+            filePathFromNav={filePath}
+          />
+        ) : (
+          iconPodcastComponent
+        )}
 
         <FastImage
           style={{
@@ -365,13 +379,17 @@ const EpisodePlay = ({route}) => {
       </Text>
       {podcastUploadInfo}
 
-      <ControlCenter
-        addTrack={addTrack}
-        trackInfoFromNav={route.params}
-        isAlreadyDownloaded={isAlreadyDownloaded}
-        fileNameFromNav={fileName}
-        filePathFromNav={filePath}
-      />
+      {width > height ? (
+        iconPodcastComponent
+      ) : (
+        <ControlCenter
+          addTrack={addTrack}
+          trackInfoFromNav={route.params}
+          isAlreadyDownloaded={isAlreadyDownloaded}
+          fileNameFromNav={fileName}
+          filePathFromNav={filePath}
+        />
+      )}
 
       <View style={styles.downloadStuffContainer}>
         <Pressable
@@ -383,7 +401,7 @@ const EpisodePlay = ({route}) => {
                 ? colorSchemeObj[globalCtx.colorSchemeValue].base
                 : colorSchemeObj[globalCtx.colorSchemeValue].dark10,
             },
-            styles.button,
+            styles.button(width, height),
           ]}>
           <IconMaterialCommunity
             style={styles.iconButton(globalCtx.colorSchemeValue)}
@@ -450,29 +468,46 @@ const EpisodePlay = ({route}) => {
       </View>
     </View>
   );
+
+  if (width > height) {
+    return (
+      <ScrollView contentContainerStyle={styles.wrapper}>
+        {mainViewToDisplayComponent}
+      </ScrollView>
+    );
+  } else {
+    return <>{mainViewToDisplayComponent}</>;
+  }
 };
 
 export default EpisodePlay;
 
 const styles = StyleSheet.create({
-  container: colorScheme => {
+  wrapper: {
+    height: 'auto',
+  },
+  container: (colorScheme, screenWidth, screenHeight) => {
     return {
       flex: 1,
       alignItems: 'center',
-      justifyContent: 'space-evenly',
+      justifyContent:
+        screenWidth > screenHeight ? 'flex-start' : 'space-evenly',
       backgroundColor: colorSchemeObj[colorScheme].dark90,
     };
   },
-  headsContainer: {
-    flexDirection: 'row',
-    width: screenWidth,
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginVertical: 5,
+  headsContainer: screenWidth => {
+    return {
+      flexDirection: 'row',
+      width: screenWidth,
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginVertical: 5,
+    };
   },
   descriptionText: colorScheme => {
     return {
       marginBottom: 5,
+      marginTop: 5,
       textAlign: 'center',
       fontFamily: 'sans-serif-condensed',
       color: colorSchemeObj[colorScheme].light70,
@@ -487,6 +522,7 @@ const styles = StyleSheet.create({
       fontFamily: 'sans-serif-thin',
       fontWeight: 'bold',
       fontSize: 13,
+      marginVertical: 5,
     };
   },
   downloadedInfo: {
@@ -497,16 +533,20 @@ const styles = StyleSheet.create({
   icon: colorScheme => {
     return {
       color: colorSchemeObj[colorScheme].light20,
+      marginVertical: 5,
     };
   },
-  button: {
-    padding: 8,
-    borderRadius: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 5,
-    flexDirection: 'row',
-    width: screenWidth - 100,
+  button: (screenWidth, screenHeight) => {
+    return {
+      padding: 8,
+      borderRadius: 10,
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginBottom: 5,
+      flexDirection: 'row',
+      width:
+        screenWidth > screenHeight ? screenHeight - 100 : screenWidth - 100,
+    };
   },
   buttonText: colorScheme => {
     return {

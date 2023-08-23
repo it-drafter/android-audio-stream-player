@@ -4,7 +4,7 @@ import {
   View,
   Pressable,
   Alert,
-  Dimensions,
+  useWindowDimensions,
   Linking,
 } from 'react-native';
 import React, {useState, useEffect, useContext} from 'react';
@@ -29,8 +29,6 @@ import {colorSchemeObj} from '../util/colors';
 
 import Loading from './Loading';
 
-const screenWidth = Dimensions.get('window').width;
-
 import daWobble from '../assets/da-wobble.gif';
 import mlWobble from '../assets/ml-wobble.gif';
 import daSpin from '../assets/da-spin.gif';
@@ -38,6 +36,8 @@ import mlSpin from '../assets/ml-spin.gif';
 import artworkImgStream from '../assets/artwork-stream.png';
 
 const Stream = () => {
+  const {width, height} = useWindowDimensions();
+
   const globalCtx = useContext(GlobalContext);
   const {position} = useProgress();
   const netInfo = useNetInfo();
@@ -147,8 +147,10 @@ const Stream = () => {
 
   if (error) {
     return (
-      <View style={styles.errorLoadingContainer(globalCtx.colorSchemeValue)}>
-        <Text style={styles.textContent(globalCtx.colorSchemeValue)}>
+      <View
+        style={styles.errorLoadingContainer(globalCtx.colorSchemeValue, width)}>
+        <Text
+          style={styles.textContent(width, height, globalCtx.colorSchemeValue)}>
           Error: {error.message}
         </Text>
       </View>
@@ -189,7 +191,7 @@ const Stream = () => {
         ) {
           Alert.alert(
             'Ne mogu da pustim radio.',
-            'U podešavanjima je uključena opcija "Slušaj live radio samo preko WiFi.\n\nIsključi tu opciju ako želiš da dozvoliš slušanje radija i preko mobilnog interneta.',
+            'U podešavanjima ove aplikacije je uključena opcija "Slušaj live radio samo preko WiFi.\n\nIsključi tu opciju ako želiš da dozvoliš slušanje radija i preko mobilnog interneta.',
           );
           return;
         }
@@ -227,7 +229,7 @@ const Stream = () => {
           ) {
             Alert.alert(
               'Ne mogu da pustim radio.',
-              'U podešavanjima je uključena opcija "Slušaj live radio samo preko WiFi.\n\nIsključi tu opciju ako želiš da dozvoliš slušanje radija i preko mobilnog interneta.',
+              'U podešavanjima ove aplikacije je uključena opcija "Slušaj live radio samo preko WiFi.\n\nIsključi tu opciju ako želiš da dozvoliš slušanje radija i preko mobilnog interneta.',
             );
             return;
           }
@@ -259,7 +261,7 @@ const Stream = () => {
           ) {
             Alert.alert(
               'Ne mogu da pustim radio.',
-              'U podešavanjima je uključena opcija "Slušaj live radio samo preko WiFi.\n\nIsključi tu opciju ako želiš da dozvoliš slušanje radija i preko mobilnog interneta.',
+              'U podešavanjima ove aplikacije je uključena opcija "Slušaj live radio samo preko WiFi.\n\nIsključi tu opciju ako želiš da dozvoliš slušanje radija i preko mobilnog interneta.',
             );
             return;
           }
@@ -326,10 +328,52 @@ const Stream = () => {
       : '0';
   }
 
+  const infoTextOnScreenContainerComponent = (
+    <View style={styles.infoTextOnScreenContainer(width, height)}>
+      {playBackState === State.Playing &&
+        globalCtx.fileNameLoadedToTrackValue.endsWith('stream') &&
+        listenersCountAutodj.trim() !== '0' && (
+          <Text style={styles.textHeading(globalCtx.colorSchemeValue)}>
+            Track Name:
+          </Text>
+        )}
+      <Text
+        style={styles.textContent(width, height, globalCtx.colorSchemeValue)}>
+        {streamInfoTitleToDisplay}
+      </Text>
+
+      {playBackState === State.Playing &&
+        globalCtx.fileNameLoadedToTrackValue.endsWith('stream') &&
+        listenersCountAutodj.trim() !== '0' && (
+          <Text style={styles.textHeading(globalCtx.colorSchemeValue)}>
+            Artist:
+          </Text>
+        )}
+      <Text
+        style={styles.textContent(width, height, globalCtx.colorSchemeValue)}>
+        {streamInfoArtistToDisplay}
+      </Text>
+    </View>
+  );
+
+  const playButtonContainerComponent = (
+    <View style={styles.playContainer(width, height)}>
+      <Pressable
+        onPress={() => togglePlayback(playBackState)}
+        style={({pressed}) => pressed && styles.pressedItem}>
+        <IconMaterialCommunity
+          style={styles.icon(globalCtx.colorSchemeValue)}
+          name={iconName}
+          size={80}
+        />
+      </Pressable>
+    </View>
+  );
+
   return (
     <View style={styles.container(globalCtx.colorSchemeValue)}>
-      <View style={styles.detailsContainer}>
-        <View style={styles.headsContainer}>
+      <View style={styles.detailsContainer(width, height)}>
+        <View style={styles.headsContainer(width)}>
           <FastImage
             style={{
               width: 70,
@@ -339,11 +383,15 @@ const Stream = () => {
             resizeMode={FastImage.resizeMode.cover}
           />
 
+          {width > height && infoTextOnScreenContainerComponent}
+
           <IconMaterialCommunity
             style={styles.icon(globalCtx.colorSchemeValue)}
             name="radio"
             size={50}
           />
+
+          {width > height && playButtonContainerComponent}
 
           <FastImage
             style={{
@@ -355,41 +403,12 @@ const Stream = () => {
           />
         </View>
 
-        {playBackState === State.Playing &&
-          globalCtx.fileNameLoadedToTrackValue.endsWith('stream') &&
-          listenersCountAutodj.trim() !== '0' && (
-            <Text style={styles.textHeading(globalCtx.colorSchemeValue)}>
-              Track Name:
-            </Text>
-          )}
-        <Text style={styles.textContent(globalCtx.colorSchemeValue)}>
-          {streamInfoTitleToDisplay}
-        </Text>
-
-        {playBackState === State.Playing &&
-          globalCtx.fileNameLoadedToTrackValue.endsWith('stream') &&
-          listenersCountAutodj.trim() !== '0' && (
-            <Text style={styles.textHeading(globalCtx.colorSchemeValue)}>
-              Artist:
-            </Text>
-          )}
-        <Text style={styles.textContent(globalCtx.colorSchemeValue)}>
-          {streamInfoArtistToDisplay}
-        </Text>
+        {height > width && infoTextOnScreenContainerComponent}
       </View>
 
-      <View style={styles.playContainer}>
-        <Pressable
-          onPress={() => togglePlayback(playBackState)}
-          style={({pressed}) => pressed && styles.pressedItem}>
-          <IconMaterialCommunity
-            style={styles.icon(globalCtx.colorSchemeValue)}
-            name={iconName}
-            size={80}
-          />
-        </Pressable>
-      </View>
-      <View style={styles.smsListenersCountContainer}>
+      {height > width && playButtonContainerComponent}
+
+      <View style={styles.smsListenersCountContainer(width)}>
         <View style={styles.listenersCountContainer}>
           <Text style={styles.textHeading(globalCtx.colorSchemeValue)}>
             Online slušalaca:
@@ -422,29 +441,33 @@ const styles = StyleSheet.create({
       backgroundColor: colorSchemeObj[colorScheme].dark90,
     };
   },
-  detailsContainer: {
-    flex: 3,
-    width: screenWidth,
-    alignItems: 'center',
-    justifyContent: 'flex-start',
+  detailsContainer: (screenWidth, screenHeight) => {
+    return {
+      flex: 3,
+      width: screenWidth,
+      alignItems: 'center',
+      justifyContent: screenWidth > screenHeight ? 'center' : 'flex-start',
+    };
   },
-  playContainer: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: screenWidth,
+  playContainer: (screenWidth, screenHeight) => {
+    return {
+      flex: screenWidth > screenHeight ? 0 : 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+    };
   },
   icon: colorScheme => {
     return {
       color: colorSchemeObj[colorScheme].light20,
     };
   },
-  textContent: colorScheme => {
+  textContent: (screenWidth, screenHeight, colorScheme) => {
     return {
-      fontSize: 15,
+      fontSize: screenWidth > screenHeight ? 13 : 15,
       color: colorSchemeObj[colorScheme].light80,
       fontWeight: 'bold',
       fontFamily: 'sans-serif-condensed',
+      textAlign: 'center',
     };
   },
   textHeading: colorScheme => {
@@ -467,19 +490,21 @@ const styles = StyleSheet.create({
   pressedItem: {
     opacity: 0.5,
   },
-  smsListenersCountContainer: {
-    width: screenWidth,
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    flexDirection: 'row',
-    paddingBottom: 5,
-    paddingHorizontal: 5,
+  smsListenersCountContainer: screenWidth => {
+    return {
+      width: screenWidth,
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      flexDirection: 'row',
+      paddingBottom: 5,
+      paddingHorizontal: 5,
+    };
   },
   listenersCountContainer: {
     justifyContent: 'center',
     alignItems: 'center',
   },
-  errorLoadingContainer: colorScheme => {
+  errorLoadingContainer: (colorScheme, screenWidth) => {
     return {
       height: '100%',
       padding: 10,
@@ -487,11 +512,19 @@ const styles = StyleSheet.create({
       backgroundColor: colorSchemeObj[colorScheme].dark90,
     };
   },
-  headsContainer: {
-    flexDirection: 'row',
-    width: screenWidth,
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginVertical: 10,
+  headsContainer: screenWidth => {
+    return {
+      flexDirection: 'row',
+      width: screenWidth,
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginVertical: 10,
+    };
+  },
+  infoTextOnScreenContainer: (screenWidth, screenHeight) => {
+    return {
+      alignItems: 'center',
+      width: screenWidth > screenHeight ? screenWidth / 4 : screenWidth,
+    };
   },
 });

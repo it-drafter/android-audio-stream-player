@@ -1,6 +1,12 @@
 import Slider from '@react-native-community/slider';
 import React, {useState, useContext, useEffect} from 'react';
-import {View, StyleSheet, Text, Dimensions, AppState} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  Text,
+  useWindowDimensions,
+  AppState,
+} from 'react-native';
 import TrackPlayer, {
   useProgress,
   State,
@@ -10,9 +16,8 @@ import GlobalContext from '../util/context';
 import {localStorage} from '../util/http';
 import {colorSchemeObj} from '../util/colors';
 
-const {width} = Dimensions.get('window');
-
 const ProgressSlider = props => {
+  const {width, height} = useWindowDimensions();
   const globalCtx = useContext(GlobalContext);
   const {position} = useProgress();
   const playBackState = usePlaybackState();
@@ -96,7 +101,7 @@ const ProgressSlider = props => {
         maximumTrackTintColor={
           colorSchemeObj[globalCtx.colorSchemeValue].light80
         }
-        style={styles.sliderContainer}
+        style={styles.sliderContainer(width, height)}
         onSlidingComplete={handleSlidingComplete}
         disabled={
           playBackState !== State.Playing ||
@@ -120,10 +125,12 @@ const ProgressSlider = props => {
 };
 
 const styles = StyleSheet.create({
-  sliderContainer: {
-    width: width,
-    marginTop: 25,
-    flexDirection: 'row',
+  sliderContainer: (screenWidth, screenHeight) => {
+    return {
+      width: screenWidth > screenHeight ? screenWidth - 150 : screenWidth,
+      marginTop: 25,
+      flexDirection: 'row',
+    };
   },
   timeContainer: {
     flexDirection: 'row',

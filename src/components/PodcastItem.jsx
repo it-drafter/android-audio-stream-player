@@ -1,5 +1,11 @@
 import React, {useState, memo, useCallback, useContext} from 'react';
-import {View, Text, StyleSheet, Pressable, Dimensions} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Pressable,
+  useWindowDimensions,
+} from 'react-native';
 import IconMaterialCommunity from 'react-native-vector-icons/MaterialCommunityIcons';
 import IconFeather from 'react-native-vector-icons/Feather';
 import RNFS from 'react-native-fs';
@@ -8,9 +14,8 @@ import {localStorage} from '../util/http';
 import GlobalContext from '../util/context';
 import {colorSchemeObj} from '../util/colors';
 
-const {width} = Dimensions.get('window');
-
 function PodcastItem(props) {
+  const {width, height} = useWindowDimensions();
   const globalCtx = useContext(GlobalContext);
 
   const handlePressPodcastItem = () => {
@@ -212,7 +217,7 @@ function PodcastItem(props) {
       onPress={handlePressPodcastItem}>
       <View
         style={[
-          styles.podcastItem(globalCtx.colorSchemeValue),
+          styles.podcastItem(globalCtx.colorSchemeValue, width, height),
           {
             backgroundColor: props.url.endsWith(lastPlayedPodcast)
               ? colorSchemeObj[globalCtx.colorSchemeValue].dark40
@@ -255,10 +260,10 @@ function PodcastItem(props) {
 export default memo(PodcastItem);
 
 const styles = StyleSheet.create({
-  podcastItem: colorScheme => {
+  podcastItem: (colorScheme, screenWidth, screenHeight) => {
     return {
       height: 100,
-      width: width,
+      width: screenWidth > screenHeight ? screenHeight : screenWidth,
       padding: 5,
       justifyContent: 'center',
       borderBottomWidth: 1,
