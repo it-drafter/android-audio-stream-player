@@ -239,7 +239,12 @@ export async function playbackService() {
 
   // save podcast progress every 30s in case of an unexpected playback interruption
   // e.g. app crash or headset plugged out
-  setInterval(() => {
-    remoteProgressSave();
+  setInterval(async () => {
+    const position = await TrackPlayer.getPosition();
+    const duration = await TrackPlayer.getDuration();
+
+    if (position && position < duration - 10) {
+      remoteProgressSave();
+    }
   }, 30000);
 }
