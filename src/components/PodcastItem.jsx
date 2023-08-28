@@ -168,7 +168,8 @@ function PodcastItem(props) {
     !props.title.toLowerCase().includes('Na ivici ofsajda'.toLowerCase()) &&
     !props.title.toLowerCase().includes('Sportski Pozdrav'.toLowerCase()) &&
     !props.title.toLowerCase().includes('Tople Ljucke Priče'.toLowerCase()) &&
-    !props.title.toLowerCase().includes('Rastrojavanje'.toLowerCase())
+    !props.title.toLowerCase().includes('Rastrojavanje'.toLowerCase()) &&
+    !props.description.toLowerCase().includes('Puna Usta Poezije'.toLowerCase())
   ) {
     musicOnOffInfo = (
       <Text
@@ -191,7 +192,8 @@ function PodcastItem(props) {
     !props.title.toLowerCase().includes('Tople Ljucke Priče'.toLowerCase()) &&
     !props.title.toLowerCase().includes('Na ivici ofsajda'.toLowerCase()) &&
     !props.title.toLowerCase().includes('Ljudi iz podzemlja'.toLowerCase()) &&
-    !props.title.toLowerCase().includes('Rastrojavanje'.toLowerCase())
+    !props.title.toLowerCase().includes('Rastrojavanje'.toLowerCase()) &&
+    !props.description.toLowerCase().includes('Puna Usta Poezije'.toLowerCase())
   ) {
     musicOnOffInfo = (
       <Text

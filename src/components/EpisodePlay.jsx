@@ -293,7 +293,10 @@ const EpisodePlay = ({route}) => {
     !route.params.title
       .toLowerCase()
       .includes('Tople Ljucke Priče'.toLowerCase()) &&
-    !route.params.title.toLowerCase().includes('Rastrojavanje'.toLowerCase())
+    !route.params.title.toLowerCase().includes('Rastrojavanje'.toLowerCase()) &&
+    !route.params.description
+      .toLowerCase()
+      .includes('Puna Usta Poezije'.toLowerCase())
   ) {
     musicOnOffInfo = (
       <IconMaterialCommunity
@@ -318,7 +321,10 @@ const EpisodePlay = ({route}) => {
     !route.params.title
       .toLowerCase()
       .includes('Ljudi iz podzemlja'.toLowerCase()) &&
-    !route.params.title.toLowerCase().includes('Rastrojavanje'.toLowerCase())
+    !route.params.title.toLowerCase().includes('Rastrojavanje'.toLowerCase()) &&
+    !route.params.description
+      .toLowerCase()
+      .includes('Puna Usta Poezije'.toLowerCase())
   ) {
     musicOnOffInfo = (
       <IconFeather

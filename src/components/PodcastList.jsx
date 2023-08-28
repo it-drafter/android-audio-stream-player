@@ -22,7 +22,7 @@ import PodcastItem from './PodcastItem';
 import Loading from './Loading';
 
 const PodcastList = ({navigation}) => {
-  const {width} = useWindowDimensions();
+  const {width, height} = useWindowDimensions();
   const globalCtx = useContext(GlobalContext);
   const netInfo = useNetInfo();
 
@@ -81,6 +81,12 @@ const PodcastList = ({navigation}) => {
   const [isCheckedRastrojavanje, setIsCheckedRastrojavanje] = useState(
     localStorage.getBoolean('isCheckedRastrojavanje') === undefined ||
       localStorage.getBoolean('isCheckedRastrojavanje') === true
+      ? true
+      : false,
+  );
+  const [isCheckedPunaUstaPoezije, setIsCheckedPunaUstaPoezije] = useState(
+    localStorage.getBoolean('isCheckedPunaUstaPoezije') === undefined ||
+      localStorage.getBoolean('isCheckedPunaUstaPoezije') === true
       ? true
       : false,
   );
@@ -178,7 +184,10 @@ const PodcastList = ({navigation}) => {
         !episode.title
           .toLowerCase()
           .includes('Tople Ljucke Priče'.toLowerCase()) &&
-        !episode.title.toLowerCase().includes('Rastrojavanje'.toLowerCase()),
+        !episode.title.toLowerCase().includes('Rastrojavanje'.toLowerCase()) &&
+        !episode.artist
+          .toLowerCase()
+          .includes('Puna Usta Poezije'.toLowerCase()),
     ),
   ];
 
@@ -201,7 +210,10 @@ const PodcastList = ({navigation}) => {
         !episode.title
           .toLowerCase()
           .includes('Tople Ljucke Priče'.toLowerCase()) &&
-        !episode.title.toLowerCase().includes('Rastrojavanje'.toLowerCase()),
+        !episode.title.toLowerCase().includes('Rastrojavanje'.toLowerCase()) &&
+        !episode.artist
+          .toLowerCase()
+          .includes('Puna Usta Poezije'.toLowerCase()),
     ),
   ];
 
@@ -243,6 +255,12 @@ const PodcastList = ({navigation}) => {
     ),
   ];
 
+  const fetchedEpisodesOnlyPunaUstaPoezije = [
+    ...fetchedEpisodes.filter(episode =>
+      episode.artist.toLowerCase().includes('Puna Usta Poezije'.toLowerCase()),
+    ),
+  ];
+
   const fetchedEpisodesUnsorted = [];
 
   isCheckedAlarmSaMuzikom &&
@@ -261,6 +279,8 @@ const PodcastList = ({navigation}) => {
     fetchedEpisodesUnsorted.push(...fetchedEpisodesOnlyTopleLjuckePrice);
   isCheckedRastrojavanje &&
     fetchedEpisodesUnsorted.push(...fetchedEpisodesOnlyRastrojavanje);
+  isCheckedPunaUstaPoezije &&
+    fetchedEpisodesUnsorted.push(...fetchedEpisodesOnlyPunaUstaPoezije);
 
   const fetchedEpisodesToDisplay = fetchedEpisodesUnsorted.sort((a, b) => {
     let da = new Date(a.pubDate),
@@ -311,7 +331,7 @@ const PodcastList = ({navigation}) => {
         <View style={styles.checkboxContainer(globalCtx.colorSchemeValue)}>
           <View style={styles.checkboxColumn}>
             <BouncyCheckbox
-              size={20}
+              size={width > height ? 17 : 20}
               fillColor={colorSchemeObj[globalCtx.colorSchemeValue].light50}
               unfillColor={colorSchemeObj[globalCtx.colorSchemeValue].light30}
               text="Alarm - sa muzikom"
@@ -321,7 +341,7 @@ const PodcastList = ({navigation}) => {
               innerIconStyle={{borderWidth: 2}}
               textStyle={{
                 textDecorationLine: 'none',
-                fontSize: 14,
+                fontSize: width > height ? 13 : 14,
                 color: isCheckedAlarmSaMuzikom
                   ? colorSchemeObj[globalCtx.colorSchemeValue].light50
                   : colorSchemeObj[globalCtx.colorSchemeValue].light30,
@@ -342,7 +362,7 @@ const PodcastList = ({navigation}) => {
               style={{marginTop: 7}}
             />
             <BouncyCheckbox
-              size={20}
+              size={width > height ? 17 : 20}
               fillColor={colorSchemeObj[globalCtx.colorSchemeValue].light50}
               unfillColor={colorSchemeObj[globalCtx.colorSchemeValue].light30}
               text="Alarm - bez muzike"
@@ -352,7 +372,7 @@ const PodcastList = ({navigation}) => {
               innerIconStyle={{borderWidth: 2}}
               textStyle={{
                 textDecorationLine: 'none',
-                fontSize: 14,
+                fontSize: width > height ? 13 : 14,
                 color: isCheckedAlarmBezMuzike
                   ? colorSchemeObj[globalCtx.colorSchemeValue].light50
                   : colorSchemeObj[globalCtx.colorSchemeValue].light30,
@@ -373,7 +393,7 @@ const PodcastList = ({navigation}) => {
               style={{marginTop: 7}}
             />
             <BouncyCheckbox
-              size={20}
+              size={width > height ? 17 : 20}
               fillColor={colorSchemeObj[globalCtx.colorSchemeValue].light50}
               unfillColor={colorSchemeObj[globalCtx.colorSchemeValue].light30}
               text="Ljudi iz podzemlja"
@@ -383,7 +403,7 @@ const PodcastList = ({navigation}) => {
               innerIconStyle={{borderWidth: 2}}
               textStyle={{
                 textDecorationLine: 'none',
-                fontSize: 14,
+                fontSize: width > height ? 13 : 14,
                 color: isCheckedLjudiIzPodzemlja
                   ? colorSchemeObj[globalCtx.colorSchemeValue].light50
                   : colorSchemeObj[globalCtx.colorSchemeValue].light30,
@@ -403,7 +423,7 @@ const PodcastList = ({navigation}) => {
               style={{marginTop: 7}}
             />
             <BouncyCheckbox
-              size={20}
+              size={width > height ? 17 : 20}
               fillColor={colorSchemeObj[globalCtx.colorSchemeValue].light50}
               unfillColor={colorSchemeObj[globalCtx.colorSchemeValue].light30}
               text="Večernja škola rokenrola"
@@ -413,7 +433,7 @@ const PodcastList = ({navigation}) => {
               innerIconStyle={{borderWidth: 2}}
               textStyle={{
                 textDecorationLine: 'none',
-                fontSize: 14,
+                fontSize: width > height ? 13 : 14,
                 color: isCheckedVecernjaSkolaRokenrola
                   ? colorSchemeObj[globalCtx.colorSchemeValue].light50
                   : colorSchemeObj[globalCtx.colorSchemeValue].light30,
@@ -435,10 +455,8 @@ const PodcastList = ({navigation}) => {
               }}
               style={{marginTop: 7}}
             />
-          </View>
-          <View style={styles.checkboxColumn}>
             <BouncyCheckbox
-              size={20}
+              size={width > height ? 17 : 20}
               fillColor={colorSchemeObj[globalCtx.colorSchemeValue].light50}
               unfillColor={colorSchemeObj[globalCtx.colorSchemeValue].light30}
               text="Na ivici ofsajda"
@@ -448,7 +466,7 @@ const PodcastList = ({navigation}) => {
               innerIconStyle={{borderWidth: 2}}
               textStyle={{
                 textDecorationLine: 'none',
-                fontSize: 14,
+                fontSize: width > height ? 13 : 14,
                 color: isCheckedNaIviciOfsajda
                   ? colorSchemeObj[globalCtx.colorSchemeValue].light50
                   : colorSchemeObj[globalCtx.colorSchemeValue].light30,
@@ -468,18 +486,20 @@ const PodcastList = ({navigation}) => {
               }}
               style={{marginTop: 7}}
             />
+          </View>
+          <View style={styles.checkboxColumn}>
             <BouncyCheckbox
-              size={20}
+              size={width > height ? 17 : 20}
               fillColor={colorSchemeObj[globalCtx.colorSchemeValue].light50}
               unfillColor={colorSchemeObj[globalCtx.colorSchemeValue].light30}
-              text="Sportski Pozdrav"
+              text="Sportski pozdrav"
               iconStyle={{
                 borderColor: colorSchemeObj[globalCtx.colorSchemeValue].base,
               }}
               innerIconStyle={{borderWidth: 2}}
               textStyle={{
                 textDecorationLine: 'none',
-                fontSize: 14,
+                fontSize: width > height ? 13 : 14,
                 color: isCheckedSportskiPozdrav
                   ? colorSchemeObj[globalCtx.colorSchemeValue].light50
                   : colorSchemeObj[globalCtx.colorSchemeValue].light30,
@@ -500,17 +520,17 @@ const PodcastList = ({navigation}) => {
               style={{marginTop: 7}}
             />
             <BouncyCheckbox
-              size={20}
+              size={width > height ? 17 : 20}
               fillColor={colorSchemeObj[globalCtx.colorSchemeValue].light50}
               unfillColor={colorSchemeObj[globalCtx.colorSchemeValue].light30}
-              text="Tople Ljucke Priče"
+              text="Tople ljucke priče"
               iconStyle={{
                 borderColor: colorSchemeObj[globalCtx.colorSchemeValue].base,
               }}
               innerIconStyle={{borderWidth: 2}}
               textStyle={{
                 textDecorationLine: 'none',
-                fontSize: 14,
+                fontSize: width > height ? 13 : 14,
                 color: isCheckedTopleLjuckePrice
                   ? colorSchemeObj[globalCtx.colorSchemeValue].light50
                   : colorSchemeObj[globalCtx.colorSchemeValue].light30,
@@ -531,7 +551,7 @@ const PodcastList = ({navigation}) => {
               style={{marginTop: 7}}
             />
             <BouncyCheckbox
-              size={20}
+              size={width > height ? 17 : 20}
               fillColor={colorSchemeObj[globalCtx.colorSchemeValue].light50}
               unfillColor={colorSchemeObj[globalCtx.colorSchemeValue].light30}
               text="Rastrojavanje"
@@ -541,7 +561,7 @@ const PodcastList = ({navigation}) => {
               innerIconStyle={{borderWidth: 2}}
               textStyle={{
                 textDecorationLine: 'none',
-                fontSize: 14,
+                fontSize: width > height ? 13 : 14,
                 color: isCheckedRastrojavanje
                   ? colorSchemeObj[globalCtx.colorSchemeValue].light50
                   : colorSchemeObj[globalCtx.colorSchemeValue].light30,
@@ -555,6 +575,37 @@ const PodcastList = ({navigation}) => {
                 );
 
                 setIsCheckedRastrojavanje(!isCheckedRastrojavanje);
+              }}
+              textContainerStyle={{
+                marginLeft: 5,
+              }}
+              style={{marginTop: 7}}
+            />
+            <BouncyCheckbox
+              size={width > height ? 17 : 20}
+              fillColor={colorSchemeObj[globalCtx.colorSchemeValue].light50}
+              unfillColor={colorSchemeObj[globalCtx.colorSchemeValue].light30}
+              text="Puna usta poezije"
+              iconStyle={{
+                borderColor: colorSchemeObj[globalCtx.colorSchemeValue].base,
+              }}
+              innerIconStyle={{borderWidth: 2}}
+              textStyle={{
+                textDecorationLine: 'none',
+                fontSize: width > height ? 13 : 14,
+                color: isCheckedPunaUstaPoezije
+                  ? colorSchemeObj[globalCtx.colorSchemeValue].light50
+                  : colorSchemeObj[globalCtx.colorSchemeValue].light30,
+              }}
+              isChecked={isCheckedPunaUstaPoezije}
+              disableBuiltInState
+              onPress={() => {
+                localStorage.set(
+                  'isCheckedPunaUstaPoezije',
+                  !isCheckedPunaUstaPoezije,
+                );
+
+                setIsCheckedPunaUstaPoezije(!isCheckedPunaUstaPoezije);
               }}
               textContainerStyle={{
                 marginLeft: 5,
@@ -672,6 +723,6 @@ const styles = StyleSheet.create({
     };
   },
   checkboxColumn: {
-    justifyContent: 'space-between',
+    justifyContent: 'flex-start',
   },
 });
