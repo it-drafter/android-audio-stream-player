@@ -361,7 +361,7 @@ const Settings = () => {
             O aplikaciji:
           </Text>
           <Text style={styles.regularText(globalCtx.colorSchemeValue)}>
-            Verzija: 1.3.20230829
+            Verzija: 1.4.20230904
           </Text>
           <View style={styles.contactContainer}>
             <Text style={styles.regularText(globalCtx.colorSchemeValue)}>

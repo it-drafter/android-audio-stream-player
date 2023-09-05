@@ -79,12 +79,22 @@ export async function playbackService() {
       if (trackNameFromUrl.endsWith('stream')) {
         await TrackPlayer.reset();
 
+        let urlToLoad;
+        if (
+          localStorage.getString('selectedStream') === undefined ||
+          localStorage.getString('selectedStream') === 'stream1'
+        ) {
+          urlToLoad = 'https://stream.daskoimladja.com:9000/stream';
+        } else if (localStorage.getString('selectedStream') === 'stream2') {
+          urlToLoad = 'http://stream.daskoimladja.com:8000/stream';
+        }
+
         await TrackPlayer.add([
           {
             id: 'stream',
             title: 'Live Stream',
             artist: 'Daško i Mlađa',
-            url: 'https://stream.daskoimladja.com:9000/stream',
+            url: urlToLoad,
             artwork: artworkImgStream,
           },
         ]);
@@ -113,12 +123,22 @@ export async function playbackService() {
             trackNameFromUrl.endsWith('stream'):
             await TrackPlayer.reset();
 
+            let urlToLoad;
+            if (
+              localStorage.getString('selectedStream') === undefined ||
+              localStorage.getString('selectedStream') === 'stream1'
+            ) {
+              urlToLoad = 'https://stream.daskoimladja.com:9000/stream';
+            } else if (localStorage.getString('selectedStream') === 'stream2') {
+              urlToLoad = 'http://stream.daskoimladja.com:8000/stream';
+            }
+
             await TrackPlayer.add([
               {
                 id: 'stream',
                 title: 'Live Stream',
                 artist: 'Daško i Mlađa',
-                url: 'https://stream.daskoimladja.com:9000/stream',
+                url: urlToLoad,
                 artwork: artworkImgStream,
               },
             ]);
@@ -136,12 +156,21 @@ export async function playbackService() {
             localStorage.getBoolean('isWiFiOnlyEnabledForRadio') === false:
             await TrackPlayer.reset();
 
+            let urlToLoad1;
+            if (
+              localStorage.getString('selectedStream') === undefined ||
+              localStorage.getString('selectedStream') === 'stream1'
+            ) {
+              urlToLoad1 = 'https://stream.daskoimladja.com:9000/stream';
+            } else if (localStorage.getString('selectedStream') === 'stream2') {
+              urlToLoad1 = 'http://stream.daskoimladja.com:8000/stream';
+            }
             await TrackPlayer.add([
               {
                 id: 'stream',
                 title: 'Live Stream',
                 artist: 'Daško i Mlađa',
-                url: 'https://stream.daskoimladja.com:9000/stream',
+                url: urlToLoad1,
                 artwork: artworkImgStream,
               },
             ]);
@@ -185,12 +214,22 @@ export async function playbackService() {
       if (trackNameFromUrl.endsWith('stream')) {
         await TrackPlayer.reset();
 
+        let urlToLoad;
+        if (
+          localStorage.getString('selectedStream') === undefined ||
+          localStorage.getString('selectedStream') === 'stream1'
+        ) {
+          urlToLoad = 'https://stream.daskoimladja.com:9000/stream';
+        } else if (localStorage.getString('selectedStream') === 'stream2') {
+          urlToLoad = 'http://stream.daskoimladja.com:8000/stream';
+        }
+
         await TrackPlayer.add([
           {
             id: 'stream',
             title: 'Live Stream',
             artist: 'Daško i Mlađa',
-            url: 'https://stream.daskoimladja.com:9000/stream',
+            url: urlToLoad,
             artwork: artworkImgStream,
           },
         ]);
@@ -203,11 +242,21 @@ export async function playbackService() {
 
     async params => {
       try {
+        let urlToLoad;
+        if (
+          localStorage.getString('selectedStream') === undefined ||
+          localStorage.getString('selectedStream') === 'stream1'
+        ) {
+          urlToLoad = 'https://stream.daskoimladja.com:9000/stream';
+        } else if (localStorage.getString('selectedStream') === 'stream2') {
+          urlToLoad = 'http://stream.daskoimladja.com:8000/stream';
+        }
+
         await TrackPlayer.updateMetadataForTrack(0, {
           id: 'stream',
           title: params?.title || 'Live Stream',
           artist: params?.artist || 'Daško i Mlađa',
-          url: 'https://stream.daskoimladja.com:9000/stream',
+          url: urlToLoad,
           artwork: artworkImgStream,
         });
       } catch (error) {}

@@ -7,7 +7,7 @@ import {
   useWindowDimensions,
   Linking,
 } from 'react-native';
-import React, {useState, useEffect, useContext} from 'react';
+import React, {useState, useEffect, useContext, useMemo} from 'react';
 import TrackPlayer, {
   State,
   usePlaybackState,
@@ -21,6 +21,8 @@ import GlobalContext from '../util/context';
 import {localStorage} from '../util/http';
 import NetInfo from '@react-native-community/netinfo';
 import FastImage from 'react-native-fast-image';
+import RadioGroup from 'react-native-radio-buttons-group';
+
 import {fetchNumberOfListenersAutodj} from '../util/http';
 import {fetchNumberOfListenersLive} from '../util/http';
 import {fetchNumberOfListenersStream} from '../util/http';
@@ -51,16 +53,28 @@ const Stream = () => {
   const [listenersCountLive, setListenersCountLive] = useState('nedostupno');
   const [listenersCountStream, setListenersCountStream] =
     useState('nedostupno');
+  const [selectedId, setSelectedId] = useState(
+    localStorage.getString('selectedStream') ?? 'stream1',
+  );
 
   async function addTrack() {
     try {
       setError(null);
+      let urlToLoad;
+      if (
+        localStorage.getString('selectedStream') === undefined ||
+        localStorage.getString('selectedStream') === 'stream1'
+      ) {
+        urlToLoad = 'https://stream.daskoimladja.com:9000/stream';
+      } else if (localStorage.getString('selectedStream') === 'stream2') {
+        urlToLoad = 'http://stream.daskoimladja.com:8000/stream';
+      }
       await TrackPlayer.add([
         {
           id: 'stream',
           title: 'Live Stream',
           artist: 'Daško i Mlađa',
-          url: 'https://stream.daskoimladja.com:9000/stream',
+          url: urlToLoad,
           artwork: artworkImgStream,
         },
       ]);
@@ -94,6 +108,7 @@ const Stream = () => {
     const intervalId = setInterval(() => {
       fetchNoOfListenersAutodj();
       fetchNoOfListenersLive();
+      fetchNoOfListenersStream();
     }, 30000);
 
     return () => {
@@ -328,6 +343,41 @@ const Stream = () => {
       : '0';
   }
 
+  const radioButtons = [
+    {
+      id: 'stream1',
+      label: 'Stream 1',
+      size: width > height ? 18 : 20,
+      color:
+        selectedId === 'stream1'
+          ? colorSchemeObj[globalCtx.colorSchemeValue].light50
+          : colorSchemeObj[globalCtx.colorSchemeValue].light30,
+      labelStyle: {
+        fontSize: width > height ? 13 : 14,
+        color:
+          selectedId === 'stream1'
+            ? colorSchemeObj[globalCtx.colorSchemeValue].light50
+            : colorSchemeObj[globalCtx.colorSchemeValue].light30,
+      },
+    },
+    {
+      id: 'stream2',
+      label: 'Stream 2',
+      size: width > height ? 18 : 20,
+      color:
+        selectedId === 'stream2'
+          ? colorSchemeObj[globalCtx.colorSchemeValue].light50
+          : colorSchemeObj[globalCtx.colorSchemeValue].light30,
+      labelStyle: {
+        fontSize: width > height ? 13 : 14,
+        color:
+          selectedId === 'stream2'
+            ? colorSchemeObj[globalCtx.colorSchemeValue].light50
+            : colorSchemeObj[globalCtx.colorSchemeValue].light30,
+      },
+    },
+  ];
+
   const infoTextOnScreenContainerComponent = (
     <View style={styles.infoTextOnScreenContainer(width, height)}>
       {playBackState === State.Playing &&
@@ -358,6 +408,82 @@ const Stream = () => {
 
   const playButtonContainerComponent = (
     <View style={styles.playContainer(width, height)}>
+      <View>
+        <RadioGroup
+          radioButtons={radioButtons}
+          onPress={async () => {
+            if (selectedId === 'stream1') {
+              localStorage.set('selectedStream', 'stream2');
+              setSelectedId('stream2');
+
+              if (
+                playBackState === State.Playing &&
+                !globalCtx.fileNameLoadedToTrackValue.endsWith('stream') &&
+                localStorage.getString('localProgressMap')
+              ) {
+                const localStorageData = JSON.parse(
+                  localStorage.getString('localProgressMap'),
+                );
+                localStorageData[globalCtx.fileNameLoadedToTrackValue] =
+                  position;
+                localStorage.set(
+                  'localProgressMap',
+                  JSON.stringify(localStorageData),
+                );
+              } else if (
+                playBackState === State.Playing &&
+                !globalCtx.fileNameLoadedToTrackValue.endsWith('stream') &&
+                !localStorage.getString('localProgressMap')
+              ) {
+                localStorage.set(
+                  'localProgressMap',
+                  JSON.stringify({
+                    [globalCtx.fileNameLoadedToTrackValue]: position,
+                  }),
+                );
+              }
+
+              await TrackPlayer.reset();
+              addTrack();
+            } else if (selectedId === 'stream2') {
+              localStorage.set('selectedStream', 'stream1');
+              setSelectedId('stream1');
+
+              if (
+                playBackState === State.Playing &&
+                !globalCtx.fileNameLoadedToTrackValue.endsWith('stream') &&
+                localStorage.getString('localProgressMap')
+              ) {
+                const localStorageData = JSON.parse(
+                  localStorage.getString('localProgressMap'),
+                );
+                localStorageData[globalCtx.fileNameLoadedToTrackValue] =
+                  position;
+                localStorage.set(
+                  'localProgressMap',
+                  JSON.stringify(localStorageData),
+                );
+              } else if (
+                playBackState === State.Playing &&
+                !globalCtx.fileNameLoadedToTrackValue.endsWith('stream') &&
+                !localStorage.getString('localProgressMap')
+              ) {
+                localStorage.set(
+                  'localProgressMap',
+                  JSON.stringify({
+                    [globalCtx.fileNameLoadedToTrackValue]: position,
+                  }),
+                );
+              }
+
+              await TrackPlayer.reset();
+              addTrack();
+            }
+          }}
+          selectedId={selectedId}
+          layout="row"
+        />
+      </View>
       <Pressable
         onPress={() => togglePlayback(playBackState)}
         style={({pressed}) => pressed && styles.pressedItem}>
