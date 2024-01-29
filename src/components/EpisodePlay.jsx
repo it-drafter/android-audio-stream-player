@@ -76,6 +76,8 @@ const EpisodePlay = ({route}) => {
           artist: route.params.description,
           url: urlToLoad,
           artwork: artworkImgPodcast,
+          description: 'Radio Daško i Mlađa',
+          album: 'D&M',
         },
       ]);
     } catch (error) {

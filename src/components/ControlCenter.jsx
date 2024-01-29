@@ -20,7 +20,7 @@ const ControlCenter = props => {
   const netInfo = useNetInfo();
 
   const handleRewind = async () => {
-    await TrackPlayer.seekTo(position - 30);
+    await TrackPlayer.seekTo(position - 15);
   };
 
   const handleForward = async () => {
@@ -44,7 +44,7 @@ const ControlCenter = props => {
         );
       }
     });
-  }, [localStorage]);
+  }, [globalCtx.fileNameLoadedToTrackValue]);
 
   async function loadTrackNameToCtx() {
     const infoData = await TrackPlayer.getQueue();
@@ -384,7 +384,7 @@ const ControlCenter = props => {
               style={({pressed}) => pressed && styles.pressedItem}>
               <IconMaterialCommunity
                 style={styles.icon(globalCtx.colorSchemeValue)}
-                name="rewind-30"
+                name="rewind-15"
                 size={40}
               />
             </Pressable>

@@ -46,7 +46,7 @@ function App() {
     }
 
     setIsPlayerReady(isSetup);
-  });
+  }, []);
 
   useEffect(() => {
     setup();
@@ -54,7 +54,7 @@ function App() {
     return async () => {
       await TrackPlayer.reset();
     };
-  }, []);
+  }, [setup]);
 
   useEffect(() => {
     SplashScreen.hide();

@@ -67,42 +67,47 @@ async function remoteProgressSave() {
   } catch (error) {}
 }
 
+async function prepareStreamTrack() {
+  const infoData = await TrackPlayer.getQueue();
+  try {
+    const infoDataUrlArr = (infoData[0]?.url).split('/');
+    const trackNameFromUrl = infoDataUrlArr[infoDataUrlArr.length - 1];
+    if (trackNameFromUrl.endsWith('stream')) {
+      await TrackPlayer.reset();
+
+      let urlToLoad;
+      if (
+        localStorage.getString('selectedStream') === undefined ||
+        localStorage.getString('selectedStream') === 'stream1'
+      ) {
+        urlToLoad = 'https://stream.daskoimladja.com:9000/stream';
+      } else if (localStorage.getString('selectedStream') === 'stream2') {
+        urlToLoad = 'http://stream.daskoimladja.com:8000/stream';
+      }
+
+      await TrackPlayer.add([
+        {
+          id: 'stream',
+          title: 'Live Stream',
+          artist: 'Daško i Mlađa',
+          url: urlToLoad,
+          artwork: artworkImgStream,
+          description: 'Radio Daško i Mlađa',
+          album: 'D&M',
+        },
+      ]);
+    }
+  } catch (error) {}
+}
+
 export async function playbackService() {
   TrackPlayer.addEventListener(Event.RemotePause, async () => {
     remoteProgressSave();
     await TrackPlayer.pause();
-
-    const infoData = await TrackPlayer.getQueue();
-    try {
-      const infoDataUrlArr = (infoData[0]?.url).split('/');
-      const trackNameFromUrl = infoDataUrlArr[infoDataUrlArr.length - 1];
-      if (trackNameFromUrl.endsWith('stream')) {
-        await TrackPlayer.reset();
-
-        let urlToLoad;
-        if (
-          localStorage.getString('selectedStream') === undefined ||
-          localStorage.getString('selectedStream') === 'stream1'
-        ) {
-          urlToLoad = 'https://stream.daskoimladja.com:9000/stream';
-        } else if (localStorage.getString('selectedStream') === 'stream2') {
-          urlToLoad = 'http://stream.daskoimladja.com:8000/stream';
-        }
-
-        await TrackPlayer.add([
-          {
-            id: 'stream',
-            title: 'Live Stream',
-            artist: 'Daško i Mlađa',
-            url: urlToLoad,
-            artwork: artworkImgStream,
-          },
-        ]);
-      }
-    } catch (error) {}
+    prepareStreamTrack();
   });
 
-  TrackPlayer.addEventListener(Event.RemotePlay, async () => {
+  async function playFunction() {
     const infoData = await TrackPlayer.getQueue();
 
     try {
@@ -140,6 +145,8 @@ export async function playbackService() {
                 artist: 'Daško i Mlađa',
                 url: urlToLoad,
                 artwork: artworkImgStream,
+                description: 'Radio Daško i Mlađa',
+                album: 'D&M',
               },
             ]);
 
@@ -172,6 +179,8 @@ export async function playbackService() {
                 artist: 'Daško i Mlađa',
                 url: urlToLoad1,
                 artwork: artworkImgStream,
+                description: 'Radio Daško i Mlađa',
+                album: 'D&M',
               },
             ]);
 
@@ -200,9 +209,34 @@ export async function playbackService() {
         await TrackPlayer.play();
       }
     } catch (error) {}
+  }
+
+  TrackPlayer.addEventListener(Event.RemotePlay, async () => {
+    playFunction();
   });
 
   TrackPlayer.addEventListener(Event.RemoteDuck, async event => {
+    // if (
+    //   event.paused === true &&
+    //   (localStorage.getBoolean('isAutoResumeEnabledAfterInterruption') ===
+    //     undefined ||
+    //     localStorage.getBoolean('isAutoResumeEnabledAfterInterruption') ===
+    //       true)
+    // ) {
+    //   remoteProgressSave();
+    //   await TrackPlayer.pause();
+    // } else if (
+    //   event.paused === false &&
+    //   (localStorage.getBoolean('isAutoResumeEnabledAfterInterruption') ===
+    //     undefined ||
+    //     localStorage.getBoolean('isAutoResumeEnabledAfterInterruption') ===
+    //       true)
+    // ) {
+    //   prepareStreamTrack();
+    //   playFunction();
+    // } else if (
+    //   localStorage.getBoolean('isAutoResumeEnabledAfterInterruption') === false
+    // ) {
     remoteProgressSave();
     await TrackPlayer.pause();
 
@@ -231,10 +265,13 @@ export async function playbackService() {
             artist: 'Daško i Mlađa',
             url: urlToLoad,
             artwork: artworkImgStream,
+            description: 'Radio Daško i Mlađa',
+            album: 'D&M',
           },
         ]);
       }
     } catch (error) {}
+    // }
   });
 
   TrackPlayer.addEventListener(
@@ -258,42 +295,23 @@ export async function playbackService() {
           artist: params?.artist || 'Daško i Mlađa',
           url: urlToLoad,
           artwork: artworkImgStream,
+          description: 'Radio Daško i Mlađa',
+          album: 'D&M',
         });
       } catch (error) {}
     },
   );
 
-  // save progress when internet connection is lost
+  // save podcast progress every 6s in case of an unexpected playback interruption
   // it only affect podcasts (as intended)
+  let lastPosition = 0;
   setInterval(async () => {
     const position = await TrackPlayer.getPosition();
-    const buffered = await TrackPlayer.getBufferedPosition();
     const duration = await TrackPlayer.getDuration();
 
-    if (
-      position &&
-      buffered &&
-      position < duration - 10 &&
-      position > buffered - 10
-    ) {
+    if (duration && position !== lastPosition) {
       remoteProgressSave();
-      (async () => {
-        await TrackPlayer.pause();
-        try {
-          await TrackPlayer.reset();
-        } catch (error) {}
-      })();
     }
+    lastPosition = position;
   }, 6000);
-
-  // save podcast progress every 30s in case of an unexpected playback interruption
-  // e.g. app crash or headset plugged out
-  setInterval(async () => {
-    const position = await TrackPlayer.getPosition();
-    const duration = await TrackPlayer.getDuration();
-
-    if (position && position < duration - 10) {
-      remoteProgressSave();
-    }
-  }, 30000);
 }

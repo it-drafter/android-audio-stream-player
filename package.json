@@ -1,5 +1,5 @@
 {
-  "name": "mlađaidaškoplayer",
+  "name": "mladjaidaskoplayer",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -10,6 +10,7 @@
     "test": "jest"
   },
   "dependencies": {
+    "@react-native-clipboard/clipboard": "^1.13.2",
     "@react-native-community/netinfo": "^9.4.1",
     "@react-native-community/slider": "^4.4.2",
     "@react-navigation/material-bottom-tabs": "^6.2.16",

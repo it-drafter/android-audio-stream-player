@@ -7,10 +7,14 @@ import {
   ScrollView,
   useWindowDimensions,
 } from 'react-native';
-import React, {useContext} from 'react';
+import React, {useContext, useState, useCallback} from 'react';
 import {colorSchemeObj} from '../util/colors';
 import GlobalContext from '../util/context';
 import FastImage from 'react-native-fast-image';
+import Clipboard from '@react-native-clipboard/clipboard';
+import {useFocusEffect} from '@react-navigation/native';
+import IconMaterialCommunity from 'react-native-vector-icons/MaterialCommunityIcons';
+import IconFeaher from 'react-native-vector-icons/Feather';
 
 import badge from '../assets/badge.png';
 import patreon from '../assets/patreon.png';
@@ -20,6 +24,24 @@ import voban from '../assets/voban.png';
 const SupportUs = () => {
   const {width, height} = useWindowDimensions();
   const globalCtx = useContext(GlobalContext);
+  const [isCopied, setIsCopied] = useState(false);
+
+  useFocusEffect(
+    useCallback(() => {
+      let timeout1;
+
+      if (isCopied) {
+        timeout1 = setTimeout(() => {
+          setIsCopied(false);
+        }, 1500);
+      }
+
+      return () => {
+        clearTimeout(timeout1);
+      };
+    }, [isCopied]),
+  );
+
   return (
     <ScrollView contentContainerStyle={styles.wrapper}>
       <View style={styles.container(globalCtx.colorSchemeValue)}>
@@ -71,7 +93,12 @@ const SupportUs = () => {
                     styles.pressableTextContent,
                   ]}>
                   <Text style={styles.textLink(globalCtx.colorSchemeValue)}>
-                    patreon.com/daskoimladja
+                    patreon.com/daskoimladja{' '}
+                    <IconFeaher
+                      style={styles.icon(globalCtx.colorSchemeValue)}
+                      name={'external-link'}
+                      size={20}
+                    />
                   </Text>
                 </Pressable>
               </View>
@@ -101,7 +128,12 @@ const SupportUs = () => {
                     styles.pressableTextContent,
                   ]}>
                   <Text style={styles.textLink(globalCtx.colorSchemeValue)}>
-                    paypal.me/daskoimladja
+                    paypal.me/daskoimladja{' '}
+                    <IconFeaher
+                      style={styles.icon(globalCtx.colorSchemeValue)}
+                      name={'external-link'}
+                      size={20}
+                    />
                   </Text>
                 </Pressable>
               </View>
@@ -120,12 +152,27 @@ const SupportUs = () => {
                   UPLATOM NA NAŠ RAČUN U OTP BANCI:
                 </Text>
 
-                <Text
-                  style={[
-                    styles.textLink(globalCtx.colorSchemeValue),
+                <Pressable
+                  onPress={() => {
+                    Clipboard.setString('325-9300600398707-66');
+                    setIsCopied(true);
+                  }}
+                  style={({pressed}) => [
+                    pressed && styles.pressedItem,
                     styles.pressableTextContent,
                   ]}>
-                  325-9300600398707-66
+                  <Text style={[styles.textLink(globalCtx.colorSchemeValue)]}>
+                    325-9300600398707-66{' '}
+                    <IconMaterialCommunity
+                      style={styles.icon(globalCtx.colorSchemeValue)}
+                      name={'content-copy'}
+                      size={20}
+                    />
+                  </Text>
+                </Pressable>
+
+                <Text style={[styles.textTooltip(globalCtx.colorSchemeValue)]}>
+                  {`${isCopied ? 'Kopirano!' : ''}`}
                 </Text>
               </View>
             </View>
@@ -193,6 +240,15 @@ const styles = StyleSheet.create({
       marginLeft: 10,
     };
   },
+  textTooltip: colorScheme => {
+    return {
+      fontSize: 14,
+      color: colorSchemeObj[colorScheme].light10,
+      fontWeight: 'bold',
+      fontFamily: 'sans-serif-condensed',
+      marginLeft: 10,
+    };
+  },
   textLink: colorScheme => {
     return {
       fontSize: 14,
@@ -200,6 +256,12 @@ const styles = StyleSheet.create({
       fontWeight: 'bold',
       fontFamily: 'sans-serif-condensed',
       textAlign: 'left',
+    };
+  },
+  icon: colorScheme => {
+    return {
+      color: colorSchemeObj[colorScheme].light20,
+      marginRight: 10,
     };
   },
   pressableTextContent: {

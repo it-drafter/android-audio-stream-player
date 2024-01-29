@@ -7,7 +7,7 @@ import {
   useWindowDimensions,
   Linking,
 } from 'react-native';
-import React, {useState, useEffect, useContext, useMemo} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import TrackPlayer, {
   State,
   usePlaybackState,
@@ -76,6 +76,8 @@ const Stream = () => {
           artist: 'Daško i Mlađa',
           url: urlToLoad,
           artwork: artworkImgStream,
+          description: 'Radio Daško i Mlađa',
+          album: 'D&M',
         },
       ]);
 

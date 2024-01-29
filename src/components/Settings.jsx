@@ -22,6 +22,7 @@ import TrackPlayer, {
   State,
 } from 'react-native-track-player';
 import FastImage from 'react-native-fast-image';
+import Clipboard from '@react-native-clipboard/clipboard';
 
 import developerIcon from '../assets/developericon.png';
 import buyMeACoffee from '../assets/buymeacoffee.png';
@@ -44,8 +45,15 @@ const Settings = () => {
   ] = useState(
     localStorage.getBoolean('isWiFiOnlyEnabledForPodcastDownload') ?? true,
   );
+  // const [
+  //   isAutoResumeEnabledOnInterruption,
+  //   setIsAutoResumeEnabledOnInterruption,
+  // ] = useState(
+  //   localStorage.getBoolean('isAutoResumeEnabledAfterInterruption') ?? true,
+  // );
   const [folderContent, setFolderContent] = useState([]);
   const [folderSize, setFolderSize] = useState(0);
+  const [isCopied, setIsCopied] = useState(false);
 
   const getFolderContent = async () => {
     setFolderContent(await RNFS.readdir(RNFS.ExternalDirectoryPath));
@@ -81,6 +89,22 @@ const Settings = () => {
     }, []),
   );
 
+  useFocusEffect(
+    useCallback(() => {
+      let timeout1;
+
+      if (isCopied) {
+        timeout1 = setTimeout(() => {
+          setIsCopied(false);
+        }, 1500);
+      }
+
+      return () => {
+        clearTimeout(timeout1);
+      };
+    }, [isCopied]),
+  );
+
   const toggleSwitchRadio = () =>
     setIsWiFiOnlyEnabledRadio(previousState => {
       localStorage.set('isWiFiOnlyEnabledForRadio', !previousState);
@@ -101,6 +125,13 @@ const Settings = () => {
 
       return !previousState;
     });
+
+  // const toggleSwitchAutoResumeOnInterruption = () =>
+  //   setIsAutoResumeEnabledOnInterruption(previousState => {
+  //     localStorage.set('isAutoResumeEnabledAfterInterruption', !previousState);
+
+  //     return !previousState;
+  //   });
 
   const handleDeleteFiles = async () => {
     const filesInFolder = await RNFS.readdir(
@@ -209,6 +240,24 @@ const Settings = () => {
                 value={isWiFiOnlyEnabledPodcastDownload}
               />
             </View>
+            {/* <View style={styles.switchContainer(width, height)}>
+              <Text style={styles.regularText(globalCtx.colorSchemeValue)}>
+                Nastavi playback automatski nakon{'\n'}poziva
+              </Text>
+              <Switch
+                trackColor={{
+                  false: colorSchemeObj[globalCtx.colorSchemeValue].dark10,
+                  true: colorSchemeObj[globalCtx.colorSchemeValue].light40,
+                }}
+                thumbColor={
+                  isAutoResumeEnabledOnInterruption
+                    ? colorSchemeObj[globalCtx.colorSchemeValue].light90
+                    : colorSchemeObj[globalCtx.colorSchemeValue].light20
+                }
+                onValueChange={toggleSwitchAutoResumeOnInterruption}
+                value={isAutoResumeEnabledOnInterruption}
+              />
+            </View> */}
           </View>
 
           <View style={styles.buttonContainer(width, height)}>
@@ -313,43 +362,42 @@ const Settings = () => {
                 <Pressable
                   onPress={handlePressViolet}
                   style={({pressed}) => pressed && styles.pressedItem}>
-                  <View style={[styles.colorBox, styles.colorBoxViolet]}></View>
+                  <View style={[styles.colorBox, styles.colorBoxViolet]} />
                 </Pressable>
               </View>
               <View>
                 <Pressable
                   onPress={handlePressCrimsonRed}
                   style={({pressed}) => pressed && styles.pressedItem}>
-                  <View
-                    style={[styles.colorBox, styles.colorBoxCrimsonRed]}></View>
+                  <View style={[styles.colorBox, styles.colorBoxCrimsonRed]} />
                 </Pressable>
               </View>
               <View>
                 <Pressable
                   onPress={handlePressBlue}
                   style={({pressed}) => pressed && styles.pressedItem}>
-                  <View style={[styles.colorBox, styles.colorBoxBlue]}></View>
+                  <View style={[styles.colorBox, styles.colorBoxBlue]} />
                 </Pressable>
               </View>
               <View>
                 <Pressable
                   onPress={handlePressPink}
                   style={({pressed}) => pressed && styles.pressedItem}>
-                  <View style={[styles.colorBox, styles.colorBoxPink]}></View>
+                  <View style={[styles.colorBox, styles.colorBoxPink]} />
                 </Pressable>
               </View>
               <View>
                 <Pressable
                   onPress={handlePressGreen}
                   style={({pressed}) => pressed && styles.pressedItem}>
-                  <View style={[styles.colorBox, styles.colorBoxGreen]}></View>
+                  <View style={[styles.colorBox, styles.colorBoxGreen]} />
                 </Pressable>
               </View>
               <View>
                 <Pressable
                   onPress={handlePressOrange}
                   style={({pressed}) => pressed && styles.pressedItem}>
-                  <View style={[styles.colorBox, styles.colorBoxOrange]}></View>
+                  <View style={[styles.colorBox, styles.colorBoxOrange]} />
                 </Pressable>
               </View>
             </View>
@@ -361,7 +409,7 @@ const Settings = () => {
             O aplikaciji:
           </Text>
           <Text style={styles.regularText(globalCtx.colorSchemeValue)}>
-            Verzija: 1.4.20230904
+            Verzija: 1.4.20240123
           </Text>
           <View style={styles.contactContainer}>
             <Text style={styles.regularText(globalCtx.colorSchemeValue)}>
@@ -397,9 +445,14 @@ const Settings = () => {
               </Pressable>
             </View>
           </View>
+        </View>
+        <View style={styles.developerContainer(width, height)}>
+          <Text style={styles.aboutTextHeading(globalCtx.colorSchemeValue)}>
+            Časti aplikatora:
+          </Text>
           <View style={styles.contactContainer}>
             <Text style={styles.regularText(globalCtx.colorSchemeValue)}>
-              Časti me kafom:
+              - kafom:
             </Text>
             <View style={styles.pressableContainer}>
               <Pressable
@@ -417,6 +470,38 @@ const Settings = () => {
                 />
               </Pressable>
             </View>
+            <Text style={styles.regularText(globalCtx.colorSchemeValue)}>
+              {' '}
+              , ili
+            </Text>
+          </View>
+          <View style={styles.contactContainer}>
+            <Text style={styles.regularText(globalCtx.colorSchemeValue)}>
+              - uplatom na račun:
+            </Text>
+
+            <Pressable
+              onPress={() => {
+                Clipboard.setString('265-6164332-61');
+                setIsCopied(true);
+              }}
+              style={({pressed}) => [
+                pressed && styles.pressedItem,
+                styles.accountNumberContainer,
+              ]}>
+              <Text style={[styles.textLink(globalCtx.colorSchemeValue)]}>
+                265-6164332-61{' '}
+              </Text>
+              <IconMaterialCommunity
+                style={styles.iconWithLessMargin(globalCtx.colorSchemeValue)}
+                name={'content-copy'}
+                size={20}
+              />
+            </Pressable>
+
+            <Text style={[styles.textTooltip(globalCtx.colorSchemeValue)]}>
+              {`${isCopied ? 'Kopirano!' : ''}`}
+            </Text>
           </View>
         </View>
       </View>
@@ -466,6 +551,15 @@ const styles = StyleSheet.create({
       paddingHorizontal: '2%',
       paddingVertical: 7,
       marginTop: 5,
+    };
+  },
+  developerContainer: (screenWidth, screenHeight) => {
+    return {
+      width: screenWidth > screenHeight ? screenHeight : screenWidth,
+      paddingHorizontal: '2%',
+      paddingVertical: 7,
+      marginTop: 5,
+      marginBottom: 20,
     };
   },
   buttonContainer: (screenWidth, screenHeight) => {
@@ -527,10 +621,34 @@ const styles = StyleSheet.create({
       marginBottom: 2,
     };
   },
+  textTooltip: colorScheme => {
+    return {
+      fontSize: 14,
+      color: colorSchemeObj[colorScheme].light10,
+      fontWeight: 'bold',
+      fontFamily: 'sans-serif-condensed',
+    };
+  },
+  textLink: colorScheme => {
+    return {
+      fontSize: 14,
+      color: colorSchemeObj[colorScheme].light60,
+      fontWeight: 'bold',
+      fontFamily: 'sans-serif-condensed',
+      textAlign: 'left',
+      marginLeft: 5,
+    };
+  },
   icon: colorScheme => {
     return {
       color: colorSchemeObj[colorScheme].light20,
       marginRight: 10,
+    };
+  },
+  iconWithLessMargin: colorScheme => {
+    return {
+      color: colorSchemeObj[colorScheme].light20,
+      marginRight: 5,
     };
   },
   iconButton: colorScheme => {
@@ -548,6 +666,9 @@ const styles = StyleSheet.create({
   },
   pressableContainer: {
     marginLeft: 5,
+  },
+  accountNumberContainer: {
+    flexDirection: 'row',
   },
   colorsContainer: (screenWidth, screenHeight) => {
     return {

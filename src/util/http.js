@@ -57,18 +57,25 @@ export async function fetchEpisodes() {
 }
 
 export async function fetchNumberOfListenersAutodj() {
+  let urlToLoad;
+  if (
+    localStorage.getString('selectedStream') === undefined ||
+    localStorage.getString('selectedStream') === 'stream1'
+  ) {
+    urlToLoad = 'https://stream.daskoimladja.com:9000/autodj.xspf';
+  } else if (localStorage.getString('selectedStream') === 'stream2') {
+    urlToLoad = 'http://stream.daskoimladja.com:8000/autodj.xspf';
+  }
+
   try {
-    const response = await axios.get(
-      'https://stream.daskoimladja.com:9000/autodj.xspf',
-      {
-        timeout: 10000,
-        headers: {
-          'Cache-Control': 'no-cache',
-          Pragma: 'no-cache',
-          Expires: '0',
-        },
+    const response = await axios.get(urlToLoad, {
+      timeout: 10000,
+      headers: {
+        'Cache-Control': 'no-cache',
+        Pragma: 'no-cache',
+        Expires: '0',
       },
-    );
+    });
 
     const responseDataArr = response.data.split('\n');
     let numberOfListeners;
@@ -85,18 +92,25 @@ export async function fetchNumberOfListenersAutodj() {
 }
 
 export async function fetchNumberOfListenersLive() {
+  let urlToLoad;
+  if (
+    localStorage.getString('selectedStream') === undefined ||
+    localStorage.getString('selectedStream') === 'stream1'
+  ) {
+    urlToLoad = 'https://stream.daskoimladja.com:9000/live.xspf';
+  } else if (localStorage.getString('selectedStream') === 'stream2') {
+    urlToLoad = 'http://stream.daskoimladja.com:8000/live.xspf';
+  }
+
   try {
-    const response = await axios.get(
-      'https://stream.daskoimladja.com:9000/live.xspf',
-      {
-        timeout: 10000,
-        headers: {
-          'Cache-Control': 'no-cache',
-          Pragma: 'no-cache',
-          Expires: '0',
-        },
+    const response = await axios.get(urlToLoad, {
+      timeout: 10000,
+      headers: {
+        'Cache-Control': 'no-cache',
+        Pragma: 'no-cache',
+        Expires: '0',
       },
-    );
+    });
 
     const responseDataArr = response.data.split('\n');
     let numberOfListeners;
@@ -113,18 +127,25 @@ export async function fetchNumberOfListenersLive() {
 }
 
 export async function fetchNumberOfListenersStream() {
+  let urlToLoad;
+  if (
+    localStorage.getString('selectedStream') === undefined ||
+    localStorage.getString('selectedStream') === 'stream1'
+  ) {
+    urlToLoad = 'https://stream.daskoimladja.com:9000/stream.xspf';
+  } else if (localStorage.getString('selectedStream') === 'stream2') {
+    urlToLoad = 'http://stream.daskoimladja.com:8000/stream.xspf';
+  }
+
   try {
-    const response = await axios.get(
-      'https://stream.daskoimladja.com:9000/stream.xspf',
-      {
-        timeout: 10000,
-        headers: {
-          'Cache-Control': 'no-cache',
-          Pragma: 'no-cache',
-          Expires: '0',
-        },
+    const response = await axios.get(urlToLoad, {
+      timeout: 10000,
+      headers: {
+        'Cache-Control': 'no-cache',
+        Pragma: 'no-cache',
+        Expires: '0',
       },
-    );
+    });
 
     const responseDataArr = response.data.split('\n');
     let numberOfListeners;
