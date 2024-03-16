@@ -14,7 +14,8 @@ import FastImage from 'react-native-fast-image';
 import Clipboard from '@react-native-clipboard/clipboard';
 import {useFocusEffect} from '@react-navigation/native';
 import IconMaterialCommunity from 'react-native-vector-icons/MaterialCommunityIcons';
-import IconFeaher from 'react-native-vector-icons/Feather';
+import IconFontAwesome6 from 'react-native-vector-icons/FontAwesome6';
+import IconFeather from 'react-native-vector-icons/Feather';
 
 import badge from '../assets/badge.png';
 import patreon from '../assets/patreon.png';
@@ -94,7 +95,7 @@ const SupportUs = () => {
                   ]}>
                   <Text style={styles.textLink(globalCtx.colorSchemeValue)}>
                     patreon.com/daskoimladja{' '}
-                    <IconFeaher
+                    <IconFeather
                       style={styles.icon(globalCtx.colorSchemeValue)}
                       name={'external-link'}
                       size={20}
@@ -129,7 +130,7 @@ const SupportUs = () => {
                   ]}>
                   <Text style={styles.textLink(globalCtx.colorSchemeValue)}>
                     paypal.me/daskoimladja{' '}
-                    <IconFeaher
+                    <IconFeather
                       style={styles.icon(globalCtx.colorSchemeValue)}
                       name={'external-link'}
                       size={20}
@@ -178,6 +179,184 @@ const SupportUs = () => {
             </View>
           </View>
         </View>
+        <View
+          style={styles.socialNetworksContainer(
+            globalCtx.colorSchemeValue,
+            width,
+            height,
+          )}>
+          <Text style={styles.textHeading(globalCtx.colorSchemeValue)}>
+            ZAPRATI NAS
+          </Text>
+          <View
+            style={styles.socialNetworksContainerPart(
+              globalCtx.colorSchemeValue,
+            )}>
+            <View style={styles.pressableContainer}>
+              <Pressable
+                onPress={() => Linking.openURL('https://www.daskoimladja.com/')}
+                style={({pressed}) => pressed && styles.pressedItem}>
+                <IconMaterialCommunity
+                  style={styles.icon(globalCtx.colorSchemeValue)}
+                  name={'web'}
+                  size={40}
+                />
+              </Pressable>
+            </View>
+            <View style={styles.pressableContainer}>
+              <Pressable
+                onPress={() =>
+                  Linking.openURL('https://www.facebook.com/daskoimladja/')
+                }
+                style={({pressed}) => pressed && styles.pressedItem}>
+                <IconMaterialCommunity
+                  style={styles.icon(globalCtx.colorSchemeValue)}
+                  name={'facebook'}
+                  size={40}
+                />
+              </Pressable>
+            </View>
+            <View style={styles.pressableContainer}>
+              <Pressable
+                onPress={() =>
+                  Linking.openURL('https://soundcloud.com/daskoimladja')
+                }
+                style={({pressed}) => pressed && styles.pressedItem}>
+                <IconMaterialCommunity
+                  style={styles.icon(globalCtx.colorSchemeValue)}
+                  name={'soundcloud'}
+                  size={40}
+                />
+              </Pressable>
+            </View>
+          </View>
+          <View
+            style={styles.socialNetworksContainerPart(
+              globalCtx.colorSchemeValue,
+            )}>
+            <View style={styles.pressableContainer}>
+              <Pressable
+                onPress={() =>
+                  Linking.openURL('https://www.instagram.com/daskoimladja/')
+                }
+                style={({pressed}) => pressed && styles.pressedItem}>
+                <IconMaterialCommunity
+                  style={styles.icon(globalCtx.colorSchemeValue)}
+                  name={'instagram'}
+                  size={40}
+                />
+              </Pressable>
+            </View>
+            <View style={styles.pressableContainer}>
+              <Pressable
+                onPress={() => Linking.openURL('https://x.com/daskoimladja')}
+                style={({pressed}) => pressed && styles.pressedItem}>
+                <IconFontAwesome6
+                  style={styles.icon(globalCtx.colorSchemeValue)}
+                  name={'x-twitter'}
+                  size={40}
+                />
+              </Pressable>
+            </View>
+            <View style={styles.pressableContainer}>
+              <Pressable
+                onPress={() =>
+                  Linking.openURL(
+                    'https://www.youtube.com/channel/UCAnjcl_5PjyoixFII4JLLdA',
+                  )
+                }
+                style={({pressed}) => pressed && styles.pressedItem}>
+                <IconMaterialCommunity
+                  style={styles.icon(globalCtx.colorSchemeValue)}
+                  name={'youtube'}
+                  size={40}
+                />
+              </Pressable>
+            </View>
+          </View>
+        </View>
+        <View
+          style={styles.radioShowsContainer(
+            globalCtx.colorSchemeValue,
+            width,
+            height,
+          )}>
+          <Text style={styles.textHeadingStory(globalCtx.colorSchemeValue)}>
+            RASPORED EMISIJA {'\n'} NA RADIJU "DAŠKO I MLAĐA"
+          </Text>
+          <Text style={styles.textContentShows(globalCtx.colorSchemeValue)}>
+            Radnim danima (sem petka), 07h:{'\n'}
+            <Text
+              style={styles.textContentShowsTitles(globalCtx.colorSchemeValue)}>
+              Alarm sa Mlađom i Daškom
+            </Text>
+          </Text>
+          <Text style={styles.textContentShows(globalCtx.colorSchemeValue)}>
+            Ponedeljak, 20h:{'\n'}
+            <Text
+              style={styles.textContentShowsTitles(globalCtx.colorSchemeValue)}>
+              Sportski pozdrav
+            </Text>
+          </Text>
+          <Text style={styles.textContentShows(globalCtx.colorSchemeValue)}>
+            Utorak, 20h:{'\n'}
+            <Text
+              style={styles.textContentShowsTitles(globalCtx.colorSchemeValue)}>
+              Večernja škola rokenrola
+            </Text>
+          </Text>
+          <Text style={styles.textContentShows(globalCtx.colorSchemeValue)}>
+            Sreda, 20h:{'\n'}
+            <Text
+              style={styles.textContentShowsTitles(globalCtx.colorSchemeValue)}>
+              Ljudi iz podzemlja
+            </Text>
+          </Text>
+          <Text style={styles.textContentShows(globalCtx.colorSchemeValue)}>
+            Četvrtak, 20h:{'\n'}
+            <Text
+              style={styles.textContentShowsTitles(globalCtx.colorSchemeValue)}>
+              Na ivici ofsajda
+            </Text>
+          </Text>
+          <Text style={styles.textContentShows(globalCtx.colorSchemeValue)}>
+            Nedelja, 20h:{'\n'}
+            <Text
+              style={styles.textContentShowsTitles(globalCtx.colorSchemeValue)}>
+              Unutrašnja emigracija
+            </Text>
+          </Text>
+        </View>
+        <View
+          style={styles.storyContainer(
+            globalCtx.colorSchemeValue,
+            width,
+            height,
+          )}>
+          <Text style={styles.textHeadingStory(globalCtx.colorSchemeValue)}>
+            NAŠA TOPLA LJUCKA PRIČA
+          </Text>
+          <Text style={styles.textContentStory(globalCtx.colorSchemeValue)}>
+            Sve je počelo kada je Mlađa, tezgareći kao Deda Mraz, Dašku doneo
+            paketić za Novu 1987. u firmi gde su radili Daškovi mama i tata.
+          </Text>
+          <Text style={styles.textContentStory(globalCtx.colorSchemeValue)}>
+            Baš smo skoro nešto računali i mislimo da se poznajemo negde oko 20
+            godina. Stari drugari sa pank scene.
+          </Text>
+          <Text style={styles.textContentStory(globalCtx.colorSchemeValue)}>
+            Svirali u bendovima, pravili fanzine, radio emisije, ozbiljne
+            časopise, organizovali koncerte i žurke.
+          </Text>
+          <Text style={styles.textContentStory(globalCtx.colorSchemeValue)}>
+            Ponovo se našli na zajedničkom radio poslu u rano proleće 2011. i
+            otad se skoro svako jutro gledamo i slušamo.
+          </Text>
+          <Text style={styles.textContentStory(globalCtx.colorSchemeValue)}>
+            Pored radio pregalaštva, prilično redovno se penjemo na bine i tamo
+            se uživo šalimo, pevamo i blamiramo.
+          </Text>
+        </View>
       </View>
     </ScrollView>
   );
@@ -205,7 +384,56 @@ const styles = StyleSheet.create({
       padding: 20,
       paddingTop: 50,
       width: screenWidth > screenHeight ? screenHeight : screenWidth - 40,
+      borderRadius: 15,
     };
+  },
+  radioShowsContainer: (colorScheme, screenWidth, screenHeight) => {
+    return {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: colorSchemeObj[colorScheme].dark50,
+      marginBottom: 30,
+      padding: 20,
+      paddingBottom: 10,
+      width: screenWidth > screenHeight ? screenHeight : screenWidth - 40,
+      borderRadius: 15,
+    };
+  },
+  socialNetworksContainer: (colorScheme, screenWidth, screenHeight) => {
+    return {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: colorSchemeObj[colorScheme].dark50,
+      marginVertical: 30,
+      padding: 10,
+      paddingTop: 20,
+      width: screenWidth > screenHeight ? screenHeight : screenWidth - 40,
+      borderRadius: 15,
+    };
+  },
+  socialNetworksContainerPart: colorScheme => {
+    return {
+      flex: 1,
+      flexDirection: 'row',
+      justifyContent: 'flex-start',
+      backgroundColor: colorSchemeObj[colorScheme].dark50,
+      padding: 10,
+    };
+  },
+  storyContainer: (colorScheme, screenWidth, screenHeight) => {
+    return {
+      flex: 1,
+      justifyContent: 'flex-start',
+      backgroundColor: colorSchemeObj[colorScheme].dark50,
+      padding: 20,
+      width: screenWidth > screenHeight ? screenHeight : screenWidth - 40,
+      borderRadius: 15,
+    };
+  },
+  pressableContainer: {
+    marginLeft: 5,
   },
   donationsContainer: {
     width: '100%',
@@ -231,6 +459,17 @@ const styles = StyleSheet.create({
       textAlign: 'center',
     };
   },
+  textHeadingStory: colorScheme => {
+    return {
+      fontSize: 15,
+      color: colorSchemeObj[colorScheme].light80,
+      fontWeight: 'bold',
+      fontFamily: 'sans-serif-condensed',
+      width: '100%',
+      marginBottom: 20,
+      textAlign: 'center',
+    };
+  },
   textContent: colorScheme => {
     return {
       fontSize: 14,
@@ -238,6 +477,38 @@ const styles = StyleSheet.create({
       fontWeight: 'bold',
       fontFamily: 'sans-serif-condensed',
       marginLeft: 10,
+    };
+  },
+  textContentStory: colorScheme => {
+    return {
+      fontSize: 14,
+      color: colorSchemeObj[colorScheme].light80,
+      fontWeight: 'bold',
+      fontFamily: 'sans-serif-condensed',
+      marginLeft: 10,
+      marginBottom: 7,
+    };
+  },
+  textContentShows: colorScheme => {
+    return {
+      fontSize: 14,
+      color: colorSchemeObj[colorScheme].light60,
+      fontWeight: 'bold',
+      fontFamily: 'sans-serif-condensed',
+      marginLeft: 10,
+      marginBottom: 7,
+      width: '100%',
+    };
+  },
+  textContentShowsTitles: colorScheme => {
+    return {
+      fontSize: 13,
+      color: colorSchemeObj[colorScheme].light90,
+      fontWeight: 'bold',
+      fontFamily: 'sans-serif-condensed',
+      marginLeft: 10,
+      marginBottom: 7,
+      width: '100%',
     };
   },
   textTooltip: colorScheme => {

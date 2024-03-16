@@ -16,10 +16,12 @@ import Settings from './components/Settings';
 import SupportUs from './components/SupportUs';
 import IconMaterialCommunity from 'react-native-vector-icons/MaterialCommunityIcons';
 import SplashScreen from 'react-native-splash-screen';
+import FastImage from 'react-native-fast-image';
 
 import Loading from './components/Loading';
 import {localStorage} from './util/http';
 import {colorSchemeObj} from './util/colors';
+import daMl from './assets/da-ml.png';
 
 const TabBottom = createMaterialBottomTabNavigator();
 
@@ -123,12 +125,15 @@ function App() {
               name="SupportUs"
               component={SupportUs}
               options={{
-                title: 'Podrži nas',
+                title: 'O nama',
                 tabBarIcon: () => (
-                  <IconMaterialCommunity
-                    style={styles.icon(colorScheme)}
-                    name={'currency-usd'}
-                    size={25}
+                  <FastImage
+                    style={{
+                      width: 40,
+                      height: 27,
+                    }}
+                    source={daMl}
+                    resizeMode={FastImage.resizeMode.cover}
                   />
                 ),
               }}

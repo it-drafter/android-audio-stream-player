@@ -60,12 +60,13 @@ const PodcastList = ({navigation}) => {
         ? true
         : false,
     );
-  const [isCheckedNaIviciOfsajda, setIsCheckedNaIviciOfsajda] = useState(
-    localStorage.getBoolean('isCheckedNaIviciOfsajda') === undefined ||
-      localStorage.getBoolean('isCheckedNaIviciOfsajda') === true
-      ? true
-      : false,
-  );
+  const [isCheckedUnutrasnjaEmigracija, setIsCheckedUnutrasnjaEmigracija] =
+    useState(
+      localStorage.getBoolean('isCheckedUnutrasnjaEmigracija') === undefined ||
+        localStorage.getBoolean('isCheckedUnutrasnjaEmigracija') === true
+        ? true
+        : false,
+    );
   const [isCheckedSportskiPozdrav, setIsCheckedSportskiPozdrav] = useState(
     localStorage.getBoolean('isCheckedSportskiPozdrav') === undefined ||
       localStorage.getBoolean('isCheckedSportskiPozdrav') === true
@@ -87,6 +88,12 @@ const PodcastList = ({navigation}) => {
   const [isCheckedPunaUstaPoezije, setIsCheckedPunaUstaPoezije] = useState(
     localStorage.getBoolean('isCheckedPunaUstaPoezije') === undefined ||
       localStorage.getBoolean('isCheckedPunaUstaPoezije') === true
+      ? true
+      : false,
+  );
+  const [isCheckedNaIviciOfsajda, setIsCheckedNaIviciOfsajda] = useState(
+    localStorage.getBoolean('isCheckedNaIviciOfsajda') === undefined ||
+      localStorage.getBoolean('isCheckedNaIviciOfsajda') === true
       ? true
       : false,
   );
@@ -177,7 +184,7 @@ const PodcastList = ({navigation}) => {
           .includes('Večernja škola rokenrola'.toLowerCase()) &&
         !episode.title
           .toLowerCase()
-          .includes('Na ivici ofsajda'.toLowerCase()) &&
+          .includes('Unutrasnja emigracija'.toLowerCase()) &&
         !episode.title
           .toLowerCase()
           .includes('Sportski Pozdrav'.toLowerCase()) &&
@@ -187,7 +194,8 @@ const PodcastList = ({navigation}) => {
         !episode.title.toLowerCase().includes('Rastrojavanje'.toLowerCase()) &&
         !episode.artist
           .toLowerCase()
-          .includes('Puna Usta Poezije'.toLowerCase()),
+          .includes('Puna Usta Poezije'.toLowerCase()) &&
+        !episode.title.toLowerCase().includes('Na ivici ofsajda'.toLowerCase()),
     ),
   ];
 
@@ -203,7 +211,7 @@ const PodcastList = ({navigation}) => {
           .includes('Večernja škola rokenrola'.toLowerCase()) &&
         !episode.title
           .toLowerCase()
-          .includes('Na ivici ofsajda'.toLowerCase()) &&
+          .includes('Unutrasnja emigracija'.toLowerCase()) &&
         !episode.title
           .toLowerCase()
           .includes('Sportski Pozdrav'.toLowerCase()) &&
@@ -213,7 +221,8 @@ const PodcastList = ({navigation}) => {
         !episode.title.toLowerCase().includes('Rastrojavanje'.toLowerCase()) &&
         !episode.artist
           .toLowerCase()
-          .includes('Puna Usta Poezije'.toLowerCase()),
+          .includes('Puna Usta Poezije'.toLowerCase()) &&
+        !episode.title.toLowerCase().includes('Na ivici ofsajda'.toLowerCase()),
     ),
   ];
 
@@ -231,9 +240,11 @@ const PodcastList = ({navigation}) => {
     ),
   ];
 
-  const fetchedEpisodesOnlyNaIviciOfsajda = [
+  const fetchedEpisodesOnlyUnutrasnjaEmigracija = [
     ...fetchedEpisodes.filter(episode =>
-      episode.title.toLowerCase().includes('Na ivici ofsajda'.toLowerCase()),
+      episode.title
+        .toLowerCase()
+        .includes('Unutrasnja emigracija'.toLowerCase()),
     ),
   ];
 
@@ -261,6 +272,12 @@ const PodcastList = ({navigation}) => {
     ),
   ];
 
+  const fetchedEpisodesOnlyNaIviciOfsajda = [
+    ...fetchedEpisodes.filter(episode =>
+      episode.title.toLowerCase().includes('Na ivici ofsajda'.toLowerCase()),
+    ),
+  ];
+
   const fetchedEpisodesUnsorted = [];
 
   isCheckedAlarmSaMuzikom &&
@@ -271,8 +288,8 @@ const PodcastList = ({navigation}) => {
     fetchedEpisodesUnsorted.push(...fetchedEpisodesOnlyLjudiIzPodzemlja);
   isCheckedVecernjaSkolaRokenrola &&
     fetchedEpisodesUnsorted.push(...fetchedEpisodesOnlyVecernjaSkolaRokenrola);
-  isCheckedNaIviciOfsajda &&
-    fetchedEpisodesUnsorted.push(...fetchedEpisodesOnlyNaIviciOfsajda);
+  isCheckedUnutrasnjaEmigracija &&
+    fetchedEpisodesUnsorted.push(...fetchedEpisodesOnlyUnutrasnjaEmigracija);
   isCheckedSportskiPozdrav &&
     fetchedEpisodesUnsorted.push(...fetchedEpisodesOnlySportskiPozdrav);
   isCheckedTopleLjuckePrice &&
@@ -281,6 +298,8 @@ const PodcastList = ({navigation}) => {
     fetchedEpisodesUnsorted.push(...fetchedEpisodesOnlyRastrojavanje);
   isCheckedPunaUstaPoezije &&
     fetchedEpisodesUnsorted.push(...fetchedEpisodesOnlyPunaUstaPoezije);
+  isCheckedNaIviciOfsajda &&
+    fetchedEpisodesUnsorted.push(...fetchedEpisodesOnlyNaIviciOfsajda);
 
   const fetchedEpisodesToDisplay = fetchedEpisodesUnsorted.sort((a, b) => {
     let da = new Date(a.pubDate),
@@ -459,7 +478,7 @@ const PodcastList = ({navigation}) => {
               size={width > height ? 17 : 20}
               fillColor={colorSchemeObj[globalCtx.colorSchemeValue].light50}
               unfillColor={colorSchemeObj[globalCtx.colorSchemeValue].light30}
-              text="Na ivici ofsajda"
+              text="Unutrašnja emigracija"
               iconStyle={{
                 borderColor: colorSchemeObj[globalCtx.colorSchemeValue].base,
               }}
@@ -467,19 +486,21 @@ const PodcastList = ({navigation}) => {
               textStyle={{
                 textDecorationLine: 'none',
                 fontSize: width > height ? 13 : 14,
-                color: isCheckedNaIviciOfsajda
+                color: isCheckedUnutrasnjaEmigracija
                   ? colorSchemeObj[globalCtx.colorSchemeValue].light50
                   : colorSchemeObj[globalCtx.colorSchemeValue].light30,
               }}
-              isChecked={isCheckedNaIviciOfsajda}
+              isChecked={isCheckedUnutrasnjaEmigracija}
               disableBuiltInState
               onPress={() => {
                 localStorage.set(
-                  'isCheckedNaIviciOfsajda',
-                  !isCheckedNaIviciOfsajda,
+                  'isCheckedUnutrasnjaEmigracija',
+                  !isCheckedUnutrasnjaEmigracija,
                 );
 
-                setIsCheckedNaIviciOfsajda(!isCheckedNaIviciOfsajda);
+                setIsCheckedUnutrasnjaEmigracija(
+                  !isCheckedUnutrasnjaEmigracija,
+                );
               }}
               textContainerStyle={{
                 marginLeft: 5,
@@ -606,6 +627,37 @@ const PodcastList = ({navigation}) => {
                 );
 
                 setIsCheckedPunaUstaPoezije(!isCheckedPunaUstaPoezije);
+              }}
+              textContainerStyle={{
+                marginLeft: 5,
+              }}
+              style={{marginTop: 7}}
+            />
+            <BouncyCheckbox
+              size={width > height ? 17 : 20}
+              fillColor={colorSchemeObj[globalCtx.colorSchemeValue].light50}
+              unfillColor={colorSchemeObj[globalCtx.colorSchemeValue].light30}
+              text="Na ivici ofsajda"
+              iconStyle={{
+                borderColor: colorSchemeObj[globalCtx.colorSchemeValue].base,
+              }}
+              innerIconStyle={{borderWidth: 2}}
+              textStyle={{
+                textDecorationLine: 'none',
+                fontSize: width > height ? 13 : 14,
+                color: isCheckedNaIviciOfsajda
+                  ? colorSchemeObj[globalCtx.colorSchemeValue].light50
+                  : colorSchemeObj[globalCtx.colorSchemeValue].light30,
+              }}
+              isChecked={isCheckedNaIviciOfsajda}
+              disableBuiltInState
+              onPress={() => {
+                localStorage.set(
+                  'isCheckedNaIviciOfsajda',
+                  !isCheckedNaIviciOfsajda,
+                );
+
+                setIsCheckedNaIviciOfsajda(!isCheckedNaIviciOfsajda);
               }}
               textContainerStyle={{
                 marginLeft: 5,

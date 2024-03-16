@@ -14,6 +14,7 @@ import RNFS from 'react-native-fs';
 import {localStorage} from '../util/http';
 import {useFocusEffect} from '@react-navigation/native';
 import IconMaterialCommunity from 'react-native-vector-icons/MaterialCommunityIcons';
+import IconFeather from 'react-native-vector-icons/Feather';
 import {colorSchemeObj} from '../util/colors';
 import GlobalContext from '../util/context';
 import TrackPlayer, {
@@ -26,6 +27,10 @@ import Clipboard from '@react-native-clipboard/clipboard';
 
 import developerIcon from '../assets/developericon.png';
 import buyMeACoffee from '../assets/buymeacoffee.png';
+import raiffeisen from '../assets/raiffeisen.jpg';
+import bitcoin from '../assets/bitcoin.png';
+import bitcoinLightning from '../assets/bitcoin-lightning.png';
+import mlWobble from '../assets/ml-wobble.gif';
 
 const Settings = () => {
   const {width, height} = useWindowDimensions();
@@ -53,7 +58,10 @@ const Settings = () => {
   // );
   const [folderContent, setFolderContent] = useState([]);
   const [folderSize, setFolderSize] = useState(0);
-  const [isCopied, setIsCopied] = useState(false);
+  const [isCopiedRaiffeisen, setIsCopiedRaiffeisen] = useState(false);
+  const [isCopiedContactEmail, setIsCopiedContactEmail] = useState(false);
+  const [isCopiedBtcNetwork, setIsCopiedBtcNetwork] = useState(false);
+  const [isCopiedBtcLightning, setIsCopiedBtcLightning] = useState(false);
 
   const getFolderContent = async () => {
     setFolderContent(await RNFS.readdir(RNFS.ExternalDirectoryPath));
@@ -93,16 +101,39 @@ const Settings = () => {
     useCallback(() => {
       let timeout1;
 
-      if (isCopied) {
+      if (isCopiedRaiffeisen) {
         timeout1 = setTimeout(() => {
-          setIsCopied(false);
+          setIsCopiedRaiffeisen(false);
+        }, 1500);
+      }
+
+      if (isCopiedContactEmail) {
+        timeout1 = setTimeout(() => {
+          setIsCopiedContactEmail(false);
+        }, 1500);
+      }
+
+      if (isCopiedBtcNetwork) {
+        timeout1 = setTimeout(() => {
+          setIsCopiedBtcNetwork(false);
+        }, 1500);
+      }
+
+      if (isCopiedBtcLightning) {
+        timeout1 = setTimeout(() => {
+          setIsCopiedBtcLightning(false);
         }, 1500);
       }
 
       return () => {
         clearTimeout(timeout1);
       };
-    }, [isCopied]),
+    }, [
+      isCopiedRaiffeisen,
+      isCopiedBtcNetwork,
+      isCopiedContactEmail,
+      isCopiedBtcLightning,
+    ]),
   );
 
   const toggleSwitchRadio = () =>
@@ -409,11 +440,14 @@ const Settings = () => {
             O aplikaciji:
           </Text>
           <Text style={styles.regularText(globalCtx.colorSchemeValue)}>
-            Verzija: 1.4.20240123
+            Verzija: 1.4.20240314
           </Text>
-          <View style={styles.contactContainer}>
+          <View style={styles.contactContainerDonate}>
             <Text style={styles.regularText(globalCtx.colorSchemeValue)}>
               Autor:&nbsp;
+            </Text>
+            <Text style={styles.regularText(globalCtx.colorSchemeValue)}>
+              &nbsp;Ivan Tančik a.k.a.&nbsp;
             </Text>
             <FastImage
               style={{
@@ -427,32 +461,89 @@ const Settings = () => {
               &nbsp;Roćko
             </Text>
           </View>
+
           <View style={styles.contactContainer}>
-            <Text style={styles.regularText(globalCtx.colorSchemeValue)}>
-              Kontakt:
-            </Text>
-            <View style={styles.pressableContainer}>
-              <Pressable
-                onPress={() =>
-                  Linking.openURL('https://discord.com/invite/8MtjZG2Vsd')
-                }
-                style={({pressed}) => pressed && styles.pressedItem}>
-                <IconMaterialCommunity
-                  style={styles.icon(globalCtx.colorSchemeValue)}
-                  name={'discord'}
-                  size={30}
-                />
-              </Pressable>
+            <View style={styles.contactContainerEmailDiscord}>
+              <Text style={styles.regularText(globalCtx.colorSchemeValue)}>
+                {'Kontakt:   '}
+              </Text>
+              <View>
+                <View style={styles.bitcoinContainerBtcLightning}>
+                  <Pressable
+                    onPress={() => {
+                      Clipboard.setString('rotjko.zica@gmail.com');
+                      setIsCopiedContactEmail(true);
+                    }}
+                    style={({pressed}) => [
+                      pressed && styles.pressedItem,
+                      styles.accountNumberContainer,
+                    ]}>
+                    <IconMaterialCommunity
+                      style={styles.iconWithTheLeastMargin(
+                        globalCtx.colorSchemeValue,
+                      )}
+                      name={'email'}
+                      size={20}
+                    />
+
+                    <Text style={[styles.textLink(globalCtx.colorSchemeValue)]}>
+                      rotjko.zica@gmail.com{' '}
+                    </Text>
+                    <IconMaterialCommunity
+                      style={styles.iconWithLessMargin(
+                        globalCtx.colorSchemeValue,
+                      )}
+                      name={'content-copy'}
+                      size={20}
+                    />
+                  </Pressable>
+
+                  <Text
+                    style={[styles.textTooltip(globalCtx.colorSchemeValue)]}>
+                    {`${isCopiedContactEmail ? 'Kopirano!' : ''}`}
+                  </Text>
+                </View>
+                <View style={styles.bitcoinContainerBtcLightning}>
+                  <Pressable
+                    onPress={() =>
+                      Linking.openURL('https://discord.com/invite/8MtjZG2Vsd')
+                    }
+                    style={({pressed}) => [
+                      pressed && styles.pressedItem,
+                      styles.accountNumberContainer,
+                    ]}>
+                    <IconMaterialCommunity
+                      style={styles.iconWithTheLeastMargin(
+                        globalCtx.colorSchemeValue,
+                      )}
+                      name={'discord'}
+                      size={20}
+                    />
+
+                    <Text style={[styles.textLink(globalCtx.colorSchemeValue)]}>
+                      D&M Discord segta{' '}
+                    </Text>
+                    <IconFeather
+                      style={styles.iconWithLessMargin(
+                        globalCtx.colorSchemeValue,
+                      )}
+                      name={'external-link'}
+                      size={20}
+                    />
+                  </Pressable>
+                </View>
+              </View>
             </View>
           </View>
         </View>
+
         <View style={styles.developerContainer(width, height)}>
           <Text style={styles.aboutTextHeading(globalCtx.colorSchemeValue)}>
             Časti aplikatora:
           </Text>
-          <View style={styles.contactContainer}>
+          <View style={styles.contactContainerDonate}>
             <Text style={styles.regularText(globalCtx.colorSchemeValue)}>
-              - kafom:
+              - Karticom:
             </Text>
             <View style={styles.pressableContainer}>
               <Pressable
@@ -470,25 +561,34 @@ const Settings = () => {
                 />
               </Pressable>
             </View>
+          </View>
+          <View style={styles.contactContainerDonate}>
             <Text style={styles.regularText(globalCtx.colorSchemeValue)}>
-              {' '}
-              , ili
+              {'- Uplatom na dinarski račun:  '}
             </Text>
           </View>
-          <View style={styles.contactContainer}>
-            <Text style={styles.regularText(globalCtx.colorSchemeValue)}>
-              - uplatom na račun:
+          <View style={styles.contactContainerDonate}>
+            <Text style={styles.hiddenText(globalCtx.colorSchemeValue)}>
+              {'- '}
             </Text>
-
             <Pressable
               onPress={() => {
                 Clipboard.setString('265-6164332-61');
-                setIsCopied(true);
+                setIsCopiedRaiffeisen(true);
               }}
               style={({pressed}) => [
                 pressed && styles.pressedItem,
                 styles.accountNumberContainer,
               ]}>
+              <FastImage
+                style={{
+                  width: 18,
+                  height: 18,
+                }}
+                source={raiffeisen}
+                resizeMode={FastImage.resizeMode.cover}
+              />
+
               <Text style={[styles.textLink(globalCtx.colorSchemeValue)]}>
                 265-6164332-61{' '}
               </Text>
@@ -500,8 +600,120 @@ const Settings = () => {
             </Pressable>
 
             <Text style={[styles.textTooltip(globalCtx.colorSchemeValue)]}>
-              {`${isCopied ? 'Kopirano!' : ''}`}
+              {`${isCopiedRaiffeisen ? 'Kopirano!' : ''}`}
             </Text>
+          </View>
+
+          <View style={styles.bitcoinContainerBtcLightning}>
+            <Text style={styles.regularText(globalCtx.colorSchemeValue)}>
+              {'- Bitcoin-om:  '}
+            </Text>
+            <View style={styles.bitcoinContainer}>
+              <View style={styles.bitcoinContainerBtcLightning}>
+                <Pressable
+                  onPress={() => {
+                    Clipboard.setString('1GjVbbCaqqKzS9d9hiwZ7Mc99N7otdjX7H');
+                    setIsCopiedBtcNetwork(true);
+                  }}
+                  style={({pressed}) => [
+                    pressed && styles.pressedItem,
+                    styles.accountNumberContainer,
+                  ]}>
+                  <FastImage
+                    style={{
+                      width: 18,
+                      height: 18,
+                    }}
+                    source={bitcoin}
+                    resizeMode={FastImage.resizeMode.cover}
+                  />
+
+                  <Text style={[styles.textLink(globalCtx.colorSchemeValue)]}>
+                    BTC Network{' '}
+                  </Text>
+                  <IconMaterialCommunity
+                    style={styles.iconWithLessMargin(
+                      globalCtx.colorSchemeValue,
+                    )}
+                    name={'content-copy'}
+                    size={20}
+                  />
+                </Pressable>
+
+                <Text style={[styles.textTooltip(globalCtx.colorSchemeValue)]}>
+                  {`${isCopiedBtcNetwork ? 'Kopirano!' : ''}`}
+                </Text>
+              </View>
+              <View style={styles.bitcoinContainerBtcLightning}>
+                <Pressable
+                  onPress={() => {
+                    Clipboard.setString('machocoke36@walletofsatoshi.com');
+                    setIsCopiedBtcLightning(true);
+                  }}
+                  style={({pressed}) => [
+                    pressed && styles.pressedItem,
+                    styles.accountNumberContainer,
+                  ]}>
+                  <FastImage
+                    style={{
+                      width: 18,
+                      height: 18,
+                    }}
+                    source={bitcoinLightning}
+                    resizeMode={FastImage.resizeMode.cover}
+                  />
+
+                  <Text style={[styles.textLink(globalCtx.colorSchemeValue)]}>
+                    Lightning Network{' '}
+                  </Text>
+                  <IconMaterialCommunity
+                    style={styles.iconWithLessMargin(
+                      globalCtx.colorSchemeValue,
+                    )}
+                    name={'content-copy'}
+                    size={20}
+                  />
+                </Pressable>
+
+                <Text style={[styles.textTooltip(globalCtx.colorSchemeValue)]}>
+                  {`${isCopiedBtcLightning ? 'Kopirano!' : ''}`}
+                </Text>
+              </View>
+            </View>
+          </View>
+
+          <View style={styles.quoteContainer(globalCtx.colorSchemeValue)}>
+            <Text style={styles.italicText(globalCtx.colorSchemeValue)}>
+              {'"Svaki bitkoin ima svoju vrednost.'}
+            </Text>
+            <Text style={styles.italicText(globalCtx.colorSchemeValue)}>
+              {'Njegovu vrednost garantuje kompjuter."'}
+            </Text>
+
+            <View style={styles.hairline(globalCtx.colorSchemeValue)} />
+
+            <View style={styles.thinkerContainer}>
+              <FastImage
+                style={{
+                  width: 47,
+                  height: 47,
+                }}
+                source={mlWobble}
+                resizeMode={FastImage.resizeMode.cover}
+              />
+              <View>
+                <Text
+                  style={styles.thinkerTextName(globalCtx.colorSchemeValue)}>
+                  {'— Mladen Urdarević —'}
+                </Text>
+                <Text style={styles.thinkerText(globalCtx.colorSchemeValue)}>
+                  {'saradnik na scenariju aplikacije'}
+                </Text>
+                <Text style={styles.thinkerText(globalCtx.colorSchemeValue)}>
+                  {'i aforističar'}
+                </Text>
+              </View>
+            </View>
           </View>
         </View>
       </View>
@@ -558,7 +770,7 @@ const styles = StyleSheet.create({
       width: screenWidth > screenHeight ? screenHeight : screenWidth,
       paddingHorizontal: '2%',
       paddingVertical: 7,
-      marginTop: 5,
+      marginTop: 10,
       marginBottom: 20,
     };
   },
@@ -621,6 +833,43 @@ const styles = StyleSheet.create({
       marginBottom: 2,
     };
   },
+  hiddenText: colorScheme => {
+    return {
+      color: colorSchemeObj[colorScheme].dark90,
+      fontFamily: 'sans-serif-medium',
+      marginBottom: 2,
+    };
+  },
+  italicText: colorScheme => {
+    return {
+      color: colorSchemeObj[colorScheme].light60,
+      fontFamily: 'sans-serif-medium',
+      marginBottom: 2,
+      fontStyle: 'italic',
+      fontSize: 13,
+    };
+  },
+  thinkerTextName: colorScheme => {
+    return {
+      color: colorSchemeObj[colorScheme].light40,
+      fontFamily: 'sans-serif-medium',
+      marginBottom: 2,
+      fontSize: 13,
+      paddingLeft: 15,
+      textAlign: 'center',
+    };
+  },
+  thinkerText: colorScheme => {
+    return {
+      color: colorSchemeObj[colorScheme].light50,
+      fontFamily: 'sans-serif-medium',
+      marginBottom: 2,
+      fontSize: 12,
+      paddingLeft: 15,
+      fontStyle: 'italic',
+      textAlign: 'center',
+    };
+  },
   textTooltip: colorScheme => {
     return {
       fontSize: 14,
@@ -651,6 +900,12 @@ const styles = StyleSheet.create({
       marginRight: 5,
     };
   },
+  iconWithTheLeastMargin: colorScheme => {
+    return {
+      color: colorSchemeObj[colorScheme].light20,
+      marginRight: 1,
+    };
+  },
   iconButton: colorScheme => {
     return {
       color: colorSchemeObj[colorScheme].light70,
@@ -663,6 +918,41 @@ const styles = StyleSheet.create({
   contactContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  contactContainerDonate: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 3,
+  },
+  thinkerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 3,
+    alignSelf: 'flex-start',
+    paddingLeft: 13,
+  },
+  bitcoinContainer: {
+    marginVertical: 2,
+  },
+  bitcoinContainerBtcLightning: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 2,
+  },
+  contactContainerEmailDiscord: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  quoteContainer: colorScheme => {
+    return {
+      alignItems: 'center',
+      marginVertical: 7,
+      backgroundColor: colorSchemeObj[colorScheme].dark100,
+      borderRadius: 15,
+      paddingTop: 8,
+      paddingBottom: 5,
+      width: 250,
+    };
   },
   pressableContainer: {
     marginLeft: 5,
@@ -703,5 +993,14 @@ const styles = StyleSheet.create({
   },
   colorBoxOrange: {
     backgroundColor: '#ef5d22',
+  },
+  hairline: colorScheme => {
+    return {
+      backgroundColor: colorSchemeObj[colorScheme].dark50,
+      height: 1.5,
+      width: 220,
+      marginTop: 7,
+      marginBottom: 3,
+    };
   },
 });
