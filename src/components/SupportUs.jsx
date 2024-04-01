@@ -192,73 +192,103 @@ const SupportUs = () => {
             style={styles.socialNetworksContainerPart(
               globalCtx.colorSchemeValue,
             )}>
-            <View style={styles.pressableContainer}>
+            <View style={styles.pressableContainerSocialNetworks}>
               <Pressable
                 onPress={() => Linking.openURL('https://www.daskoimladja.com/')}
                 style={({pressed}) => pressed && styles.pressedItem}>
                 <IconMaterialCommunity
-                  style={styles.icon(globalCtx.colorSchemeValue)}
+                  style={styles.iconSocialNetworks(globalCtx.colorSchemeValue)}
                   name={'web'}
                   size={40}
                 />
               </Pressable>
+              <Text
+                style={[
+                  styles.textLinkSocialNetworks(globalCtx.colorSchemeValue),
+                ]}>
+                www
+              </Text>
             </View>
-            <View style={styles.pressableContainer}>
+            <View style={styles.pressableContainerSocialNetworks}>
               <Pressable
                 onPress={() =>
                   Linking.openURL('https://www.facebook.com/daskoimladja/')
                 }
                 style={({pressed}) => pressed && styles.pressedItem}>
                 <IconMaterialCommunity
-                  style={styles.icon(globalCtx.colorSchemeValue)}
+                  style={styles.iconSocialNetworks(globalCtx.colorSchemeValue)}
                   name={'facebook'}
                   size={40}
                 />
               </Pressable>
+              <Text
+                style={[
+                  styles.textLinkSocialNetworks(globalCtx.colorSchemeValue),
+                ]}>
+                Facebook
+              </Text>
             </View>
-            <View style={styles.pressableContainer}>
+            <View style={styles.pressableContainerSocialNetworks}>
               <Pressable
                 onPress={() =>
                   Linking.openURL('https://soundcloud.com/daskoimladja')
                 }
                 style={({pressed}) => pressed && styles.pressedItem}>
                 <IconMaterialCommunity
-                  style={styles.icon(globalCtx.colorSchemeValue)}
+                  style={styles.iconSocialNetworks(globalCtx.colorSchemeValue)}
                   name={'soundcloud'}
                   size={40}
                 />
               </Pressable>
+              <Text
+                style={[
+                  styles.textLinkSocialNetworks(globalCtx.colorSchemeValue),
+                ]}>
+                SoundCloud
+              </Text>
             </View>
           </View>
           <View
             style={styles.socialNetworksContainerPart(
               globalCtx.colorSchemeValue,
             )}>
-            <View style={styles.pressableContainer}>
+            <View style={styles.pressableContainerSocialNetworks}>
               <Pressable
                 onPress={() =>
                   Linking.openURL('https://www.instagram.com/daskoimladja/')
                 }
                 style={({pressed}) => pressed && styles.pressedItem}>
                 <IconMaterialCommunity
-                  style={styles.icon(globalCtx.colorSchemeValue)}
+                  style={styles.iconSocialNetworks(globalCtx.colorSchemeValue)}
                   name={'instagram'}
                   size={40}
                 />
               </Pressable>
+              <Text
+                style={[
+                  styles.textLinkSocialNetworks(globalCtx.colorSchemeValue),
+                ]}>
+                Instagram
+              </Text>
             </View>
-            <View style={styles.pressableContainer}>
+            <View style={styles.pressableContainerSocialNetworks}>
               <Pressable
                 onPress={() => Linking.openURL('https://x.com/daskoimladja')}
                 style={({pressed}) => pressed && styles.pressedItem}>
                 <IconFontAwesome6
-                  style={styles.icon(globalCtx.colorSchemeValue)}
+                  style={styles.iconSocialNetworks(globalCtx.colorSchemeValue)}
                   name={'x-twitter'}
                   size={40}
                 />
               </Pressable>
+              <Text
+                style={[
+                  styles.textLinkSocialNetworks(globalCtx.colorSchemeValue),
+                ]}>
+                X
+              </Text>
             </View>
-            <View style={styles.pressableContainer}>
+            <View style={styles.pressableContainerSocialNetworks}>
               <Pressable
                 onPress={() =>
                   Linking.openURL(
@@ -267,11 +297,62 @@ const SupportUs = () => {
                 }
                 style={({pressed}) => pressed && styles.pressedItem}>
                 <IconMaterialCommunity
-                  style={styles.icon(globalCtx.colorSchemeValue)}
+                  style={styles.iconSocialNetworks(globalCtx.colorSchemeValue)}
                   name={'youtube'}
                   size={40}
                 />
               </Pressable>
+              <Text
+                style={[
+                  styles.textLinkSocialNetworks(globalCtx.colorSchemeValue),
+                ]}>
+                YouTube
+              </Text>
+            </View>
+          </View>
+          <View
+            style={styles.socialNetworksContainerPart(
+              globalCtx.colorSchemeValue,
+            )}>
+            <View style={styles.pressableContainerSocialNetworks}>
+              <Pressable
+                onPress={() =>
+                  Linking.openURL('https://discord.com/invite/8MtjZG2Vsd')
+                }
+                style={({pressed}) => pressed && styles.pressedItem}>
+                <IconMaterialCommunity
+                  style={styles.iconSocialNetworks(globalCtx.colorSchemeValue)}
+                  name={'discord'}
+                  size={40}
+                />
+              </Pressable>
+              <Text
+                style={[
+                  styles.textLinkSocialNetworks(globalCtx.colorSchemeValue),
+                ]}>
+                Discord segta
+              </Text>
+            </View>
+            <View style={styles.pressableContainerSocialNetworks}>
+              <Pressable
+                onPress={() =>
+                  Linking.openURL(
+                    'https://invite.viber.com/?g2=AQAaijr1MYpoY0oqV1TPhxl7QfwvpwEwcFdLR44E2GAUcPJrAm1ZOACmsRyDR3vH&lang=en',
+                  )
+                }
+                style={({pressed}) => pressed && styles.pressedItem}>
+                <IconFontAwesome6
+                  style={styles.iconSocialNetworks(globalCtx.colorSchemeValue)}
+                  name={'viber'}
+                  size={40}
+                />
+              </Pressable>
+              <Text
+                style={[
+                  styles.textLinkSocialNetworks(globalCtx.colorSchemeValue),
+                ]}>
+                Viber Cum Unity
+              </Text>
             </View>
           </View>
         </View>
@@ -435,6 +516,11 @@ const styles = StyleSheet.create({
   pressableContainer: {
     marginLeft: 5,
   },
+  pressableContainerSocialNetworks: {
+    marginHorizontal: 5,
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
   donationsContainer: {
     width: '100%',
     marginTop: 20,
@@ -529,10 +615,25 @@ const styles = StyleSheet.create({
       textAlign: 'left',
     };
   },
+  textLinkSocialNetworks: colorScheme => {
+    return {
+      fontSize: 12,
+      color: colorSchemeObj[colorScheme].light60,
+      fontWeight: 'bold',
+      fontFamily: 'sans-serif-condensed',
+      textAlign: 'left',
+    };
+  },
   icon: colorScheme => {
     return {
       color: colorSchemeObj[colorScheme].light20,
       marginRight: 10,
+    };
+  },
+  iconSocialNetworks: colorScheme => {
+    return {
+      color: colorSchemeObj[colorScheme].light20,
+      marginHorizontal: 15,
     };
   },
   pressableTextContent: {

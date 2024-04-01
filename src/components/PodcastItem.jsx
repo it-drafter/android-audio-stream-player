@@ -59,10 +59,10 @@ function PodcastItem(props) {
       .toLowerCase()
       .includes('Večernja škola rokenrola'.toLowerCase()) &&
     !props.title.toLowerCase().includes('Tople Ljucke Priče'.toLowerCase()) &&
-    !props.title.toLowerCase().includes('Unutrasnja emigracija'.toLowerCase())
+    !props.url.toLowerCase().includes('unutrasnja_emigracija'.toLowerCase())
   ) {
     podcastUploadInfo = (
-      <Text style={styles.infoText(globalCtx.colorSchemeValue)}>
+      <Text style={styles.infoTextTitle(globalCtx.colorSchemeValue)}>
         {props.title}
         {'\n'}(pre {diffInDays}{' '}
         {diffInDays === 1 ||
@@ -146,7 +146,7 @@ function PodcastItem(props) {
     }
 
     podcastUploadInfo = (
-      <Text style={styles.infoText(globalCtx.colorSchemeValue)}>
+      <Text style={styles.infoTextTitle(globalCtx.colorSchemeValue)}>
         {props.title}
         {'\n'}
         {`(${day}, ${
@@ -166,9 +166,7 @@ function PodcastItem(props) {
     !props.title
       .toLowerCase()
       .includes('Večernja škola rokenrola'.toLowerCase()) &&
-    !props.title
-      .toLowerCase()
-      .includes('Unutrasnja emigracija'.toLowerCase()) &&
+    !props.url.toLowerCase().includes('unutrasnja_emigracija'.toLowerCase()) &&
     !props.title.toLowerCase().includes('Sportski Pozdrav'.toLowerCase()) &&
     !props.title.toLowerCase().includes('Tople Ljucke Priče'.toLowerCase()) &&
     !props.title.toLowerCase().includes('Rastrojavanje'.toLowerCase()) &&
@@ -196,9 +194,7 @@ function PodcastItem(props) {
       .toLowerCase()
       .includes('Večernja škola rokenrola'.toLowerCase()) &&
     !props.title.toLowerCase().includes('Tople Ljucke Priče'.toLowerCase()) &&
-    !props.title
-      .toLowerCase()
-      .includes('Unutrasnja emigracija'.toLowerCase()) &&
+    !props.url.toLowerCase().includes('unutrasnja_emigracija'.toLowerCase()) &&
     !props.title.toLowerCase().includes('Ljudi iz podzemlja'.toLowerCase()) &&
     !props.title.toLowerCase().includes('Rastrojavanje'.toLowerCase()) &&
     !props.description
@@ -301,6 +297,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+  },
+  infoTextTitle: colorScheme => {
+    return {
+      color: colorSchemeObj[colorScheme].light70,
+      textAlignVertical: 'center',
+      maxWidth: '70%',
+    };
   },
   infoText: colorScheme => {
     return {

@@ -440,7 +440,7 @@ const Settings = () => {
             O aplikaciji:
           </Text>
           <Text style={styles.regularText(globalCtx.colorSchemeValue)}>
-            Verzija: 1.4.20240314
+            Verzija: 1.4.20240320
           </Text>
           <View style={styles.contactContainerDonate}>
             <Text style={styles.regularText(globalCtx.colorSchemeValue)}>

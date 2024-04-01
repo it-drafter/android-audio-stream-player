@@ -182,9 +182,9 @@ const PodcastList = ({navigation}) => {
         !episode.title
           .toLowerCase()
           .includes('Večernja škola rokenrola'.toLowerCase()) &&
-        !episode.title
+        !episode.url
           .toLowerCase()
-          .includes('Unutrasnja emigracija'.toLowerCase()) &&
+          .includes('unutrasnja_emigracija'.toLowerCase()) &&
         !episode.title
           .toLowerCase()
           .includes('Sportski Pozdrav'.toLowerCase()) &&
@@ -209,9 +209,9 @@ const PodcastList = ({navigation}) => {
         !episode.title
           .toLowerCase()
           .includes('Večernja škola rokenrola'.toLowerCase()) &&
-        !episode.title
+        !episode.url
           .toLowerCase()
-          .includes('Unutrasnja emigracija'.toLowerCase()) &&
+          .includes('unutrasnja_emigracija'.toLowerCase()) &&
         !episode.title
           .toLowerCase()
           .includes('Sportski Pozdrav'.toLowerCase()) &&
@@ -242,9 +242,7 @@ const PodcastList = ({navigation}) => {
 
   const fetchedEpisodesOnlyUnutrasnjaEmigracija = [
     ...fetchedEpisodes.filter(episode =>
-      episode.title
-        .toLowerCase()
-        .includes('Unutrasnja emigracija'.toLowerCase()),
+      episode.url.toLowerCase().includes('unutrasnja_emigracija'.toLowerCase()),
     ),
   ];
 
