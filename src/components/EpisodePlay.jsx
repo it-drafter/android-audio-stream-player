@@ -31,7 +31,7 @@ const EpisodePlay = ({route}) => {
   const {width, height} = useWindowDimensions();
   const globalCtx = useContext(GlobalContext);
   const netInfo = useNetInfo();
-  const playBackState = usePlaybackState();
+  const playBackState = usePlaybackState().state;
 
   const [error, setError] = useState(null);
   const [isAlreadyDownloaded, setIsAlreadyDownloaded] = useState(false);
@@ -552,8 +552,7 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       marginBottom: 5,
       flexDirection: 'row',
-      width:
-        screenWidth > screenHeight ? screenHeight - 100 : screenWidth - 100,
+      width: screenWidth > screenHeight ? screenHeight - 90 : screenWidth - 90,
     };
   },
   buttonText: colorScheme => {

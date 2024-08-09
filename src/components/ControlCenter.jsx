@@ -16,7 +16,7 @@ import {colorSchemeObj} from '../util/colors';
 const ControlCenter = props => {
   const globalCtx = useContext(GlobalContext);
   const {position} = useProgress();
-  const playBackState = usePlaybackState();
+  const playBackState = usePlaybackState().state;
   const netInfo = useNetInfo();
 
   const handleRewind = async () => {
@@ -72,7 +72,7 @@ const ControlCenter = props => {
   };
 
   const togglePlayback = async playback => {
-    const currentTrack = await TrackPlayer.getCurrentTrack();
+    const currentTrack = await TrackPlayer.getActiveTrackIndex();
 
     if (currentTrack !== null) {
       switch (true) {
@@ -110,7 +110,7 @@ const ControlCenter = props => {
 
           await seekToJumpTo(props.fileNameFromNav);
 
-          await TrackPlayer.play();
+          TrackPlayer.play();
 
           loadTrackNameToCtx();
 
@@ -151,7 +151,7 @@ const ControlCenter = props => {
 
           await seekToJumpTo(props.fileNameFromNav);
 
-          await TrackPlayer.play();
+          TrackPlayer.play();
 
           loadTrackNameToCtx();
 
@@ -192,7 +192,7 @@ const ControlCenter = props => {
 
           await seekToJumpTo(props.fileNameFromNav);
 
-          await TrackPlayer.play();
+          TrackPlayer.play();
 
           loadTrackNameToCtx();
 
@@ -231,7 +231,7 @@ const ControlCenter = props => {
 
           await seekToJumpTo(props.fileNameFromNav);
 
-          await TrackPlayer.play();
+          TrackPlayer.play();
 
           loadTrackNameToCtx();
 
@@ -271,7 +271,7 @@ const ControlCenter = props => {
 
           await seekToJumpTo(props.fileNameFromNav);
 
-          await TrackPlayer.play();
+          TrackPlayer.play();
 
           loadTrackNameToCtx();
 
@@ -355,7 +355,7 @@ const ControlCenter = props => {
 
           await seekToJumpTo(props.fileNameFromNav);
 
-          await TrackPlayer.play();
+          TrackPlayer.play();
 
           loadTrackNameToCtx();
 

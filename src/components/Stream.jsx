@@ -7,7 +7,7 @@ import {
   useWindowDimensions,
   Linking,
 } from 'react-native';
-import React, {useState, useEffect, useContext} from 'react';
+import React, {useState, useEffect, useContext, useCallback} from 'react';
 import TrackPlayer, {
   State,
   usePlaybackState,
@@ -43,7 +43,7 @@ const Stream = () => {
   const globalCtx = useContext(GlobalContext);
   const {position} = useProgress();
   const netInfo = useNetInfo();
-  const playBackState = usePlaybackState();
+  const playBackState = usePlaybackState().state;
 
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -151,12 +151,12 @@ const Stream = () => {
 
   useEffect(() => {
     TrackPlayer.addEventListener(
-      Event.PlaybackMetadataReceived,
+      Event.MetadataCommonReceived,
 
       async params => {
         setMetaData({
-          title: params?.title,
-          artist: params?.artist,
+          title: params.metadata?.title,
+          artist: params.metadata?.artist,
         });
       },
     );
@@ -189,7 +189,7 @@ const Stream = () => {
   }
 
   const togglePlayback = async playback => {
-    const currentTrack = await TrackPlayer.getCurrentTrack();
+    const currentTrack = await TrackPlayer.getActiveTrackIndex();
 
     if (currentTrack !== null) {
       if (playback !== State.Playing) {
@@ -296,27 +296,27 @@ const Stream = () => {
   };
 
   let streamInfoTitleToDisplay = 'Live Stream';
-  let streamInfoArtistToDisplay = 'Daško i Mlađa';
+  let streamInfoArtistToDisplay = 'Radio Daško i Mlađa';
   if (
     playBackState === State.Playing &&
     globalCtx.fileNameLoadedToTrackValue.endsWith('stream') &&
     listenersCountAutodj.trim() !== '0'
   ) {
     streamInfoTitleToDisplay = metaData.title || 'Live Stream';
-    streamInfoArtistToDisplay = metaData.artist || 'Daško i Mlađa';
+    streamInfoArtistToDisplay = metaData.artist || 'Radio Daško i Mlađa';
   } else if (
     playBackState === State.Playing &&
     !globalCtx.fileNameLoadedToTrackValue.endsWith('stream')
   ) {
     streamInfoTitleToDisplay = 'Live Stream';
-    streamInfoArtistToDisplay = 'Daško i Mlađa';
+    streamInfoArtistToDisplay = 'Radio Daško i Mlađa';
   } else if (
     playBackState === State.Playing &&
     globalCtx.fileNameLoadedToTrackValue.endsWith('stream') &&
     listenersCountAutodj.trim() === '0'
   ) {
     streamInfoTitleToDisplay = 'Live Stream';
-    streamInfoArtistToDisplay = 'Daško i Mlađa';
+    streamInfoArtistToDisplay = 'Radio Daško i Mlađa';
   }
 
   let iconName = 'play-circle-outline';
@@ -382,10 +382,14 @@ const Stream = () => {
 
   const infoTextOnScreenContainerComponent = (
     <View style={styles.infoTextOnScreenContainer(width, height)}>
+      <Text style={styles.textHeading1(globalCtx.colorSchemeValue)}>
+        {streamInfoArtistToDisplay}
+      </Text>
+
       {playBackState === State.Playing &&
         globalCtx.fileNameLoadedToTrackValue.endsWith('stream') &&
         listenersCountAutodj.trim() !== '0' && (
-          <Text style={styles.textHeading(globalCtx.colorSchemeValue)}>
+          <Text style={styles.textHeading2(globalCtx.colorSchemeValue)}>
             Track Name:
           </Text>
         )}
@@ -394,17 +398,13 @@ const Stream = () => {
         {streamInfoTitleToDisplay}
       </Text>
 
-      {playBackState === State.Playing &&
+      {/* {playBackState === State.Playing &&
         globalCtx.fileNameLoadedToTrackValue.endsWith('stream') &&
         listenersCountAutodj.trim() !== '0' && (
-          <Text style={styles.textHeading(globalCtx.colorSchemeValue)}>
-            Artist:
+          <Text style={styles.textHeading1(globalCtx.colorSchemeValue)}>
+            Radio Daško i Mlađa
           </Text>
-        )}
-      <Text
-        style={styles.textContent(width, height, globalCtx.colorSchemeValue)}>
-        {streamInfoArtistToDisplay}
-      </Text>
+        )} */}
     </View>
   );
 
@@ -536,7 +536,7 @@ const Stream = () => {
 
       {height > width && playButtonContainerComponent}
 
-      <View style={styles.smsListenersCountContainer(width)}>
+      <View style={styles.smsListenersCountContainer(width, height)}>
         <View style={styles.listenersCountContainer}>
           <Text style={styles.textHeading(globalCtx.colorSchemeValue)}>
             Online slušalaca:
@@ -607,6 +607,24 @@ const styles = StyleSheet.create({
       fontFamily: 'sans-serif-thin',
     };
   },
+  textHeading1: colorScheme => {
+    return {
+      fontSize: 15,
+      color: colorSchemeObj[colorScheme].light80,
+      fontWeight: 'bold',
+      marginTop: 10,
+      fontFamily: 'sans-serif-condensed',
+    };
+  },
+  textHeading2: colorScheme => {
+    return {
+      fontSize: 13,
+      color: colorSchemeObj[colorScheme].light70,
+      fontWeight: 'bold',
+      marginTop: 20,
+      fontFamily: 'sans-serif-thin',
+    };
+  },
   textlistenersCount: colorScheme => {
     return {
       fontSize: 13,
@@ -618,13 +636,13 @@ const styles = StyleSheet.create({
   pressedItem: {
     opacity: 0.5,
   },
-  smsListenersCountContainer: screenWidth => {
+  smsListenersCountContainer: (screenWidth, screenHeight) => {
     return {
       width: screenWidth,
       justifyContent: 'space-between',
       alignItems: 'center',
       flexDirection: 'row',
-      paddingBottom: 5,
+      paddingBottom: screenWidth > screenHeight ? 0 : 5,
       paddingHorizontal: 5,
     };
   },

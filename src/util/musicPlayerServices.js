@@ -13,7 +13,7 @@ import artworkImgStream from '../assets/artwork-stream.png';
 export async function setupPlayer() {
   let isSetup = false;
   try {
-    await TrackPlayer.getCurrentTrack();
+    await TrackPlayer.getActiveTrackIndex();
     isSetup = true;
   } catch (error) {
     await TrackPlayer.setupPlayer();
@@ -39,7 +39,7 @@ export async function addTrack() {
 }
 
 async function remoteProgressSave() {
-  const position = await TrackPlayer.getPosition();
+  const position = (await TrackPlayer.getProgress()).position;
   const infoData = await TrackPlayer.getQueue();
   try {
     const infoDataUrlArr = (infoData[0]?.url).split('/');
@@ -275,7 +275,7 @@ export async function playbackService() {
   });
 
   TrackPlayer.addEventListener(
-    Event.PlaybackMetadataReceived,
+    Event.MetadataCommonReceived,
 
     async params => {
       try {
@@ -291,8 +291,8 @@ export async function playbackService() {
 
         await TrackPlayer.updateMetadataForTrack(0, {
           id: 'stream',
-          title: params?.title || 'Live Stream',
-          artist: params?.artist || 'Daško i Mlađa',
+          title: params.metadata?.title || 'Live Stream',
+          artist: params.metadata?.artist || 'Daško i Mlađa',
           url: urlToLoad,
           artwork: artworkImgStream,
           description: 'Radio Daško i Mlađa',
@@ -306,8 +306,8 @@ export async function playbackService() {
   // it only affect podcasts (as intended)
   let lastPosition = 0;
   setInterval(async () => {
-    const position = await TrackPlayer.getPosition();
-    const duration = await TrackPlayer.getDuration();
+    const position = (await TrackPlayer.getProgress()).position;
+    const duration = (await TrackPlayer.getProgress()).duration;
 
     if (duration && position !== lastPosition) {
       remoteProgressSave();

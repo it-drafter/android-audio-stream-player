@@ -15,7 +15,7 @@ import Main from './components/Main';
 import Settings from './components/Settings';
 import SupportUs from './components/SupportUs';
 import IconMaterialCommunity from 'react-native-vector-icons/MaterialCommunityIcons';
-import SplashScreen from 'react-native-splash-screen';
+import BootSplash from 'react-native-bootsplash';
 import FastImage from 'react-native-fast-image';
 
 import Loading from './components/Loading';
@@ -59,7 +59,11 @@ function App() {
   }, [setup]);
 
   useEffect(() => {
-    SplashScreen.hide();
+    const init = async () => {};
+
+    init().finally(async () => {
+      await BootSplash.hide({fade: true});
+    });
   }, []);
 
   useEffect(() => {

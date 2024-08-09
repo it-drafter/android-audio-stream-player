@@ -12,6 +12,7 @@ import {useFocusEffect} from '@react-navigation/native';
 import {useNetInfo} from '@react-native-community/netinfo';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import IconFeather from 'react-native-vector-icons/Feather';
+import IconEntypo from 'react-native-vector-icons/Entypo';
 
 import {fetchEpisodes} from '../util/http';
 import {localStorage} from '../util/http';
@@ -305,6 +306,34 @@ const PodcastList = ({navigation}) => {
     return db - da;
   });
 
+  const flatListFetchedEpisodesToDisplay = (
+    <FlatList
+      data={fetchedEpisodesToDisplay}
+      renderItem={renderItem}
+      keyExtractor={item => {
+        return item.url;
+      }}
+      refreshing={isRefreshing}
+      onRefresh={onRefresh}
+      extraData={fetchedEpisodesToDisplay}
+      contentContainerStyle={styles.containerFlatList(
+        globalCtx.colorSchemeValue,
+      )}
+      initialNumToRender={30}
+      maxToRenderPerBatch={10}
+      windowSize={24}
+      getItemLayout={getItemLayout}
+    />
+  );
+
+  const iconArrowDown = (
+    <IconEntypo
+      style={styles.iconArrowTop(globalCtx.colorSchemeValue)}
+      name="arrow-long-down"
+      size={17}
+    />
+  );
+
   return (
     <View style={styles.container(globalCtx.colorSchemeValue)}>
       <View style={styles.tipsContainer(globalCtx.colorSchemeValue)}>
@@ -324,26 +353,26 @@ const PodcastList = ({navigation}) => {
           </Text>
         )}
       </View>
-
-      <View style={styles.filterButtonContainer(globalCtx.colorSchemeValue)}>
-        <Pressable
-          onPress={() => setIsOpenFilter(!isOpenFilter)}
-          style={({pressed}) => pressed && styles.pressedItem}>
-          <View style={styles.filterIconsContainer}>
-            <IconFeather
-              style={styles.icon(globalCtx.colorSchemeValue)}
-              name="filter"
-              size={25}
-            />
-            <IconFeather
-              style={styles.icon(globalCtx.colorSchemeValue)}
-              name={isOpenFilter ? 'chevron-up' : 'chevron-down'}
-              size={22}
-            />
-          </View>
-        </Pressable>
-      </View>
-
+      {fetchedEpisodesToDisplay.length !== 0 && (
+        <View style={styles.filterButtonContainer(globalCtx.colorSchemeValue)}>
+          <Pressable
+            onPress={() => setIsOpenFilter(!isOpenFilter)}
+            style={({pressed}) => pressed && styles.pressedItem}>
+            <View style={styles.filterIconsContainer}>
+              <IconFeather
+                style={styles.icon(globalCtx.colorSchemeValue)}
+                name="filter"
+                size={25}
+              />
+              <IconFeather
+                style={styles.icon(globalCtx.colorSchemeValue)}
+                name={isOpenFilter ? 'chevron-up' : 'chevron-down'}
+                size={22}
+              />
+            </View>
+          </Pressable>
+        </View>
+      )}
       {isOpenFilter && (
         <View style={styles.checkboxContainer(globalCtx.colorSchemeValue)}>
           <View style={styles.checkboxColumn}>
@@ -666,23 +695,13 @@ const PodcastList = ({navigation}) => {
         </View>
       )}
 
-      <FlatList
-        data={fetchedEpisodesToDisplay}
-        renderItem={renderItem}
-        keyExtractor={item => {
-          return item.url;
-        }}
-        refreshing={isRefreshing}
-        onRefresh={onRefresh}
-        extraData={fetchedEpisodesToDisplay}
-        contentContainerStyle={styles.containerFlatList(
-          globalCtx.colorSchemeValue,
-        )}
-        initialNumToRender={30}
-        maxToRenderPerBatch={10}
-        windowSize={24}
-        getItemLayout={getItemLayout}
-      />
+      <>
+        <View style={styles.arrowIconsContainer}>
+          {iconArrowDown}
+          {iconArrowDown}
+        </View>
+        {flatListFetchedEpisodesToDisplay}
+      </>
     </View>
   );
 };
@@ -746,6 +765,13 @@ const styles = StyleSheet.create({
       color: colorSchemeObj[colorScheme].light20,
     };
   },
+  iconArrowTop: colorScheme => {
+    return {
+      color: colorSchemeObj[colorScheme].light20,
+      textAlign: 'center',
+      marginTop: 5,
+    };
+  },
   filterButtonContainer: colorScheme => {
     return {
       alignItems: 'center',
@@ -774,5 +800,11 @@ const styles = StyleSheet.create({
   },
   checkboxColumn: {
     justifyContent: 'flex-start',
+  },
+  arrowIconsContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-evenly',
+    paddingBottom: 3,
   },
 });

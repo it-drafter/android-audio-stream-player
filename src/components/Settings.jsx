@@ -26,7 +26,7 @@ import FastImage from 'react-native-fast-image';
 import Clipboard from '@react-native-clipboard/clipboard';
 
 import developerIcon from '../assets/developericon.png';
-import buyMeACoffee from '../assets/buymeacoffee.png';
+import payPalColor from '../assets/paypal-color.png';
 import raiffeisen from '../assets/raiffeisen.jpg';
 import bitcoin from '../assets/bitcoin.png';
 import bitcoinLightning from '../assets/bitcoin-lightning.png';
@@ -35,7 +35,7 @@ import mlWobble from '../assets/ml-wobble.gif';
 const Settings = () => {
   const {width, height} = useWindowDimensions();
   const globalCtx = useContext(GlobalContext);
-  const playBackState = usePlaybackState();
+  const playBackState = usePlaybackState().state;
   const {position} = useProgress();
 
   const [isWiFiOnlyEnabledRadio, setIsWiFiOnlyEnabledRadio] = useState(
@@ -58,6 +58,7 @@ const Settings = () => {
   // );
   const [folderContent, setFolderContent] = useState([]);
   const [folderSize, setFolderSize] = useState(0);
+  const [isCopiedPayPal, setIsCopiedPayPal] = useState(false);
   const [isCopiedRaiffeisen, setIsCopiedRaiffeisen] = useState(false);
   const [isCopiedContactEmail, setIsCopiedContactEmail] = useState(false);
   const [isCopiedBtcNetwork, setIsCopiedBtcNetwork] = useState(false);
@@ -101,6 +102,11 @@ const Settings = () => {
     useCallback(() => {
       let timeout1;
 
+      if (isCopiedPayPal) {
+        timeout1 = setTimeout(() => {
+          setIsCopiedPayPal(false);
+        }, 1500);
+      }
       if (isCopiedRaiffeisen) {
         timeout1 = setTimeout(() => {
           setIsCopiedRaiffeisen(false);
@@ -129,6 +135,7 @@ const Settings = () => {
         clearTimeout(timeout1);
       };
     }, [
+      isCopiedPayPal,
       isCopiedRaiffeisen,
       isCopiedBtcNetwork,
       isCopiedContactEmail,
@@ -332,7 +339,7 @@ const Settings = () => {
           <View style={styles.buttonContainer(width, height)}>
             <Pressable
               onPress={async () => {
-                const currentTrack = await TrackPlayer.getCurrentTrack();
+                const currentTrack = await TrackPlayer.getActiveTrackIndex();
 
                 if (currentTrack !== null) {
                   if (
@@ -440,7 +447,7 @@ const Settings = () => {
             O aplikaciji:
           </Text>
           <Text style={styles.regularText(globalCtx.colorSchemeValue)}>
-            Verzija: 1.4.20240320
+            Verzija: 1.5.20240806
           </Text>
           <View style={styles.contactContainerDonate}>
             <Text style={styles.regularText(globalCtx.colorSchemeValue)}>
@@ -541,35 +548,55 @@ const Settings = () => {
           <Text style={styles.aboutTextHeading(globalCtx.colorSchemeValue)}>
             Časti aplikatora:
           </Text>
-          <View style={styles.contactContainerDonate}>
+          <View style={styles.contactContainerDonatePayPal}>
             <Text style={styles.regularText(globalCtx.colorSchemeValue)}>
-              - Karticom:
+              {'- PayPal-om:  '}
             </Text>
-            <View style={styles.pressableContainer}>
+          </View>
+          <View style={styles.contactContainerDonate}>
+            <Text style={styles.hiddenText(globalCtx.colorSchemeValue)}>
+              {'-  '}
+            </Text>
+            <View>
               <Pressable
                 onPress={() =>
-                  Linking.openURL('https://www.buymeacoffee.com/rotjko')
+                  Linking.openURL('https://www.paypal.com/paypalme/rotjko')
                 }
-                style={({pressed}) => pressed && styles.pressedItem}>
+                style={({pressed}) => [
+                  pressed && styles.pressedItem,
+                  styles.accountNumberContainer,
+                ]}>
                 <FastImage
                   style={{
-                    width: 96,
-                    height: 27,
+                    width: 68,
+                    height: 18,
                   }}
-                  source={buyMeACoffee}
+                  source={payPalColor}
                   resizeMode={FastImage.resizeMode.cover}
+                />
+                <Text style={[styles.textLink(globalCtx.colorSchemeValue)]}>
+                  paypal.me/rotjko{' '}
+                </Text>
+                <IconFeather
+                  style={styles.iconWithLessMargin(globalCtx.colorSchemeValue)}
+                  name={'external-link'}
+                  size={20}
                 />
               </Pressable>
             </View>
+
+            <Text style={[styles.textTooltip(globalCtx.colorSchemeValue)]}>
+              {`${isCopiedPayPal ? 'Kopirano!' : ''}`}
+            </Text>
           </View>
-          <View style={styles.contactContainerDonate}>
+          <View style={styles.contactContainerDonateBank}>
             <Text style={styles.regularText(globalCtx.colorSchemeValue)}>
               {'- Uplatom na dinarski račun:  '}
             </Text>
           </View>
           <View style={styles.contactContainerDonate}>
             <Text style={styles.hiddenText(globalCtx.colorSchemeValue)}>
-              {'- '}
+              {'-    '}
             </Text>
             <Pressable
               onPress={() => {
@@ -604,7 +631,7 @@ const Settings = () => {
             </Text>
           </View>
 
-          <View style={styles.bitcoinContainerBtcLightning}>
+          <View style={styles.bitcoinContainerBtcLightning1}>
             <Text style={styles.regularText(globalCtx.colorSchemeValue)}>
               {'- Bitcoin-om:  '}
             </Text>
@@ -886,6 +913,7 @@ const styles = StyleSheet.create({
       fontFamily: 'sans-serif-condensed',
       textAlign: 'left',
       marginLeft: 5,
+      height: 20,
     };
   },
   icon: colorScheme => {
@@ -922,7 +950,18 @@ const styles = StyleSheet.create({
   contactContainerDonate: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginVertical: 3,
+    marginTop: 3,
+    marginBottom: 3,
+  },
+  contactContainerDonatePayPal: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 6,
+  },
+  contactContainerDonateBank: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 15,
   },
   thinkerContainer: {
     flexDirection: 'row',
@@ -938,6 +977,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginVertical: 2,
+  },
+  bitcoinContainerBtcLightning1: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 15,
+    marginBottom: 10,
   },
   contactContainerEmailDiscord: {
     flexDirection: 'row',
@@ -959,6 +1004,7 @@ const styles = StyleSheet.create({
   },
   accountNumberContainer: {
     flexDirection: 'row',
+    alignItems: 'center',
   },
   colorsContainer: (screenWidth, screenHeight) => {
     return {

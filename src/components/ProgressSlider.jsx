@@ -20,7 +20,7 @@ const ProgressSlider = props => {
   const {width, height} = useWindowDimensions();
   const globalCtx = useContext(GlobalContext);
   const {position} = useProgress();
-  const playBackState = usePlaybackState();
+  const playBackState = usePlaybackState().state;
   const [progressValToDisplay, setProgressValToDisplay] = useState(0);
   const [forceUpdateValue, setForceUpdateValue] = useState(0);
 
@@ -30,10 +30,11 @@ const ProgressSlider = props => {
 
   const progressValueCalculate = () => {
     switch (true) {
-      case playBackState === State.Paused ||
-        playBackState === State.Ready ||
-        playBackState === State.Stopped ||
-        playBackState === State.None:
+      // case playBackState === State.Paused ||
+      //   playBackState === State.Ready ||
+      //   playBackState === State.Stopped ||
+      //   playBackState === State.None ||
+      case playBackState !== State.Playing:
         if (localStorage.getString('localProgressMap')) {
           const localStorageData = JSON.parse(
             localStorage.getString('localProgressMap'),

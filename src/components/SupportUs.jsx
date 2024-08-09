@@ -337,7 +337,7 @@ const SupportUs = () => {
               <Pressable
                 onPress={() =>
                   Linking.openURL(
-                    'https://invite.viber.com/?g2=AQAaijr1MYpoY0oqV1TPhxl7QfwvpwEwcFdLR44E2GAUcPJrAm1ZOACmsRyDR3vH&lang=en',
+                    'https://invite.viber.com/?g2=AQBMoGeNJ%2FfAM1LFZ32UHKjDvsaKsbbxC4IcbL6wUSGMY9BrURu2J63pR3HKreDx',
                   )
                 }
                 style={({pressed}) => pressed && styles.pressedItem}>
