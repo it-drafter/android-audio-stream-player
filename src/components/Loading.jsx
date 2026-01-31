@@ -1,6 +1,6 @@
 import {StyleSheet, View, useWindowDimensions} from 'react-native';
 import React from 'react';
-import FastImage from 'react-native-fast-image';
+import FastImage from '@d11/react-native-fast-image';
 
 import headSpinner from '../assets/da-ml-fidget-spinner.gif';
 
@@ -9,9 +9,8 @@ const Loading = () => {
   return (
     <View style={styles.container(width)}>
       <FastImage
-        style={{width: 80, height: 80}}
+        style={{width: 80, height: 80, resizeMode: 'contain'}}
         source={headSpinner}
-        resizeMode={FastImage.resizeMode.contain}
       />
     </View>
   );

@@ -142,4 +142,27 @@ export const colorSchemeObj = {
     dark90: '#1f1f29', //common background for all color schemes
     dark100: '#000000',
   },
+  gray: {
+    base: '#a9a9a9',
+    light10: '#b1b1b1',
+    light20: '#bababa',
+    light30: '#c2c2c2',
+    light40: '#cbcbcb',
+    light50: '#d3d3d3',
+    light60: '#dcdcdc',
+    light70: '#e5e5e5',
+    light80: '#ededed',
+    light90: '#f6f6f6',
+    light100: '#ffffff',
+    dark10: '#929292',
+    dark20: '#7c7c7c',
+    dark30: '#676767',
+    dark40: '#535353',
+    dark50: '#3f3f3f',
+    dark60: '#2c2c2c',
+    dark70: '#1b1b1b',
+    dark80: '#0a0a0a',
+    dark90: '#1f1f29', //common background for all color schemes
+    dark100: '#000000',
+  },
 };

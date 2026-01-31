@@ -11,8 +11,11 @@ import React, {useState, useCallback, useContext} from 'react';
 import {useFocusEffect} from '@react-navigation/native';
 import {useNetInfo} from '@react-native-community/netinfo';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
-import IconFeather from 'react-native-vector-icons/Feather';
-import IconEntypo from 'react-native-vector-icons/Entypo';
+import IconFeather from '@react-native-vector-icons/feather';
+import IconEntypo from '@react-native-vector-icons/entypo';
+import IconFontAwesome from '@react-native-vector-icons/fontawesome';
+import {useTranslation} from 'react-i18next';
+import LinearGradient from 'react-native-linear-gradient';
 
 import {fetchEpisodes} from '../util/http';
 import {localStorage} from '../util/http';
@@ -26,6 +29,7 @@ const PodcastList = ({navigation}) => {
   const {width, height} = useWindowDimensions();
   const globalCtx = useContext(GlobalContext);
   const netInfo = useNetInfo();
+  const {t, i18n} = useTranslation();
 
   const [error, setError] = useState(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -44,6 +48,16 @@ const PodcastList = ({navigation}) => {
   const [isCheckedAlarmBezMuzike, setIsCheckedAlarmBezMuzike] = useState(
     localStorage.getBoolean('isCheckedAlarmBezMuzike') === undefined ||
       localStorage.getBoolean('isCheckedAlarmBezMuzike') === true
+      ? true
+      : false,
+  );
+  const [
+    isCheckedProvizorniPodnevniProgram,
+    setIsCheckedProvizorniPodnevniProgram,
+  ] = useState(
+    localStorage.getBoolean('isCheckedProvizorniPodnevniProgram') ===
+      undefined ||
+      localStorage.getBoolean('isCheckedProvizorniPodnevniProgram') === true
       ? true
       : false,
   );
@@ -86,12 +100,12 @@ const PodcastList = ({navigation}) => {
       ? true
       : false,
   );
-  const [isCheckedPunaUstaPoezije, setIsCheckedPunaUstaPoezije] = useState(
-    localStorage.getBoolean('isCheckedPunaUstaPoezije') === undefined ||
-      localStorage.getBoolean('isCheckedPunaUstaPoezije') === true
-      ? true
-      : false,
-  );
+  // const [isCheckedPunaUstaPoezije, setIsCheckedPunaUstaPoezije] = useState(
+  //   localStorage.getBoolean('isCheckedPunaUstaPoezije') === undefined ||
+  //     localStorage.getBoolean('isCheckedPunaUstaPoezije') === true
+  //     ? true
+  //     : false,
+  // );
   const [isCheckedNaIviciOfsajda, setIsCheckedNaIviciOfsajda] = useState(
     localStorage.getBoolean('isCheckedNaIviciOfsajda') === undefined ||
       localStorage.getBoolean('isCheckedNaIviciOfsajda') === true
@@ -133,8 +147,8 @@ const PodcastList = ({navigation}) => {
   const onRefresh = async () => {
     if (netInfo.isInternetReachable === false) {
       Alert.alert(
-        'Ne mogu da ažuriram podkast listu.',
-        'Proveri internet konekciju.',
+        t('podcast_list_error_title'),
+        t('podcast_list_error_check_internet'),
       );
       return;
     }
@@ -177,6 +191,7 @@ const PodcastList = ({navigation}) => {
     ...fetchedEpisodes.filter(
       episode =>
         !episode.url.toLowerCase().endsWith('bm.mp3'.toLowerCase()) &&
+        !episode.url.toLowerCase().includes('provizorni_'.toLowerCase()) &&
         !episode.title
           .toLowerCase()
           .includes('Ljudi iz podzemlja'.toLowerCase()) &&
@@ -193,9 +208,9 @@ const PodcastList = ({navigation}) => {
           .toLowerCase()
           .includes('Tople Ljucke Priče'.toLowerCase()) &&
         !episode.title.toLowerCase().includes('Rastrojavanje'.toLowerCase()) &&
-        !episode.artist
-          .toLowerCase()
-          .includes('Puna Usta Poezije'.toLowerCase()) &&
+        // && !episode.artist
+        //   .toLowerCase()
+        //   .includes('Puna Usta Poezije'.toLowerCase()) &&
         !episode.title.toLowerCase().includes('Na ivici ofsajda'.toLowerCase()),
     ),
   ];
@@ -204,6 +219,7 @@ const PodcastList = ({navigation}) => {
     ...fetchedEpisodes.filter(
       episode =>
         episode.url.toLowerCase().endsWith('bm.mp3'.toLowerCase()) &&
+        !episode.url.toLowerCase().includes('provizorni_'.toLowerCase()) &&
         !episode.title
           .toLowerCase()
           .includes('Ljudi iz podzemlja'.toLowerCase()) &&
@@ -220,10 +236,16 @@ const PodcastList = ({navigation}) => {
           .toLowerCase()
           .includes('Tople Ljucke Priče'.toLowerCase()) &&
         !episode.title.toLowerCase().includes('Rastrojavanje'.toLowerCase()) &&
-        !episode.artist
-          .toLowerCase()
-          .includes('Puna Usta Poezije'.toLowerCase()) &&
+        // && !episode.artist
+        //   .toLowerCase()
+        //   .includes('Puna Usta Poezije'.toLowerCase()) &&
         !episode.title.toLowerCase().includes('Na ivici ofsajda'.toLowerCase()),
+    ),
+  ];
+
+  const fetchedEpisodesOnlyProvizorniPodnevniProgram = [
+    ...fetchedEpisodes.filter(episode =>
+      episode.url.toLowerCase().includes('provizorni_'.toLowerCase()),
     ),
   ];
 
@@ -265,11 +287,11 @@ const PodcastList = ({navigation}) => {
     ),
   ];
 
-  const fetchedEpisodesOnlyPunaUstaPoezije = [
-    ...fetchedEpisodes.filter(episode =>
-      episode.artist.toLowerCase().includes('Puna Usta Poezije'.toLowerCase()),
-    ),
-  ];
+  // const fetchedEpisodesOnlyPunaUstaPoezije = [
+  //   ...fetchedEpisodes.filter(episode =>
+  //     episode.artist.toLowerCase().includes('Puna Usta Poezije'.toLowerCase()),
+  //   ),
+  // ];
 
   const fetchedEpisodesOnlyNaIviciOfsajda = [
     ...fetchedEpisodes.filter(episode =>
@@ -283,6 +305,10 @@ const PodcastList = ({navigation}) => {
     fetchedEpisodesUnsorted.push(...fetchedEpisodesOnlyAlarmSaMuzikom);
   isCheckedAlarmBezMuzike &&
     fetchedEpisodesUnsorted.push(...fetchedEpisodesOnlyAlarmBezMuzike);
+  isCheckedProvizorniPodnevniProgram &&
+    fetchedEpisodesUnsorted.push(
+      ...fetchedEpisodesOnlyProvizorniPodnevniProgram,
+    );
   isCheckedLjudiIzPodzemlja &&
     fetchedEpisodesUnsorted.push(...fetchedEpisodesOnlyLjudiIzPodzemlja);
   isCheckedVecernjaSkolaRokenrola &&
@@ -295,8 +321,8 @@ const PodcastList = ({navigation}) => {
     fetchedEpisodesUnsorted.push(...fetchedEpisodesOnlyTopleLjuckePrice);
   isCheckedRastrojavanje &&
     fetchedEpisodesUnsorted.push(...fetchedEpisodesOnlyRastrojavanje);
-  isCheckedPunaUstaPoezije &&
-    fetchedEpisodesUnsorted.push(...fetchedEpisodesOnlyPunaUstaPoezije);
+  // isCheckedPunaUstaPoezije &&
+  //   fetchedEpisodesUnsorted.push(...fetchedEpisodesOnlyPunaUstaPoezije);
   isCheckedNaIviciOfsajda &&
     fetchedEpisodesUnsorted.push(...fetchedEpisodesOnlyNaIviciOfsajda);
 
@@ -336,34 +362,47 @@ const PodcastList = ({navigation}) => {
 
   return (
     <View style={styles.container(globalCtx.colorSchemeValue)}>
-      <View style={styles.tipsContainer(globalCtx.colorSchemeValue)}>
+      <LinearGradient
+        colors={[
+          colorSchemeObj[globalCtx.colorSchemeValue].dark40,
+          colorSchemeObj[globalCtx.colorSchemeValue].light10,
+        ]}
+        style={styles.tipsContainer(globalCtx.colorSchemeValue)}>
         {error ? (
           <Text style={styles.errorText(globalCtx.colorSchemeValue, width)}>
-            Lista nije ažurirana. Greška u konekciji sa serverom.
+            {t('podcast_list_error_server')}
           </Text>
         ) : userRefreshed ? (
           <Text style={styles.successText(globalCtx.colorSchemeValue, width)}>
-            Lista je uspešno ažurirana!
+            {t('podcast_list_update_success')}
           </Text>
         ) : (
           <Text style={styles.tipsText(globalCtx.colorSchemeValue)}>
             {delayComplete
-              ? 'Povuci dole za update / refresh'
-              : 'Podkast lista'}
+              ? t('podcast_list_swipe_down')
+              : t('podcast_list_podcast_list')}
           </Text>
         )}
-      </View>
+      </LinearGradient>
       {fetchedEpisodesToDisplay.length !== 0 && (
         <View style={styles.filterButtonContainer(globalCtx.colorSchemeValue)}>
           <Pressable
             onPress={() => setIsOpenFilter(!isOpenFilter)}
             style={({pressed}) => pressed && styles.pressedItem}>
             <View style={styles.filterIconsContainer}>
-              <IconFeather
-                style={styles.icon(globalCtx.colorSchemeValue)}
-                name="filter"
-                size={25}
-              />
+              {isOpenFilter ? (
+                <IconFontAwesome
+                  style={styles.icon(globalCtx.colorSchemeValue)}
+                  name="filter"
+                  size={25}
+                />
+              ) : (
+                <IconFeather
+                  style={styles.icon(globalCtx.colorSchemeValue)}
+                  name="filter"
+                  size={25}
+                />
+              )}
               <IconFeather
                 style={styles.icon(globalCtx.colorSchemeValue)}
                 name={isOpenFilter ? 'chevron-up' : 'chevron-down'}
@@ -380,7 +419,7 @@ const PodcastList = ({navigation}) => {
               size={width > height ? 17 : 20}
               fillColor={colorSchemeObj[globalCtx.colorSchemeValue].light50}
               unfillColor={colorSchemeObj[globalCtx.colorSchemeValue].light30}
-              text="Alarm - sa muzikom"
+              text={t('podcast_list_filter_alarm_music')}
               iconStyle={{
                 borderColor: colorSchemeObj[globalCtx.colorSchemeValue].base,
               }}
@@ -411,7 +450,7 @@ const PodcastList = ({navigation}) => {
               size={width > height ? 17 : 20}
               fillColor={colorSchemeObj[globalCtx.colorSchemeValue].light50}
               unfillColor={colorSchemeObj[globalCtx.colorSchemeValue].light30}
-              text="Alarm - bez muzike"
+              text={t('podcast_list_filter_alarm_no_music')}
               iconStyle={{
                 borderColor: colorSchemeObj[globalCtx.colorSchemeValue].base,
               }}
@@ -442,7 +481,7 @@ const PodcastList = ({navigation}) => {
               size={width > height ? 17 : 20}
               fillColor={colorSchemeObj[globalCtx.colorSchemeValue].light50}
               unfillColor={colorSchemeObj[globalCtx.colorSchemeValue].light30}
-              text="Ljudi iz podzemlja"
+              text={t('podcast_list_filter_ppp')}
               iconStyle={{
                 borderColor: colorSchemeObj[globalCtx.colorSchemeValue].base,
               }}
@@ -450,18 +489,20 @@ const PodcastList = ({navigation}) => {
               textStyle={{
                 textDecorationLine: 'none',
                 fontSize: width > height ? 13 : 14,
-                color: isCheckedLjudiIzPodzemlja
+                color: isCheckedProvizorniPodnevniProgram
                   ? colorSchemeObj[globalCtx.colorSchemeValue].light50
                   : colorSchemeObj[globalCtx.colorSchemeValue].light30,
               }}
-              isChecked={isCheckedLjudiIzPodzemlja}
+              isChecked={isCheckedProvizorniPodnevniProgram}
               disableBuiltInState
               onPress={() => {
                 localStorage.set(
-                  'isCheckedLjudiIzPodzemlja',
-                  !isCheckedLjudiIzPodzemlja,
+                  'isCheckedProvizorniPodnevniProgram',
+                  !isCheckedProvizorniPodnevniProgram,
                 );
-                setIsCheckedLjudiIzPodzemlja(!isCheckedLjudiIzPodzemlja);
+                setIsCheckedProvizorniPodnevniProgram(
+                  !isCheckedProvizorniPodnevniProgram,
+                );
               }}
               textContainerStyle={{
                 marginLeft: 5,
@@ -472,14 +513,19 @@ const PodcastList = ({navigation}) => {
               size={width > height ? 17 : 20}
               fillColor={colorSchemeObj[globalCtx.colorSchemeValue].light50}
               unfillColor={colorSchemeObj[globalCtx.colorSchemeValue].light30}
-              text="Večernja škola rokenrola"
+              text={t('podcast_list_filter_school')}
               iconStyle={{
                 borderColor: colorSchemeObj[globalCtx.colorSchemeValue].base,
               }}
               innerIconStyle={{borderWidth: 2}}
               textStyle={{
                 textDecorationLine: 'none',
-                fontSize: width > height ? 13 : 14,
+                fontSize:
+                  i18n.language === 'jpn'
+                    ? 7
+                    : i18n.language === 'deu'
+                      ? 11
+                      : 13,
                 color: isCheckedVecernjaSkolaRokenrola
                   ? colorSchemeObj[globalCtx.colorSchemeValue].light50
                   : colorSchemeObj[globalCtx.colorSchemeValue].light30,
@@ -505,7 +551,7 @@ const PodcastList = ({navigation}) => {
               size={width > height ? 17 : 20}
               fillColor={colorSchemeObj[globalCtx.colorSchemeValue].light50}
               unfillColor={colorSchemeObj[globalCtx.colorSchemeValue].light30}
-              text="Unutrašnja emigracija"
+              text={t('podcast_list_filter_emigration')}
               iconStyle={{
                 borderColor: colorSchemeObj[globalCtx.colorSchemeValue].base,
               }}
@@ -540,7 +586,42 @@ const PodcastList = ({navigation}) => {
               size={width > height ? 17 : 20}
               fillColor={colorSchemeObj[globalCtx.colorSchemeValue].light50}
               unfillColor={colorSchemeObj[globalCtx.colorSchemeValue].light30}
-              text="Sportski pozdrav"
+              text={t('podcast_list_filter_underground')}
+              iconStyle={{
+                borderColor: colorSchemeObj[globalCtx.colorSchemeValue].base,
+              }}
+              innerIconStyle={{borderWidth: 2}}
+              textStyle={{
+                textDecorationLine: 'none',
+                fontSize:
+                  i18n.language === 'jpn'
+                    ? 10
+                    : i18n.language === 'deu'
+                      ? 11
+                      : 13,
+                color: isCheckedLjudiIzPodzemlja
+                  ? colorSchemeObj[globalCtx.colorSchemeValue].light50
+                  : colorSchemeObj[globalCtx.colorSchemeValue].light30,
+              }}
+              isChecked={isCheckedLjudiIzPodzemlja}
+              disableBuiltInState
+              onPress={() => {
+                localStorage.set(
+                  'isCheckedLjudiIzPodzemlja',
+                  !isCheckedLjudiIzPodzemlja,
+                );
+                setIsCheckedLjudiIzPodzemlja(!isCheckedLjudiIzPodzemlja);
+              }}
+              textContainerStyle={{
+                marginLeft: 5,
+              }}
+              style={{marginTop: 7}}
+            />
+            <BouncyCheckbox
+              size={width > height ? 17 : 20}
+              fillColor={colorSchemeObj[globalCtx.colorSchemeValue].light50}
+              unfillColor={colorSchemeObj[globalCtx.colorSchemeValue].light30}
+              text={t('podcast_list_filter_sports')}
               iconStyle={{
                 borderColor: colorSchemeObj[globalCtx.colorSchemeValue].base,
               }}
@@ -571,14 +652,14 @@ const PodcastList = ({navigation}) => {
               size={width > height ? 17 : 20}
               fillColor={colorSchemeObj[globalCtx.colorSchemeValue].light50}
               unfillColor={colorSchemeObj[globalCtx.colorSchemeValue].light30}
-              text="Tople ljucke priče"
+              text={t('podcast_list_filter_stories')}
               iconStyle={{
                 borderColor: colorSchemeObj[globalCtx.colorSchemeValue].base,
               }}
               innerIconStyle={{borderWidth: 2}}
               textStyle={{
                 textDecorationLine: 'none',
-                fontSize: width > height ? 13 : 14,
+                fontSize: i18n.language === 'deu' ? 10 : 13,
                 color: isCheckedTopleLjuckePrice
                   ? colorSchemeObj[globalCtx.colorSchemeValue].light50
                   : colorSchemeObj[globalCtx.colorSchemeValue].light30,
@@ -602,7 +683,7 @@ const PodcastList = ({navigation}) => {
               size={width > height ? 17 : 20}
               fillColor={colorSchemeObj[globalCtx.colorSchemeValue].light50}
               unfillColor={colorSchemeObj[globalCtx.colorSchemeValue].light30}
-              text="Rastrojavanje"
+              text={t('podcast_list_filter_disruption')}
               iconStyle={{
                 borderColor: colorSchemeObj[globalCtx.colorSchemeValue].base,
               }}
@@ -629,7 +710,7 @@ const PodcastList = ({navigation}) => {
               }}
               style={{marginTop: 7}}
             />
-            <BouncyCheckbox
+            {/* <BouncyCheckbox
               size={width > height ? 17 : 20}
               fillColor={colorSchemeObj[globalCtx.colorSchemeValue].light50}
               unfillColor={colorSchemeObj[globalCtx.colorSchemeValue].light30}
@@ -659,12 +740,12 @@ const PodcastList = ({navigation}) => {
                 marginLeft: 5,
               }}
               style={{marginTop: 7}}
-            />
+            /> */}
             <BouncyCheckbox
               size={width > height ? 17 : 20}
               fillColor={colorSchemeObj[globalCtx.colorSchemeValue].light50}
               unfillColor={colorSchemeObj[globalCtx.colorSchemeValue].light30}
-              text="Na ivici ofsajda"
+              text={t('podcast_list_filter_offside')}
               iconStyle={{
                 borderColor: colorSchemeObj[globalCtx.colorSchemeValue].base,
               }}
@@ -751,7 +832,6 @@ const styles = StyleSheet.create({
   },
   tipsContainer: colorScheme => {
     return {
-      backgroundColor: colorSchemeObj[colorScheme].dark30,
       alignItems: 'center',
       justifyContent: 'center',
       borderBottomWidth: 1,
@@ -787,7 +867,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   pressedItem: {
-    opacity: 0.5,
+    opacity: 0.2,
   },
   checkboxContainer: colorScheme => {
     return {

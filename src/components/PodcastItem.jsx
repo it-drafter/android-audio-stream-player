@@ -6,17 +6,20 @@ import {
   Pressable,
   useWindowDimensions,
 } from 'react-native';
-import IconMaterialCommunity from 'react-native-vector-icons/MaterialCommunityIcons';
-import IconFeather from 'react-native-vector-icons/Feather';
-import RNFS from 'react-native-fs';
+import IconMaterialCommunity from '@react-native-vector-icons/material-design-icons';
+import IconFeather from '@react-native-vector-icons/feather';
+import * as RNFS from '@dr.pogodin/react-native-fs';
 import {useFocusEffect} from '@react-navigation/native';
 import {localStorage} from '../util/http';
 import GlobalContext from '../util/context';
 import {colorSchemeObj} from '../util/colors';
+import {useTranslation} from 'react-i18next';
+import LinearGradient from 'react-native-linear-gradient';
 
 function PodcastItem(props) {
   const {width, height} = useWindowDimensions();
   const globalCtx = useContext(GlobalContext);
+  const {t, i18n} = useTranslation();
 
   const handlePressPodcastItem = () => {
     props.navigation.navigate('EpisodePlay', {
@@ -61,41 +64,61 @@ function PodcastItem(props) {
     !props.title.toLowerCase().includes('Tople Ljucke Priče'.toLowerCase()) &&
     !props.url.toLowerCase().includes('unutrasnja_emigracija'.toLowerCase())
   ) {
-    podcastUploadInfo = (
-      <Text style={styles.infoTextTitle(globalCtx.colorSchemeValue)}>
-        {props.title}
-        {'\n'}(pre {diffInDays}{' '}
-        {diffInDays === 1 ||
-        (diffInDays >= 21 &&
-          diffInDays.toString()[diffInDays.toString().length - 1] === '1')
-          ? 'dan'
-          : 'dana'}
-        )
-      </Text>
-    );
+    if (
+      i18n.language === 'srp' ||
+      i18n.language === 'hrv' ||
+      i18n.language === 'mkd' ||
+      i18n.language === 'deu'
+    ) {
+      podcastUploadInfo = (
+        <Text style={styles.infoTextTitle(globalCtx.colorSchemeValue)}>
+          {props.title}
+          {'\n'}({t('days_ago')} {diffInDays}{' '}
+          {diffInDays === 1 ||
+          (diffInDays >= 21 &&
+            diffInDays.toString()[diffInDays.toString().length - 1] === '1')
+            ? t('day')
+            : t('days')}
+          )
+        </Text>
+      );
+    } else {
+      podcastUploadInfo = (
+        <Text style={styles.infoTextTitle(globalCtx.colorSchemeValue)}>
+          {props.title}
+          {'\n'}({diffInDays}{' '}
+          {diffInDays === 1 ||
+          (diffInDays >= 21 &&
+            diffInDays.toString()[diffInDays.toString().length - 1] === '1')
+            ? t('day')
+            : t('days')}{' '}
+          {t('days_ago')})
+        </Text>
+      );
+    }
   } else {
     let day;
     switch (true) {
       case props.pubDate.startsWith('Mon'):
-        day = 'Ponedeljak';
+        day = t('monday');
         break;
       case props.pubDate.startsWith('Tue'):
-        day = 'Utorak';
+        day = t('tuesday');
         break;
       case props.pubDate.startsWith('Wed'):
-        day = 'Sreda';
+        day = t('wednesday');
         break;
       case props.pubDate.startsWith('Thu'):
-        day = 'Četvrtak';
+        day = t('thursday');
         break;
       case props.pubDate.startsWith('Fri'):
-        day = 'Petak';
+        day = t('friday');
         break;
       case props.pubDate.startsWith('Sat'):
-        day = 'Subota';
+        day = t('saturday');
         break;
       case props.pubDate.startsWith('Sun'):
-        day = 'Nedelja';
+        day = t('sunday');
         break;
       default:
         day = '';
@@ -105,40 +128,40 @@ function PodcastItem(props) {
     let month;
     switch (props.pubDate.substring(8, 11)) {
       case 'Jan':
-        month = 'januar';
+        month = t('january');
         break;
       case 'Feb':
-        month = 'februar';
+        month = t('february');
         break;
       case 'Mar':
-        month = 'mart';
+        month = t('march');
         break;
       case 'Apr':
-        month = 'april';
+        month = t('april');
         break;
       case 'May':
-        month = 'maj';
+        month = t('may');
         break;
       case 'Jun':
-        month = 'jun';
+        month = t('june');
         break;
       case 'Jul':
-        month = 'jul';
+        month = t('july');
         break;
       case 'Aug':
-        month = 'avgust';
+        month = t('august');
         break;
       case 'Sep':
-        month = 'septembar';
+        month = t('september');
         break;
       case 'Oct':
-        month = 'oktobar';
+        month = t('october');
         break;
       case 'Nov':
-        month = 'novembar';
+        month = t('november');
         break;
       case 'Dec':
-        month = 'decembar';
+        month = t('december');
         break;
       default:
         month = '';
@@ -162,6 +185,7 @@ function PodcastItem(props) {
 
   if (
     props.url.toLowerCase().endsWith('bm.mp3'.toLowerCase()) &&
+    !props.url.toLowerCase().includes('provizorni_'.toLowerCase()) &&
     !props.title.toLowerCase().includes('Ljudi iz podzemlja'.toLowerCase()) &&
     !props.title
       .toLowerCase()
@@ -189,13 +213,14 @@ function PodcastItem(props) {
       </Text>
     );
   } else if (
-    !props.title.toLowerCase().includes('Sportski Pozdrav'.toLowerCase()) &&
+    !props.url.toLowerCase().includes('provizorni_'.toLowerCase()) &&
+    !props.title.toLowerCase().includes('Ljudi iz podzemlja'.toLowerCase()) &&
     !props.title
       .toLowerCase()
       .includes('Večernja škola rokenrola'.toLowerCase()) &&
-    !props.title.toLowerCase().includes('Tople Ljucke Priče'.toLowerCase()) &&
     !props.url.toLowerCase().includes('unutrasnja_emigracija'.toLowerCase()) &&
-    !props.title.toLowerCase().includes('Ljudi iz podzemlja'.toLowerCase()) &&
+    !props.title.toLowerCase().includes('Sportski Pozdrav'.toLowerCase()) &&
+    !props.title.toLowerCase().includes('Tople Ljucke Priče'.toLowerCase()) &&
     !props.title.toLowerCase().includes('Rastrojavanje'.toLowerCase()) &&
     !props.description
       .toLowerCase()
@@ -224,15 +249,19 @@ function PodcastItem(props) {
       }}
       style={({pressed}) => pressed && styles.pressedItem}
       onPress={handlePressPodcastItem}>
-      <View
-        style={[
-          styles.podcastItem(globalCtx.colorSchemeValue, width, height),
-          {
-            backgroundColor: props.url.endsWith(lastPlayedPodcast)
-              ? colorSchemeObj[globalCtx.colorSchemeValue].dark40
-              : colorSchemeObj[globalCtx.colorSchemeValue].dark90,
-          },
-        ]}>
+      <LinearGradient
+        colors={
+          props.url.endsWith(lastPlayedPodcast)
+            ? [
+                colorSchemeObj[globalCtx.colorSchemeValue].dark40,
+                colorSchemeObj[globalCtx.colorSchemeValue].light10,
+              ]
+            : [
+                colorSchemeObj[globalCtx.colorSchemeValue].dark90,
+                colorSchemeObj[globalCtx.colorSchemeValue].dark90,
+              ]
+        }
+        style={[styles.podcastItem(globalCtx.colorSchemeValue, width, height)]}>
         <View>
           <Text style={styles.nameText(globalCtx.colorSchemeValue)}>
             {props.description}
@@ -261,7 +290,7 @@ function PodcastItem(props) {
             </Text>
           </View>
         </View>
-      </View>
+      </LinearGradient>
     </Pressable>
   );
 }
@@ -280,10 +309,7 @@ const styles = StyleSheet.create({
     };
   },
   pressedItem: {
-    opacity: 0.5,
-  },
-  pressableContainer: {
-    height: 100,
+    opacity: 0.2,
   },
   nameText: colorScheme => {
     return {

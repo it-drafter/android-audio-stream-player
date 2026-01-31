@@ -5,16 +5,15 @@ import {
   Switch,
   useWindowDimensions,
   Pressable,
-  Linking,
   ScrollView,
+  Alert,
 } from 'react-native';
 import React, {useCallback, useState, useContext} from 'react';
 import RNExitApp from 'react-native-exit-app';
-import RNFS from 'react-native-fs';
+import * as RNFS from '@dr.pogodin/react-native-fs';
 import {localStorage} from '../util/http';
 import {useFocusEffect} from '@react-navigation/native';
-import IconMaterialCommunity from 'react-native-vector-icons/MaterialCommunityIcons';
-import IconFeather from 'react-native-vector-icons/Feather';
+import IconMaterialCommunity from '@react-native-vector-icons/material-design-icons';
 import {colorSchemeObj} from '../util/colors';
 import GlobalContext from '../util/context';
 import TrackPlayer, {
@@ -22,21 +21,30 @@ import TrackPlayer, {
   useProgress,
   State,
 } from 'react-native-track-player';
-import FastImage from 'react-native-fast-image';
+import FastImage from '@d11/react-native-fast-image';
 import Clipboard from '@react-native-clipboard/clipboard';
+import {
+  FlagIconMK,
+  FlagIconRS,
+  FlagIconHR,
+  FlagIconGB,
+  FlagIconJP,
+  FlagIconDE,
+} from '@flagkit/react-native';
+import LinearGradient from 'react-native-linear-gradient';
+import {SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context';
 
 import developerIcon from '../assets/developericon.png';
-import payPalColor from '../assets/paypal-color.png';
-import raiffeisen from '../assets/raiffeisen.jpg';
-import bitcoin from '../assets/bitcoin.png';
-import bitcoinLightning from '../assets/bitcoin-lightning.png';
-import mlWobble from '../assets/ml-wobble.gif';
+
+import {useTranslation} from 'react-i18next';
+import {t} from 'i18next';
 
 const Settings = () => {
   const {width, height} = useWindowDimensions();
   const globalCtx = useContext(GlobalContext);
   const playBackState = usePlaybackState().state;
   const {position} = useProgress();
+  const insets = useSafeAreaInsets();
 
   const [isWiFiOnlyEnabledRadio, setIsWiFiOnlyEnabledRadio] = useState(
     localStorage.getBoolean('isWiFiOnlyEnabledForRadio') ?? true,
@@ -50,19 +58,12 @@ const Settings = () => {
   ] = useState(
     localStorage.getBoolean('isWiFiOnlyEnabledForPodcastDownload') ?? true,
   );
-  // const [
-  //   isAutoResumeEnabledOnInterruption,
-  //   setIsAutoResumeEnabledOnInterruption,
-  // ] = useState(
-  //   localStorage.getBoolean('isAutoResumeEnabledAfterInterruption') ?? true,
-  // );
   const [folderContent, setFolderContent] = useState([]);
   const [folderSize, setFolderSize] = useState(0);
-  const [isCopiedPayPal, setIsCopiedPayPal] = useState(false);
-  const [isCopiedRaiffeisen, setIsCopiedRaiffeisen] = useState(false);
   const [isCopiedContactEmail, setIsCopiedContactEmail] = useState(false);
-  const [isCopiedBtcNetwork, setIsCopiedBtcNetwork] = useState(false);
-  const [isCopiedBtcLightning, setIsCopiedBtcLightning] = useState(false);
+
+  const {i18n} = useTranslation();
+  const selectedLanguageCode = i18n.language;
 
   const getFolderContent = async () => {
     setFolderContent(await RNFS.readdir(RNFS.ExternalDirectoryPath));
@@ -102,45 +103,16 @@ const Settings = () => {
     useCallback(() => {
       let timeout1;
 
-      if (isCopiedPayPal) {
-        timeout1 = setTimeout(() => {
-          setIsCopiedPayPal(false);
-        }, 1500);
-      }
-      if (isCopiedRaiffeisen) {
-        timeout1 = setTimeout(() => {
-          setIsCopiedRaiffeisen(false);
-        }, 1500);
-      }
-
       if (isCopiedContactEmail) {
         timeout1 = setTimeout(() => {
           setIsCopiedContactEmail(false);
         }, 1500);
       }
 
-      if (isCopiedBtcNetwork) {
-        timeout1 = setTimeout(() => {
-          setIsCopiedBtcNetwork(false);
-        }, 1500);
-      }
-
-      if (isCopiedBtcLightning) {
-        timeout1 = setTimeout(() => {
-          setIsCopiedBtcLightning(false);
-        }, 1500);
-      }
-
       return () => {
         clearTimeout(timeout1);
       };
-    }, [
-      isCopiedPayPal,
-      isCopiedRaiffeisen,
-      isCopiedBtcNetwork,
-      isCopiedContactEmail,
-      isCopiedBtcLightning,
-    ]),
+    }, [isCopiedContactEmail]),
   );
 
   const toggleSwitchRadio = () =>
@@ -163,13 +135,6 @@ const Settings = () => {
 
       return !previousState;
     });
-
-  // const toggleSwitchAutoResumeOnInterruption = () =>
-  //   setIsAutoResumeEnabledOnInterruption(previousState => {
-  //     localStorage.set('isAutoResumeEnabledAfterInterruption', !previousState);
-
-  //     return !previousState;
-  //   });
 
   const handleDeleteFiles = async () => {
     const filesInFolder = await RNFS.readdir(
@@ -207,275 +172,509 @@ const Settings = () => {
     localStorage.set('colorScheme', 'orange');
     globalCtx.setColorSchemeFn('orange');
   };
+  const handlePressGray = () => {
+    localStorage.set('colorScheme', 'gray');
+    globalCtx.setColorSchemeFn('gray');
+  };
+
+  const colors = [
+    {
+      colorName: 'violet',
+      action: handlePressViolet,
+      colorTop: '#432874',
+      colorBottom: '#7d55c7',
+      style: styles.colorBoxViolet,
+    },
+    {
+      colorName: 'crimsonRed',
+      action: handlePressCrimsonRed,
+      colorTop: '#5c0000',
+      colorBottom: '#a31919',
+      style: styles.colorBoxCrimsonRed,
+    },
+    {
+      colorName: 'blue',
+      action: handlePressBlue,
+      colorTop: '#285092',
+      colorBottom: '#5591f5',
+      style: styles.colorBoxBlue,
+    },
+    {
+      colorName: 'pink',
+      action: handlePressPink,
+      colorTop: '#8c2064',
+      colorBottom: '#eb4ab0',
+      style: styles.colorBoxPink,
+    },
+    {
+      colorName: 'green',
+      action: handlePressGreen,
+      colorTop: '#0b5205',
+      colorBottom: '#2b9421',
+      style: styles.colorBoxGreen,
+    },
+    {
+      colorName: 'orange',
+      action: handlePressOrange,
+      colorTop: '#8f3814',
+      colorBottom: '#f16d38',
+      style: styles.colorBoxOrange,
+    },
+    {
+      colorName: 'gray',
+      action: handlePressGray,
+      colorTop: '#535353',
+      colorBottom: '#b1b1b1',
+      style: styles.colorBoxGray,
+    },
+  ];
+
+  const languages = [
+    {
+      code: 'srp',
+      label: t('language:Srpski'),
+      flag: <FlagIconRS />,
+      translator: 'Roćko',
+    },
+    {
+      code: 'hrv',
+      label: t('language:Hrvatski'),
+      flag: <FlagIconHR />,
+      translator: 'King Charles Latest Affair',
+    },
+    {
+      code: 'mkd',
+      label: t('language:Македонски'),
+      flag: <FlagIconMK />,
+      translator: 'Luka',
+    },
+    {
+      code: 'eng',
+      label: t('language:English'),
+      flag: <FlagIconGB />,
+      translator: 'Translator 2',
+    },
+    {
+      code: 'deu',
+      label: t('language:Deutsch'),
+      flag: <FlagIconDE />,
+      translator: 'Vlada',
+    },
+    {
+      code: 'jpn',
+      label: t('language:日本語'),
+      flag: <FlagIconJP />,
+      translator: 'Biljana',
+    },
+  ];
 
   return (
-    <ScrollView contentContainerStyle={styles.wrapper}>
-      <View style={styles.container(globalCtx.colorSchemeValue)}>
-        <View style={styles.titleContainer(width, height)}>
-          <IconMaterialCommunity
-            style={styles.icon(globalCtx.colorSchemeValue)}
-            name={'cogs'}
-            size={35}
-          />
-          <Text style={styles.titleText(globalCtx.colorSchemeValue)}>
-            Podešavanja
-          </Text>
-        </View>
-
-        <View style={styles.middleContainer}>
-          <View style={styles.switchWrapper}>
-            <View style={styles.switchContainer(width, height)}>
-              <Text style={styles.regularText(globalCtx.colorSchemeValue)}>
-                Slušaj live radio samo preko WiFi
-              </Text>
-              <Switch
-                trackColor={{
-                  false: colorSchemeObj[globalCtx.colorSchemeValue].dark10,
-                  true: colorSchemeObj[globalCtx.colorSchemeValue].light40,
-                }}
-                thumbColor={
-                  isWiFiOnlyEnabledRadio
-                    ? colorSchemeObj[globalCtx.colorSchemeValue].light90
-                    : colorSchemeObj[globalCtx.colorSchemeValue].light20
-                }
-                onValueChange={toggleSwitchRadio}
-                value={isWiFiOnlyEnabledRadio}
-              />
-            </View>
-            <View style={styles.switchContainer(width, height)}>
-              <Text style={styles.regularText(globalCtx.colorSchemeValue)}>
-                Slušaj online podkast samo preko WiFi
-              </Text>
-              <Switch
-                trackColor={{
-                  false: colorSchemeObj[globalCtx.colorSchemeValue].dark10,
-                  true: colorSchemeObj[globalCtx.colorSchemeValue].light40,
-                }}
-                thumbColor={
-                  isWiFiOnlyEnabledPodcast
-                    ? colorSchemeObj[globalCtx.colorSchemeValue].light90
-                    : colorSchemeObj[globalCtx.colorSchemeValue].light20
-                }
-                onValueChange={toggleSwitchPodcast}
-                value={isWiFiOnlyEnabledPodcast}
-              />
-            </View>
-            <View style={styles.switchContainer(width, height)}>
-              <Text style={styles.regularText(globalCtx.colorSchemeValue)}>
-                Downloaduj podkaste samo preko WiFi
-              </Text>
-              <Switch
-                trackColor={{
-                  false: colorSchemeObj[globalCtx.colorSchemeValue].dark10,
-                  true: colorSchemeObj[globalCtx.colorSchemeValue].light40,
-                }}
-                thumbColor={
-                  isWiFiOnlyEnabledPodcastDownload
-                    ? colorSchemeObj[globalCtx.colorSchemeValue].light90
-                    : colorSchemeObj[globalCtx.colorSchemeValue].light20
-                }
-                onValueChange={toggleSwitchPodcastDownload}
-                value={isWiFiOnlyEnabledPodcastDownload}
-              />
-            </View>
-            {/* <View style={styles.switchContainer(width, height)}>
-              <Text style={styles.regularText(globalCtx.colorSchemeValue)}>
-                Nastavi playback automatski nakon{'\n'}poziva
-              </Text>
-              <Switch
-                trackColor={{
-                  false: colorSchemeObj[globalCtx.colorSchemeValue].dark10,
-                  true: colorSchemeObj[globalCtx.colorSchemeValue].light40,
-                }}
-                thumbColor={
-                  isAutoResumeEnabledOnInterruption
-                    ? colorSchemeObj[globalCtx.colorSchemeValue].light90
-                    : colorSchemeObj[globalCtx.colorSchemeValue].light20
-                }
-                onValueChange={toggleSwitchAutoResumeOnInterruption}
-                value={isAutoResumeEnabledOnInterruption}
-              />
-            </View> */}
+    <SafeAreaView
+      style={{
+        flex: 1,
+        paddingTop: width < height ? insets.top + 30 : insets.top,
+      }}
+      edges={[]}>
+      <ScrollView contentContainerStyle={styles.wrapper}>
+        <View style={styles.container(globalCtx.colorSchemeValue)}>
+          <View style={styles.titleContainer(width, height)}>
+            <IconMaterialCommunity
+              style={styles.icon(globalCtx.colorSchemeValue)}
+              name={'cogs'}
+              size={35}
+            />
+            <Text style={styles.titleText(globalCtx.colorSchemeValue)}>
+              {t('settings_settings')}
+            </Text>
           </View>
 
-          <View style={styles.buttonContainer(width, height)}>
-            <Pressable
-              onPressOut={handleDeleteFiles}
-              style={({pressed}) => [
-                styles.button(globalCtx.colorSchemeValue),
-                pressed && styles.pressedItem,
-              ]}>
-              <IconMaterialCommunity
-                style={styles.iconButton(globalCtx.colorSchemeValue)}
-                name={'delete'}
-                size={25}
-              />
-              <Text style={styles.buttonText(globalCtx.colorSchemeValue)}>
-                Obriši sve preuzete podkaste
-              </Text>
-            </Pressable>
-            <View style={styles.downloadDetails}>
-              <View>
-                <IconMaterialCommunity
-                  style={styles.icon(globalCtx.colorSchemeValue)}
-                  name="database"
-                  size={30}
+          <View style={styles.middleContainer}>
+            <View style={styles.switchWrapper}>
+              <View style={styles.switchContainer(width, height)}>
+                <Pressable
+                  onPressOut={() =>
+                    Alert.alert(
+                      t('settings_wifi_info_title'),
+                      t('settings_wifi_live_radio_info'),
+                    )
+                  }
+                  style={({pressed}) => [pressed && styles.pressedItem]}>
+                  <Text
+                    style={[
+                      styles.regularText(globalCtx.colorSchemeValue),
+                      i18n.language === 'jpn' && {fontSize: 11},
+                    ]}>
+                    {t('settings_wifi_live_radio')}{' '}
+                    <IconMaterialCommunity
+                      name="information-outline"
+                      size={17}
+                      color={colorSchemeObj[globalCtx.colorSchemeValue].light40}
+                    />
+                  </Text>
+                </Pressable>
+                <Switch
+                  trackColor={{
+                    false: colorSchemeObj[globalCtx.colorSchemeValue].dark10,
+                    true: colorSchemeObj[globalCtx.colorSchemeValue].light40,
+                  }}
+                  thumbColor={
+                    isWiFiOnlyEnabledRadio
+                      ? colorSchemeObj[globalCtx.colorSchemeValue].light90
+                      : colorSchemeObj[globalCtx.colorSchemeValue].light20
+                  }
+                  onValueChange={toggleSwitchRadio}
+                  value={isWiFiOnlyEnabledRadio}
                 />
               </View>
-              <View>
-                <Text style={styles.regularText(globalCtx.colorSchemeValue)}>
-                  Broj preuzetih podkasta: {folderContent?.length}
-                </Text>
-                <Text style={styles.regularText(globalCtx.colorSchemeValue)}>
-                  Ukupna veličina:{' '}
-                  {folderSize < 1000000000
-                    ? `${(folderSize / 1000 / 1000).toFixed(2)} MB`
-                    : `${(folderSize / 1000 / 1000 / 1000).toFixed(2)} GB`}
-                </Text>
-              </View>
-            </View>
-          </View>
-
-          <View style={styles.buttonContainer(width, height)}>
-            <Pressable
-              onPress={async () => {
-                const currentTrack = await TrackPlayer.getActiveTrackIndex();
-
-                if (currentTrack !== null) {
-                  if (
-                    playBackState === State.Playing &&
-                    !globalCtx.fileNameLoadedToTrackValue.endsWith('stream') &&
-                    localStorage.getString('localProgressMap')
-                  ) {
-                    const localStorageData = JSON.parse(
-                      localStorage.getString('localProgressMap'),
-                    );
-                    localStorageData[globalCtx.fileNameLoadedToTrackValue] =
-                      position;
-                    localStorage.set(
-                      'localProgressMap',
-                      JSON.stringify(localStorageData),
-                    );
-                  } else if (
-                    playBackState === State.Playing &&
-                    !globalCtx.fileNameLoadedToTrackValue.endsWith('stream') &&
-                    !localStorage.getString('localProgressMap')
-                  ) {
-                    localStorage.set(
-                      'localProgressMap',
-                      JSON.stringify({
-                        [globalCtx.fileNameLoadedToTrackValue]: position,
-                      }),
-                    );
+              <View style={styles.switchContainer(width, height)}>
+                <Pressable
+                  onPressOut={() =>
+                    Alert.alert(
+                      t('settings_wifi_info_title'),
+                      t('settings_wifi_podcast_info'),
+                    )
                   }
-                }
+                  style={({pressed}) => [pressed && styles.pressedItem]}>
+                  <Text
+                    style={[
+                      styles.regularText(globalCtx.colorSchemeValue),
+                      i18n.language === 'jpn' && {fontSize: 11},
+                    ]}>
+                    {t('settings_wifi_podcasts')}{' '}
+                    <IconMaterialCommunity
+                      name="information-outline"
+                      size={17}
+                      color={colorSchemeObj[globalCtx.colorSchemeValue].light40}
+                    />
+                  </Text>
+                </Pressable>
+                <Switch
+                  trackColor={{
+                    false: colorSchemeObj[globalCtx.colorSchemeValue].dark10,
+                    true: colorSchemeObj[globalCtx.colorSchemeValue].light40,
+                  }}
+                  thumbColor={
+                    isWiFiOnlyEnabledPodcast
+                      ? colorSchemeObj[globalCtx.colorSchemeValue].light90
+                      : colorSchemeObj[globalCtx.colorSchemeValue].light20
+                  }
+                  onValueChange={toggleSwitchPodcast}
+                  value={isWiFiOnlyEnabledPodcast}
+                />
+              </View>
+              <View style={styles.switchContainer(width, height)}>
+                <Pressable
+                  onPressOut={() =>
+                    Alert.alert(
+                      t('settings_wifi_info_title'),
+                      t('settings_wifi_podcast_download_info'),
+                    )
+                  }
+                  style={({pressed}) => [pressed && styles.pressedItem]}>
+                  <Text
+                    style={[
+                      styles.regularText(globalCtx.colorSchemeValue),
+                      i18n.language === 'jpn' && {fontSize: 11},
+                    ]}>
+                    {t('settings_wifi_podcasts_download')}{' '}
+                    <IconMaterialCommunity
+                      name="information-outline"
+                      size={17}
+                      color={colorSchemeObj[globalCtx.colorSchemeValue].light40}
+                    />
+                  </Text>
+                </Pressable>
+                <Switch
+                  trackColor={{
+                    false: colorSchemeObj[globalCtx.colorSchemeValue].dark10,
+                    true: colorSchemeObj[globalCtx.colorSchemeValue].light40,
+                  }}
+                  thumbColor={
+                    isWiFiOnlyEnabledPodcastDownload
+                      ? colorSchemeObj[globalCtx.colorSchemeValue].light90
+                      : colorSchemeObj[globalCtx.colorSchemeValue].light20
+                  }
+                  onValueChange={toggleSwitchPodcastDownload}
+                  value={isWiFiOnlyEnabledPodcastDownload}
+                />
+              </View>
+            </View>
 
-                await TrackPlayer.reset();
+            <View style={styles.buttonContainer(width, height)}>
+              <Pressable
+                onPressOut={handleDeleteFiles}
+                style={({pressed}) => [pressed && styles.pressedItem]}>
+                <LinearGradient
+                  colors={[
+                    colorSchemeObj[globalCtx.colorSchemeValue].dark40,
+                    colorSchemeObj[globalCtx.colorSchemeValue].light10,
+                  ]}
+                  style={styles.button(globalCtx.colorSchemeValue)}>
+                  <IconMaterialCommunity
+                    style={styles.iconButton(globalCtx.colorSchemeValue)}
+                    name={'delete'}
+                    size={25}
+                  />
+                  <Text
+                    style={[
+                      styles.buttonText(globalCtx.colorSchemeValue),
+                      i18n.language === 'jpn' && {fontSize: 11},
+                      i18n.language === 'deu' && {fontSize: 11},
+                    ]}>
+                    {t('settings_delete_all')}
+                  </Text>
+                </LinearGradient>
+              </Pressable>
+              <View style={styles.downloadDetails}>
+                <View>
+                  <IconMaterialCommunity
+                    style={styles.icon(globalCtx.colorSchemeValue)}
+                    name="database"
+                    size={30}
+                  />
+                </View>
+                <View>
+                  <Text style={styles.regularText(globalCtx.colorSchemeValue)}>
+                    {t('settings_number_of_downloaded')} {folderContent?.length}
+                  </Text>
+                  <Text style={styles.regularText(globalCtx.colorSchemeValue)}>
+                    {t('settings_total_size')}{' '}
+                    {folderSize < 1000000000
+                      ? `${(folderSize / 1000 / 1000).toFixed(2)} MB`
+                      : `${(folderSize / 1000 / 1000 / 1000).toFixed(2)} GB`}
+                  </Text>
+                </View>
+              </View>
+            </View>
 
-                setTimeout(() => {
-                  RNExitApp.exitApp();
-                }, 800);
-              }}
-              style={({pressed}) => [
-                styles.button(globalCtx.colorSchemeValue),
-                pressed && styles.pressedItem,
-              ]}>
-              <IconMaterialCommunity
-                style={styles.iconButton(globalCtx.colorSchemeValue)}
-                name={'exit-run'}
-                size={25}
-              />
-              <Text style={styles.buttonText(globalCtx.colorSchemeValue)}>
-                Izlaz iz aplikacije
+            <View style={styles.buttonContainer(width, height)}>
+              <Pressable
+                onPress={async () => {
+                  const currentTrack = await TrackPlayer.getActiveTrackIndex();
+
+                  if (currentTrack !== null) {
+                    if (
+                      playBackState === State.Playing &&
+                      !globalCtx.fileNameLoadedToTrackValue.endsWith(
+                        'stream',
+                      ) &&
+                      localStorage.getString('localProgressMap')
+                    ) {
+                      const localStorageData = JSON.parse(
+                        localStorage.getString('localProgressMap'),
+                      );
+                      localStorageData[globalCtx.fileNameLoadedToTrackValue] =
+                        position;
+                      localStorage.set(
+                        'localProgressMap',
+                        JSON.stringify(localStorageData),
+                      );
+                    } else if (
+                      playBackState === State.Playing &&
+                      !globalCtx.fileNameLoadedToTrackValue.endsWith(
+                        'stream',
+                      ) &&
+                      !localStorage.getString('localProgressMap')
+                    ) {
+                      localStorage.set(
+                        'localProgressMap',
+                        JSON.stringify({
+                          [globalCtx.fileNameLoadedToTrackValue]: position,
+                        }),
+                      );
+                    }
+                  }
+
+                  await TrackPlayer.reset();
+
+                  setTimeout(() => {
+                    RNExitApp.exitApp();
+                  }, 800);
+                }}
+                style={({pressed}) => [pressed && styles.pressedItem]}>
+                <LinearGradient
+                  colors={[
+                    colorSchemeObj[globalCtx.colorSchemeValue].dark40,
+                    colorSchemeObj[globalCtx.colorSchemeValue].light10,
+                  ]}
+                  style={styles.button(globalCtx.colorSchemeValue)}>
+                  <IconMaterialCommunity
+                    style={styles.iconButton(globalCtx.colorSchemeValue)}
+                    name={'exit-run'}
+                    size={25}
+                  />
+                  <Text style={styles.buttonText(globalCtx.colorSchemeValue)}>
+                    {t('settings_exit_app')}
+                  </Text>
+                </LinearGradient>
+              </Pressable>
+            </View>
+
+            <View style={styles.colorsContainer(width, height)}>
+              <Text style={styles.aboutTextHeading(globalCtx.colorSchemeValue)}>
+                {t('settings_color')}
               </Text>
-            </Pressable>
-          </View>
+              <View style={styles.colorPickerContainer}>
+                {colors.map(currentColor => {
+                  const selectedColor =
+                    currentColor.colorName === globalCtx.colorSchemeValue;
+                  return (
+                    <Pressable
+                      key={currentColor.colorName}
+                      onPress={currentColor.action}
+                      style={({pressed}) => [
+                        {borderRadius: 5},
+                        pressed && styles.pressedItem,
+                        selectedColor && {
+                          borderWidth: 0.75,
+                          borderColor: '#fff',
+                        },
+                      ]}>
+                      <LinearGradient
+                        colors={[
+                          currentColor.colorTop,
+                          currentColor.colorBottom,
+                        ]}
+                        style={[
+                          styles.colorBox,
+                          currentColor.style,
+                        ]}></LinearGradient>
+                    </Pressable>
+                  );
+                })}
+              </View>
+            </View>
 
-          <View style={styles.colorsContainer(width, height)}>
-            <Text style={styles.aboutTextHeading(globalCtx.colorSchemeValue)}>
-              Boja:
-            </Text>
-            <View style={styles.colorPickerContainer}>
-              <View>
-                <Pressable
-                  onPress={handlePressViolet}
-                  style={({pressed}) => pressed && styles.pressedItem}>
-                  <View style={[styles.colorBox, styles.colorBoxViolet]} />
-                </Pressable>
+            <View style={styles.colorsContainer(width, height)}>
+              <Text style={styles.aboutTextHeading(globalCtx.colorSchemeValue)}>
+                {t('settings_app_language')}
+              </Text>
+              <View style={styles.colorPickerContainer}>
+                {languages.map(currentLang => {
+                  const selectedLanguage =
+                    currentLang.code === selectedLanguageCode;
+                  return (
+                    <Pressable
+                      key={currentLang.code}
+                      onPress={() => {
+                        i18n.changeLanguage(currentLang.code);
+                        localStorage.set('language', currentLang.code);
+                      }}
+                      style={({pressed}) => [
+                        {
+                          padding: 5,
+                          flexDirection: 'row',
+                          alignItems: 'center',
+                        },
+                        pressed && styles.pressedItem,
+                      ]}>
+                      <Text
+                        style={styles.translationText(
+                          globalCtx.colorSchemeValue,
+                          selectedLanguage,
+                        )}>
+                        {currentLang.flag}
+                      </Text>
+                      <Text
+                        style={styles.translationText(
+                          globalCtx.colorSchemeValue,
+                          selectedLanguage,
+                        )}>
+                        {' '}
+                        {' ' + currentLang.label}
+                      </Text>
+                    </Pressable>
+                  );
+                })}
               </View>
-              <View>
-                <Pressable
-                  onPress={handlePressCrimsonRed}
-                  style={({pressed}) => pressed && styles.pressedItem}>
-                  <View style={[styles.colorBox, styles.colorBoxCrimsonRed]} />
-                </Pressable>
-              </View>
-              <View>
-                <Pressable
-                  onPress={handlePressBlue}
-                  style={({pressed}) => pressed && styles.pressedItem}>
-                  <View style={[styles.colorBox, styles.colorBoxBlue]} />
-                </Pressable>
-              </View>
-              <View>
-                <Pressable
-                  onPress={handlePressPink}
-                  style={({pressed}) => pressed && styles.pressedItem}>
-                  <View style={[styles.colorBox, styles.colorBoxPink]} />
-                </Pressable>
-              </View>
-              <View>
-                <Pressable
-                  onPress={handlePressGreen}
-                  style={({pressed}) => pressed && styles.pressedItem}>
-                  <View style={[styles.colorBox, styles.colorBoxGreen]} />
-                </Pressable>
-              </View>
-              <View>
-                <Pressable
-                  onPress={handlePressOrange}
-                  style={({pressed}) => pressed && styles.pressedItem}>
-                  <View style={[styles.colorBox, styles.colorBoxOrange]} />
-                </Pressable>
+            </View>
+
+            <View style={styles.colorsContainer(width, height)}>
+              <Text style={styles.aboutTextHeading(globalCtx.colorSchemeValue)}>
+                {t('settings_translators')}
+              </Text>
+              <View style={styles.translatorsContainer}>
+                {languages
+                  .filter(
+                    currLang =>
+                      currLang.code !== 'srp' && currLang.code !== 'eng',
+                  )
+                  .map((currentLang, i) => {
+                    return (
+                      <View
+                        key={i}
+                        style={[
+                          {
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            height: 25,
+                          },
+                        ]}>
+                        <Text
+                          style={styles.translatorsText(
+                            globalCtx.colorSchemeValue,
+                          )}>
+                          {currentLang.flag}
+                        </Text>
+                        <Text
+                          style={styles.translatorsText(
+                            globalCtx.colorSchemeValue,
+                          )}>
+                          {' '}
+                          {' ' + currentLang.label}
+                        </Text>
+                        <Text
+                          style={styles.translatorsText(
+                            globalCtx.colorSchemeValue,
+                          )}>
+                          {' : ' + currentLang.translator}
+                        </Text>
+                        <Text
+                          style={styles.translatorsText(
+                            globalCtx.colorSchemeValue,
+                          )}>
+                          {' \n '}
+                        </Text>
+                      </View>
+                    );
+                  })}
               </View>
             </View>
           </View>
-        </View>
 
-        <View style={styles.aboutContainer(width, height)}>
-          <Text style={styles.aboutTextHeading(globalCtx.colorSchemeValue)}>
-            O aplikaciji:
-          </Text>
-          <Text style={styles.regularText(globalCtx.colorSchemeValue)}>
-            Verzija: 1.5.20240806
-          </Text>
-          <View style={styles.contactContainerDonate}>
-            <Text style={styles.regularText(globalCtx.colorSchemeValue)}>
-              Autor:&nbsp;
+          <View style={styles.aboutContainer(width, height)}>
+            <Text style={styles.aboutTextHeading(globalCtx.colorSchemeValue)}>
+              {t('settings_about_app')}
             </Text>
             <Text style={styles.regularText(globalCtx.colorSchemeValue)}>
-              &nbsp;Ivan Tančik a.k.a.&nbsp;
+              {t('settings_version')} 33.39.20260130
             </Text>
-            <FastImage
-              style={{
-                width: 20,
-                height: 20,
-              }}
-              source={developerIcon}
-              resizeMode={FastImage.resizeMode.cover}
-            />
-            <Text style={styles.regularText(globalCtx.colorSchemeValue)}>
-              &nbsp;Roćko
-            </Text>
-          </View>
-
-          <View style={styles.contactContainer}>
-            <View style={styles.contactContainerEmailDiscord}>
+            <View style={styles.contactContainerAuthor}>
               <Text style={styles.regularText(globalCtx.colorSchemeValue)}>
-                {'Kontakt:   '}
+                {t('settings_author')}&nbsp;
               </Text>
-              <View>
-                <View style={styles.bitcoinContainerBtcLightning}>
+              <Text style={styles.regularText(globalCtx.colorSchemeValue)}>
+                &nbsp;Ivan Tančik a.k.a.&nbsp;
+              </Text>
+              <FastImage
+                style={{
+                  width: 20,
+                  height: 20,
+                }}
+                source={developerIcon}
+                resizeMode={FastImage.resizeMode.cover}
+              />
+              <Text style={styles.regularText(globalCtx.colorSchemeValue)}>
+                &nbsp;Roćko
+              </Text>
+            </View>
+
+            <View style={styles.contactContainer}>
+              <View style={styles.contactContainerEmail}>
+                <Text style={styles.regularText(globalCtx.colorSchemeValue)}>
+                  {t('settings_contact')}
+                </Text>
+                <View style={styles.authorEmailContainer}>
                   <Pressable
                     onPress={() => {
                       Clipboard.setString('rotjko.zica@gmail.com');
@@ -483,7 +682,7 @@ const Settings = () => {
                     }}
                     style={({pressed}) => [
                       pressed && styles.pressedItem,
-                      styles.accountNumberContainer,
+                      styles.authorContactEmailContainer,
                     ]}>
                     <IconMaterialCommunity
                       style={styles.iconWithTheLeastMargin(
@@ -507,244 +706,15 @@ const Settings = () => {
 
                   <Text
                     style={[styles.textTooltip(globalCtx.colorSchemeValue)]}>
-                    {`${isCopiedContactEmail ? 'Kopirano!' : ''}`}
+                    {`${isCopiedContactEmail ? t('settings_copied') : ''}`}
                   </Text>
-                </View>
-                <View style={styles.bitcoinContainerBtcLightning}>
-                  <Pressable
-                    onPress={() =>
-                      Linking.openURL('https://discord.com/invite/8MtjZG2Vsd')
-                    }
-                    style={({pressed}) => [
-                      pressed && styles.pressedItem,
-                      styles.accountNumberContainer,
-                    ]}>
-                    <IconMaterialCommunity
-                      style={styles.iconWithTheLeastMargin(
-                        globalCtx.colorSchemeValue,
-                      )}
-                      name={'discord'}
-                      size={20}
-                    />
-
-                    <Text style={[styles.textLink(globalCtx.colorSchemeValue)]}>
-                      D&M Discord segta{' '}
-                    </Text>
-                    <IconFeather
-                      style={styles.iconWithLessMargin(
-                        globalCtx.colorSchemeValue,
-                      )}
-                      name={'external-link'}
-                      size={20}
-                    />
-                  </Pressable>
                 </View>
               </View>
             </View>
           </View>
         </View>
-
-        <View style={styles.developerContainer(width, height)}>
-          <Text style={styles.aboutTextHeading(globalCtx.colorSchemeValue)}>
-            Časti aplikatora:
-          </Text>
-          <View style={styles.contactContainerDonatePayPal}>
-            <Text style={styles.regularText(globalCtx.colorSchemeValue)}>
-              {'- PayPal-om:  '}
-            </Text>
-          </View>
-          <View style={styles.contactContainerDonate}>
-            <Text style={styles.hiddenText(globalCtx.colorSchemeValue)}>
-              {'-  '}
-            </Text>
-            <View>
-              <Pressable
-                onPress={() =>
-                  Linking.openURL('https://www.paypal.com/paypalme/rotjko')
-                }
-                style={({pressed}) => [
-                  pressed && styles.pressedItem,
-                  styles.accountNumberContainer,
-                ]}>
-                <FastImage
-                  style={{
-                    width: 68,
-                    height: 18,
-                  }}
-                  source={payPalColor}
-                  resizeMode={FastImage.resizeMode.cover}
-                />
-                <Text style={[styles.textLink(globalCtx.colorSchemeValue)]}>
-                  paypal.me/rotjko{' '}
-                </Text>
-                <IconFeather
-                  style={styles.iconWithLessMargin(globalCtx.colorSchemeValue)}
-                  name={'external-link'}
-                  size={20}
-                />
-              </Pressable>
-            </View>
-
-            <Text style={[styles.textTooltip(globalCtx.colorSchemeValue)]}>
-              {`${isCopiedPayPal ? 'Kopirano!' : ''}`}
-            </Text>
-          </View>
-          <View style={styles.contactContainerDonateBank}>
-            <Text style={styles.regularText(globalCtx.colorSchemeValue)}>
-              {'- Uplatom na dinarski račun:  '}
-            </Text>
-          </View>
-          <View style={styles.contactContainerDonate}>
-            <Text style={styles.hiddenText(globalCtx.colorSchemeValue)}>
-              {'-    '}
-            </Text>
-            <Pressable
-              onPress={() => {
-                Clipboard.setString('265-6164332-61');
-                setIsCopiedRaiffeisen(true);
-              }}
-              style={({pressed}) => [
-                pressed && styles.pressedItem,
-                styles.accountNumberContainer,
-              ]}>
-              <FastImage
-                style={{
-                  width: 18,
-                  height: 18,
-                }}
-                source={raiffeisen}
-                resizeMode={FastImage.resizeMode.cover}
-              />
-
-              <Text style={[styles.textLink(globalCtx.colorSchemeValue)]}>
-                265-6164332-61{' '}
-              </Text>
-              <IconMaterialCommunity
-                style={styles.iconWithLessMargin(globalCtx.colorSchemeValue)}
-                name={'content-copy'}
-                size={20}
-              />
-            </Pressable>
-
-            <Text style={[styles.textTooltip(globalCtx.colorSchemeValue)]}>
-              {`${isCopiedRaiffeisen ? 'Kopirano!' : ''}`}
-            </Text>
-          </View>
-
-          <View style={styles.bitcoinContainerBtcLightning1}>
-            <Text style={styles.regularText(globalCtx.colorSchemeValue)}>
-              {'- Bitcoin-om:  '}
-            </Text>
-            <View style={styles.bitcoinContainer}>
-              <View style={styles.bitcoinContainerBtcLightning}>
-                <Pressable
-                  onPress={() => {
-                    Clipboard.setString('1GjVbbCaqqKzS9d9hiwZ7Mc99N7otdjX7H');
-                    setIsCopiedBtcNetwork(true);
-                  }}
-                  style={({pressed}) => [
-                    pressed && styles.pressedItem,
-                    styles.accountNumberContainer,
-                  ]}>
-                  <FastImage
-                    style={{
-                      width: 18,
-                      height: 18,
-                    }}
-                    source={bitcoin}
-                    resizeMode={FastImage.resizeMode.cover}
-                  />
-
-                  <Text style={[styles.textLink(globalCtx.colorSchemeValue)]}>
-                    BTC Network{' '}
-                  </Text>
-                  <IconMaterialCommunity
-                    style={styles.iconWithLessMargin(
-                      globalCtx.colorSchemeValue,
-                    )}
-                    name={'content-copy'}
-                    size={20}
-                  />
-                </Pressable>
-
-                <Text style={[styles.textTooltip(globalCtx.colorSchemeValue)]}>
-                  {`${isCopiedBtcNetwork ? 'Kopirano!' : ''}`}
-                </Text>
-              </View>
-              <View style={styles.bitcoinContainerBtcLightning}>
-                <Pressable
-                  onPress={() => {
-                    Clipboard.setString('machocoke36@walletofsatoshi.com');
-                    setIsCopiedBtcLightning(true);
-                  }}
-                  style={({pressed}) => [
-                    pressed && styles.pressedItem,
-                    styles.accountNumberContainer,
-                  ]}>
-                  <FastImage
-                    style={{
-                      width: 18,
-                      height: 18,
-                    }}
-                    source={bitcoinLightning}
-                    resizeMode={FastImage.resizeMode.cover}
-                  />
-
-                  <Text style={[styles.textLink(globalCtx.colorSchemeValue)]}>
-                    Lightning Network{' '}
-                  </Text>
-                  <IconMaterialCommunity
-                    style={styles.iconWithLessMargin(
-                      globalCtx.colorSchemeValue,
-                    )}
-                    name={'content-copy'}
-                    size={20}
-                  />
-                </Pressable>
-
-                <Text style={[styles.textTooltip(globalCtx.colorSchemeValue)]}>
-                  {`${isCopiedBtcLightning ? 'Kopirano!' : ''}`}
-                </Text>
-              </View>
-            </View>
-          </View>
-
-          <View style={styles.quoteContainer(globalCtx.colorSchemeValue)}>
-            <Text style={styles.italicText(globalCtx.colorSchemeValue)}>
-              {'"Svaki bitkoin ima svoju vrednost.'}
-            </Text>
-            <Text style={styles.italicText(globalCtx.colorSchemeValue)}>
-              {'Njegovu vrednost garantuje kompjuter."'}
-            </Text>
-
-            <View style={styles.hairline(globalCtx.colorSchemeValue)} />
-
-            <View style={styles.thinkerContainer}>
-              <FastImage
-                style={{
-                  width: 47,
-                  height: 47,
-                }}
-                source={mlWobble}
-                resizeMode={FastImage.resizeMode.cover}
-              />
-              <View>
-                <Text
-                  style={styles.thinkerTextName(globalCtx.colorSchemeValue)}>
-                  {'— Mladen Urdarević —'}
-                </Text>
-                <Text style={styles.thinkerText(globalCtx.colorSchemeValue)}>
-                  {'saradnik na scenariju aplikacije'}
-                </Text>
-                <Text style={styles.thinkerText(globalCtx.colorSchemeValue)}>
-                  {'i aforističar'}
-                </Text>
-              </View>
-            </View>
-          </View>
-        </View>
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
@@ -790,14 +760,6 @@ const styles = StyleSheet.create({
       paddingHorizontal: '2%',
       paddingVertical: 7,
       marginTop: 5,
-    };
-  },
-  developerContainer: (screenWidth, screenHeight) => {
-    return {
-      width: screenWidth > screenHeight ? screenHeight : screenWidth,
-      paddingHorizontal: '2%',
-      paddingVertical: 7,
-      marginTop: 10,
       marginBottom: 20,
     };
   },
@@ -858,43 +820,27 @@ const styles = StyleSheet.create({
       color: colorSchemeObj[colorScheme].light80,
       fontFamily: 'sans-serif-medium',
       marginBottom: 2,
+      textAlignVertical: 'center',
     };
   },
-  hiddenText: colorScheme => {
+  translationText: (colorScheme, selectedLanguage) => {
     return {
-      color: colorSchemeObj[colorScheme].dark90,
+      color: colorSchemeObj[colorScheme].light80,
       fontFamily: 'sans-serif-medium',
-      marginBottom: 2,
+      textAlignVertical: 'center',
+      fontSize: 18,
+      color: selectedLanguage
+        ? colorSchemeObj[colorScheme].light40
+        : colorSchemeObj[colorScheme].light80,
+      fontWeight: selectedLanguage ? 'bold' : 'normal',
     };
   },
-  italicText: colorScheme => {
+  translatorsText: colorScheme => {
     return {
-      color: colorSchemeObj[colorScheme].light60,
+      color: colorSchemeObj[colorScheme].light80,
       fontFamily: 'sans-serif-medium',
       marginBottom: 2,
-      fontStyle: 'italic',
-      fontSize: 13,
-    };
-  },
-  thinkerTextName: colorScheme => {
-    return {
-      color: colorSchemeObj[colorScheme].light40,
-      fontFamily: 'sans-serif-medium',
-      marginBottom: 2,
-      fontSize: 13,
-      paddingLeft: 15,
-      textAlign: 'center',
-    };
-  },
-  thinkerText: colorScheme => {
-    return {
-      color: colorSchemeObj[colorScheme].light50,
-      fontFamily: 'sans-serif-medium',
-      marginBottom: 2,
-      fontSize: 12,
-      paddingLeft: 15,
-      fontStyle: 'italic',
-      textAlign: 'center',
+      textAlignVertical: 'center',
     };
   },
   textTooltip: colorScheme => {
@@ -941,68 +887,28 @@ const styles = StyleSheet.create({
     };
   },
   pressedItem: {
-    opacity: 0.5,
+    opacity: 0.2,
   },
   contactContainer: {
     flexDirection: 'row',
     alignItems: 'center',
   },
-  contactContainerDonate: {
+  contactContainerAuthor: {
     flexDirection: 'row',
     alignItems: 'center',
     marginTop: 3,
     marginBottom: 3,
   },
-  contactContainerDonatePayPal: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 6,
-  },
-  contactContainerDonateBank: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 15,
-  },
-  thinkerContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginVertical: 3,
-    alignSelf: 'flex-start',
-    paddingLeft: 13,
-  },
-  bitcoinContainer: {
-    marginVertical: 2,
-  },
-  bitcoinContainerBtcLightning: {
+  authorEmailContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     marginVertical: 2,
   },
-  bitcoinContainerBtcLightning1: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 15,
-    marginBottom: 10,
-  },
-  contactContainerEmailDiscord: {
+  contactContainerEmail: {
     flexDirection: 'row',
     alignItems: 'center',
   },
-  quoteContainer: colorScheme => {
-    return {
-      alignItems: 'center',
-      marginVertical: 7,
-      backgroundColor: colorSchemeObj[colorScheme].dark100,
-      borderRadius: 15,
-      paddingTop: 8,
-      paddingBottom: 5,
-      width: 250,
-    };
-  },
-  pressableContainer: {
-    marginLeft: 5,
-  },
-  accountNumberContainer: {
+  authorContactEmailContainer: {
     flexDirection: 'row',
     alignItems: 'center',
   },
@@ -1016,11 +922,17 @@ const styles = StyleSheet.create({
   colorPickerContainer: {
     flexDirection: 'row',
     marginTop: 2,
+    flexWrap: 'wrap',
+    gap: 24,
+  },
+  translatorsContainer: {
+    flexDirection: 'column',
+    marginTop: 2,
+    flexWrap: 'wrap',
   },
   colorBox: {
     width: 40,
     height: 40,
-    marginRight: 12,
   },
   colorBoxViolet: {
     backgroundColor: '#6f42c1',
@@ -1040,13 +952,7 @@ const styles = StyleSheet.create({
   colorBoxOrange: {
     backgroundColor: '#ef5d22',
   },
-  hairline: colorScheme => {
-    return {
-      backgroundColor: colorSchemeObj[colorScheme].dark50,
-      height: 1.5,
-      width: 220,
-      marginTop: 7,
-      marginBottom: 3,
-    };
+  colorBoxGray: {
+    backgroundColor: '#a9a9a9',
   },
 });

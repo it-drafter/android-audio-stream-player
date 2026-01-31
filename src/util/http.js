@@ -1,7 +1,7 @@
 import axios from 'axios';
 import {DOMParser} from 'xmldom';
-import {MMKV} from 'react-native-mmkv';
-export const localStorage = new MMKV();
+import {createMMKV} from 'react-native-mmkv';
+export const localStorage = createMMKV();
 
 const parser = new DOMParser();
 
@@ -62,9 +62,10 @@ export async function fetchNumberOfListenersAutodj() {
     localStorage.getString('selectedStream') === undefined ||
     localStorage.getString('selectedStream') === 'stream1'
   ) {
-    urlToLoad = 'https://stream.daskoimladja.com:9000/autodj.xspf';
+    urlToLoad =
+      'https://stream.daskoimladja.com/proxy/daskomladja/status-json.xsl';
   } else if (localStorage.getString('selectedStream') === 'stream2') {
-    urlToLoad = 'http://stream.daskoimladja.com:8000/autodj.xspf';
+    urlToLoad = 'http://stream.daskoimladja.com:8000/status-json.xsl';
   }
 
   try {
@@ -77,17 +78,15 @@ export async function fetchNumberOfListenersAutodj() {
       },
     });
 
-    const responseDataArr = response.data.split('\n');
-    let numberOfListeners;
-    responseDataArr.forEach(element => {
-      if (element.includes('Current Listeners: ')) {
-        numberOfListeners = element.substring(19, element.length);
-      }
-    });
+    const icestatsResponse = response.data?.icestats?.source;
 
-    return numberOfListeners;
+    const numberOfListeners = Array.isArray(icestatsResponse)
+      ? icestatsResponse?.[0]?.listeners
+      : icestatsResponse?.listeners;
+
+    return numberOfListeners.toString();
   } catch (error) {
-    return 'nedostupno';
+    return '-';
   }
 }
 
@@ -97,9 +96,10 @@ export async function fetchNumberOfListenersLive() {
     localStorage.getString('selectedStream') === undefined ||
     localStorage.getString('selectedStream') === 'stream1'
   ) {
-    urlToLoad = 'https://stream.daskoimladja.com:9000/live.xspf';
+    urlToLoad =
+      'https://stream.daskoimladja.com/proxy/daskomladja/status-json.xsl';
   } else if (localStorage.getString('selectedStream') === 'stream2') {
-    urlToLoad = 'http://stream.daskoimladja.com:8000/live.xspf';
+    urlToLoad = 'http://stream.daskoimladja.com:8000/status-json.xsl';
   }
 
   try {
@@ -112,17 +112,15 @@ export async function fetchNumberOfListenersLive() {
       },
     });
 
-    const responseDataArr = response.data.split('\n');
-    let numberOfListeners;
-    responseDataArr.forEach(element => {
-      if (element.includes('Current Listeners: ')) {
-        numberOfListeners = element.substring(19, element.length);
-      }
-    });
+    const icestatsResponse = response.data?.icestats?.source;
 
-    return numberOfListeners;
+    const numberOfListeners = Array.isArray(icestatsResponse)
+      ? icestatsResponse?.[1]?.listeners
+      : icestatsResponse?.listeners;
+
+    return numberOfListeners.toString();
   } catch (error) {
-    return 'nedostupno';
+    return '-';
   }
 }
 
@@ -132,9 +130,10 @@ export async function fetchNumberOfListenersStream() {
     localStorage.getString('selectedStream') === undefined ||
     localStorage.getString('selectedStream') === 'stream1'
   ) {
-    urlToLoad = 'https://stream.daskoimladja.com:9000/stream.xspf';
+    urlToLoad =
+      'https://stream.daskoimladja.com/proxy/daskomladja/status-json.xsl';
   } else if (localStorage.getString('selectedStream') === 'stream2') {
-    urlToLoad = 'http://stream.daskoimladja.com:8000/stream.xspf';
+    urlToLoad = 'http://stream.daskoimladja.com:8000/status-json.xsl';
   }
 
   try {
@@ -147,16 +146,14 @@ export async function fetchNumberOfListenersStream() {
       },
     });
 
-    const responseDataArr = response.data.split('\n');
-    let numberOfListeners;
-    responseDataArr.forEach(element => {
-      if (element.includes('Current Listeners: ')) {
-        numberOfListeners = element.substring(19, element.length);
-      }
-    });
+    const icestatsResponse = response.data?.icestats?.source;
 
-    return numberOfListeners;
+    const numberOfListeners = Array.isArray(icestatsResponse)
+      ? icestatsResponse?.[2]?.listeners
+      : icestatsResponse?.listeners;
+
+    return numberOfListeners.toString();
   } catch (error) {
-    return 'nedostupno';
+    return '-';
   }
 }

@@ -10,16 +10,18 @@ import {
 import React, {useState, useContext, useCallback} from 'react';
 import TrackPlayer, {State, usePlaybackState} from 'react-native-track-player';
 import {useFocusEffect} from '@react-navigation/native';
-import RNFS from 'react-native-fs';
+import * as RNFS from '@dr.pogodin/react-native-fs';
 import * as Progress from 'react-native-progress';
-import IconMaterialCommunity from 'react-native-vector-icons/MaterialCommunityIcons';
-import IconFeather from 'react-native-vector-icons/Feather';
+import IconMaterialCommunity from '@react-native-vector-icons/material-design-icons';
+import IconFeather from '@react-native-vector-icons/feather';
 import ControlCenter from './ControlCenter';
 import GlobalContext from '../util/context';
 import {useNetInfo} from '@react-native-community/netinfo';
 import {localStorage} from '../util/http';
-import FastImage from 'react-native-fast-image';
 import {colorSchemeObj} from '../util/colors';
+import {useTranslation} from 'react-i18next';
+import LinearGradient from 'react-native-linear-gradient';
+import FastImage from '@d11/react-native-fast-image';
 
 import daSwirl from '../assets/da-swirl.gif';
 import mlSwirl from '../assets/ml-swirl.gif';
@@ -32,6 +34,7 @@ const EpisodePlay = ({route}) => {
   const globalCtx = useContext(GlobalContext);
   const netInfo = useNetInfo();
   const playBackState = usePlaybackState().state;
+  const {t, i18n} = useTranslation();
 
   const [error, setError] = useState(null);
   const [isAlreadyDownloaded, setIsAlreadyDownloaded] = useState(false);
@@ -122,8 +125,8 @@ const EpisodePlay = ({route}) => {
 
     if (netInfo.isInternetReachable === false) {
       Alert.alert(
-        'Ne mogu da downloadujem podkast.',
-        'Proveri internet konekciju.',
+        t('episode_play_error_title'),
+        t('episode_play_error_check_internet'),
       );
       return;
     } else if (
@@ -134,8 +137,8 @@ const EpisodePlay = ({route}) => {
       netInfo.type !== 'wifi'
     ) {
       Alert.alert(
-        'Ne mogu da downloadujem podkast.',
-        'U podešavanjima je uključena opcija "Downloaduj podkaste samo preko WiFi.\n\nIsključi tu opciju ako želiš da dozvoliš download-ovanje podkasta i preko mobilnog interneta.',
+        t('episode_play_error_title'),
+        t('episode_play_error_wifi_only_dl'),
       );
       return;
     }
@@ -182,40 +185,56 @@ const EpisodePlay = ({route}) => {
       .toLowerCase()
       .includes('Večernja škola rokenrola'.toLowerCase())
   ) {
-    podcastUploadInfo = (
-      <Text style={styles.insignificantDetailsText(globalCtx.colorSchemeValue)}>
-        (pre {diffInDays}{' '}
-        {diffInDays === 1 ||
-        (diffInDays >= 21 &&
-          diffInDays.toString()[diffInDays.toString().length - 1] === '1')
-          ? 'dan'
-          : 'dana'}
-        )
-      </Text>
-    );
+    if (
+      i18n.language === 'srp' ||
+      i18n.language === 'hrv' ||
+      i18n.language === 'mkd' ||
+      i18n.language === 'deu'
+    ) {
+      podcastUploadInfo = (
+        <Text
+          style={styles.insignificantDetailsText(globalCtx.colorSchemeValue)}>
+          ({t('days_ago')} {diffInDays}{' '}
+          {diffInDays === 1 ||
+          (diffInDays >= 21 &&
+            diffInDays.toString()[diffInDays.toString().length - 1] === '1')
+            ? t('day')
+            : t('days')}
+          )
+        </Text>
+      );
+    } else {
+      podcastUploadInfo = (
+        <Text
+          style={styles.insignificantDetailsText(globalCtx.colorSchemeValue)}>
+          ({diffInDays} {diffInDays === 1 ? t('day') : t('days')}{' '}
+          {t('days_ago')})
+        </Text>
+      );
+    }
   } else {
     let day;
     switch (true) {
       case route.params.pubDate.startsWith('Mon'):
-        day = 'Ponedeljak';
+        day = t('monday');
         break;
       case route.params.pubDate.startsWith('Tue'):
-        day = 'Utorak';
+        day = t('tuesday');
         break;
       case route.params.pubDate.startsWith('Wed'):
-        day = 'Sreda';
+        day = t('wednesday');
         break;
       case route.params.pubDate.startsWith('Thu'):
-        day = 'Četvrtak';
+        day = t('thursday');
         break;
       case route.params.pubDate.startsWith('Fri'):
-        day = 'Petak';
+        day = t('friday');
         break;
       case route.params.pubDate.startsWith('Sat'):
-        day = 'Subota';
+        day = t('saturday');
         break;
       case route.params.pubDate.startsWith('Sun'):
-        day = 'Nedelja';
+        day = t('sunday');
         break;
       default:
         day = '';
@@ -225,40 +244,40 @@ const EpisodePlay = ({route}) => {
     let month;
     switch (route.params.pubDate.substring(8, 11)) {
       case 'Jan':
-        month = 'januar';
+        month = t('january');
         break;
       case 'Feb':
-        month = 'februar';
+        month = t('february');
         break;
       case 'Mar':
-        month = 'mart';
+        month = t('march');
         break;
       case 'Apr':
-        month = 'april';
+        month = t('april');
         break;
       case 'May':
-        month = 'maj';
+        month = t('may');
         break;
       case 'Jun':
-        month = 'jun';
+        month = t('june');
         break;
       case 'Jul':
-        month = 'jul';
+        month = t('july');
         break;
       case 'Aug':
-        month = 'avgust';
+        month = t('august');
         break;
       case 'Sep':
-        month = 'septembar';
+        month = t('september');
         break;
       case 'Oct':
-        month = 'oktobar';
+        month = t('october');
         break;
       case 'Nov':
-        month = 'novembar';
+        month = t('november');
         break;
       case 'Dec':
-        month = 'decembar';
+        month = t('december');
         break;
       default:
         month = '';
@@ -280,15 +299,16 @@ const EpisodePlay = ({route}) => {
 
   if (
     route.params.url.toLowerCase().endsWith('bm.mp3'.toLowerCase()) &&
+    !route.params.url.toLowerCase().includes('provizorni_'.toLowerCase()) &&
     !route.params.title
       .toLowerCase()
       .includes('Ljudi iz podzemlja'.toLowerCase()) &&
     !route.params.title
       .toLowerCase()
       .includes('Večernja škola rokenrola'.toLowerCase()) &&
-    !route.params.title
+    !route.params.url
       .toLowerCase()
-      .includes('Na ivici ofsajda'.toLowerCase()) &&
+      .includes('unutrasnja_emigracija'.toLowerCase()) &&
     !route.params.title
       .toLowerCase()
       .includes('Sportski Pozdrav'.toLowerCase()) &&
@@ -298,7 +318,8 @@ const EpisodePlay = ({route}) => {
     !route.params.title.toLowerCase().includes('Rastrojavanje'.toLowerCase()) &&
     !route.params.description
       .toLowerCase()
-      .includes('Puna Usta Poezije'.toLowerCase())
+      .includes('Puna Usta Poezije'.toLowerCase()) &&
+    !route.params.title.toLowerCase().includes('Na ivici ofsajda'.toLowerCase())
   ) {
     musicOnOffInfo = (
       <IconMaterialCommunity
@@ -308,25 +329,27 @@ const EpisodePlay = ({route}) => {
       />
     );
   } else if (
+    !route.params.url.toLowerCase().includes('provizorni_'.toLowerCase()) &&
+    !route.params.title
+      .toLowerCase()
+      .includes('Ljudi iz podzemlja'.toLowerCase()) &&
+    !route.params.title
+      .toLowerCase()
+      .includes('Večernja škola rokenrola'.toLowerCase()) &&
+    !route.params.url
+      .toLowerCase()
+      .includes('unutrasnja_emigracija'.toLowerCase()) &&
     !route.params.title
       .toLowerCase()
       .includes('Sportski Pozdrav'.toLowerCase()) &&
     !route.params.title
       .toLowerCase()
-      .includes('Večernja škola rokenrola'.toLowerCase()) &&
-    !route.params.title
-      .toLowerCase()
       .includes('Tople Ljucke Priče'.toLowerCase()) &&
-    !route.params.title
-      .toLowerCase()
-      .includes('Na ivici ofsajda'.toLowerCase()) &&
-    !route.params.title
-      .toLowerCase()
-      .includes('Ljudi iz podzemlja'.toLowerCase()) &&
     !route.params.title.toLowerCase().includes('Rastrojavanje'.toLowerCase()) &&
     !route.params.description
       .toLowerCase()
-      .includes('Puna Usta Poezije'.toLowerCase())
+      .includes('Puna Usta Poezije'.toLowerCase()) &&
+    !route.params.title.toLowerCase().includes('Na ivici ofsajda'.toLowerCase())
   ) {
     musicOnOffInfo = (
       <IconFeather
@@ -402,36 +425,48 @@ const EpisodePlay = ({route}) => {
       <View style={styles.downloadStuffContainer}>
         <Pressable
           onPressOut={handleDownloadPress}
-          style={({pressed}) => [
-            pressed && styles.pressedItem,
-            {
-              backgroundColor: globalCtx.fileNameDownloadingValue[fileName]?.[0]
-                ? colorSchemeObj[globalCtx.colorSchemeValue].base
-                : colorSchemeObj[globalCtx.colorSchemeValue].dark10,
-            },
-            styles.button(width, height),
-          ]}>
-          <IconMaterialCommunity
-            style={styles.iconButton(globalCtx.colorSchemeValue)}
-            name={
-              isAlreadyDownloaded &&
-              !globalCtx.fileNameDownloadingValue[fileName]?.[0]
-                ? 'delete'
-                : isAlreadyDownloaded &&
-                  globalCtx.fileNameDownloadingValue[fileName]?.[0]
-                ? 'cancel'
-                : 'download'
-            }
-            size={25}
-          />
+          style={({pressed}) => [pressed && styles.pressedItem]}>
+          <LinearGradient
+            colors={[
+              colorSchemeObj[globalCtx.colorSchemeValue].dark40,
+              colorSchemeObj[globalCtx.colorSchemeValue].light10,
+            ]}
+            style={[
+              {
+                backgroundColor: globalCtx.fileNameDownloadingValue[
+                  fileName
+                ]?.[0]
+                  ? colorSchemeObj[globalCtx.colorSchemeValue].base
+                  : colorSchemeObj[globalCtx.colorSchemeValue].dark10,
+              },
+              styles.button(width, height),
+            ]}>
+            <IconMaterialCommunity
+              style={styles.iconButton(globalCtx.colorSchemeValue)}
+              name={
+                isAlreadyDownloaded &&
+                !globalCtx.fileNameDownloadingValue[fileName]?.[0]
+                  ? 'delete'
+                  : isAlreadyDownloaded &&
+                      globalCtx.fileNameDownloadingValue[fileName]?.[0]
+                    ? 'cancel'
+                    : 'download'
+              }
+              size={25}
+            />
 
-          <Text style={styles.buttonText(globalCtx.colorSchemeValue)}>
-            {globalCtx.fileNameDownloadingValue[fileName]?.[0]
-              ? 'Otkaži download'
-              : isAlreadyDownloaded
-              ? 'Obriši podkast iz memorije'
-              : 'Preuzmi za offline preslušavanje'}
-          </Text>
+            <Text
+              style={[
+                styles.buttonText(globalCtx.colorSchemeValue),
+                i18n.language === 'jpn' && {fontSize: 11},
+              ]}>
+              {globalCtx.fileNameDownloadingValue[fileName]?.[0]
+                ? t('episode_play_cancel_download')
+                : isAlreadyDownloaded
+                  ? t('episode_play_delete_podcast')
+                  : t('episode_play_download')}
+            </Text>
+          </LinearGradient>
         </Pressable>
 
         {isAlreadyDownloaded &&
@@ -580,6 +615,6 @@ const styles = StyleSheet.create({
     };
   },
   pressedItem: {
-    opacity: 0.5,
+    opacity: 0.2,
   },
 });

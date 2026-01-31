@@ -10,14 +10,16 @@ import {useNetInfo} from '@react-native-community/netinfo';
 import GlobalContext from '../util/context';
 import {localStorage} from '../util/http';
 import ProgressSlider from './ProgressSlider';
-import IconMaterialCommunity from 'react-native-vector-icons/MaterialCommunityIcons';
+import IconMaterialCommunity from '@react-native-vector-icons/material-design-icons';
 import {colorSchemeObj} from '../util/colors';
+import {useTranslation} from 'react-i18next';
 
 const ControlCenter = props => {
   const globalCtx = useContext(GlobalContext);
   const {position} = useProgress();
   const playBackState = usePlaybackState().state;
   const netInfo = useNetInfo();
+  const {t} = useTranslation();
 
   const handleRewind = async () => {
     await TrackPlayer.seekTo(position - 15);
@@ -55,6 +57,7 @@ const ControlCenter = props => {
       globalCtx.setfileNameLoadedToTrackFn(trackNameFromUrl);
 
       localStorage.set('lastPlayedPodcast', trackNameFromUrl);
+      localStorage.set('infoDataCurrentUrl', infoData[0]?.url);
     } catch (error) {}
   }
 
@@ -85,8 +88,8 @@ const ControlCenter = props => {
             !props.isAlreadyDownloaded
           ) {
             Alert.alert(
-              'Ne mogu da pustim podkast',
-              'Proveri internet konekciju.',
+              t('control_center_error_title'),
+              t('control_center_error_check_internet'),
             );
 
             return;
@@ -99,8 +102,8 @@ const ControlCenter = props => {
             !props.isAlreadyDownloaded
           ) {
             Alert.alert(
-              'Ne mogu da pustim podkast.',
-              'U podešavanjima ove aplikacije je uključena opcija "Slušaj online podkast samo preko WiFi.\n\nIsključi tu opciju ako želiš da dozvoliš slušanje podkasta i preko mobilnog interneta.',
+              t('control_center_error_title'),
+              t('control_center_error_wifi_only'),
             );
 
             return;
@@ -110,7 +113,7 @@ const ControlCenter = props => {
 
           await seekToJumpTo(props.fileNameFromNav);
 
-          TrackPlayer.play();
+          await TrackPlayer.play();
 
           loadTrackNameToCtx();
 
@@ -126,8 +129,8 @@ const ControlCenter = props => {
             !props.isAlreadyDownloaded
           ) {
             Alert.alert(
-              'Ne mogu da pustim podkast',
-              'Proveri internet konekciju.',
+              t('control_center_error_title'),
+              t('control_center_error_check_internet'),
             );
 
             return;
@@ -140,8 +143,8 @@ const ControlCenter = props => {
             !props.isAlreadyDownloaded
           ) {
             Alert.alert(
-              'Ne mogu da pustim podkast.',
-              'U podešavanjima ove aplikacije je uključena opcija "Slušaj online podkast samo preko WiFi.\n\nIsključi tu opciju ako želiš da dozvoliš slušanje podkasta i preko mobilnog interneta.',
+              t('control_center_error_title'),
+              t('control_center_error_wifi_only'),
             );
 
             return;
@@ -151,7 +154,7 @@ const ControlCenter = props => {
 
           await seekToJumpTo(props.fileNameFromNav);
 
-          TrackPlayer.play();
+          await TrackPlayer.play();
 
           loadTrackNameToCtx();
 
@@ -167,8 +170,8 @@ const ControlCenter = props => {
             !props.isAlreadyDownloaded
           ) {
             Alert.alert(
-              'Ne mogu da pustim podkast',
-              'Proveri internet konekciju.',
+              t('control_center_error_title'),
+              t('control_center_error_check_internet'),
             );
 
             return;
@@ -181,8 +184,8 @@ const ControlCenter = props => {
             !props.isAlreadyDownloaded
           ) {
             Alert.alert(
-              'Ne mogu da pustim podkast.',
-              'U podešavanjima ove aplikacije je uključena opcija "Slušaj online podkast samo preko WiFi.\n\nIsključi tu opciju ako želiš da dozvoliš slušanje podkasta i preko mobilnog interneta.',
+              t('control_center_error_title'),
+              t('control_center_error_wifi_only'),
             );
 
             return;
@@ -192,7 +195,7 @@ const ControlCenter = props => {
 
           await seekToJumpTo(props.fileNameFromNav);
 
-          TrackPlayer.play();
+          await TrackPlayer.play();
 
           loadTrackNameToCtx();
 
@@ -206,8 +209,8 @@ const ControlCenter = props => {
             !props.isAlreadyDownloaded
           ) {
             Alert.alert(
-              'Ne mogu da pustim podkast',
-              'Proveri internet konekciju.',
+              t('control_center_error_title'),
+              t('control_center_error_check_internet'),
             );
 
             return;
@@ -220,8 +223,8 @@ const ControlCenter = props => {
             !props.isAlreadyDownloaded
           ) {
             Alert.alert(
-              'Ne mogu da pustim podkast.',
-              'U podešavanjima ove aplikacije je uključena opcija "Slušaj online podkast samo preko WiFi.\n\nIsključi tu opciju ako želiš da dozvoliš slušanje podkasta i preko mobilnog interneta.',
+              t('control_center_error_title'),
+              t('control_center_error_wifi_only'),
             );
 
             return;
@@ -231,7 +234,7 @@ const ControlCenter = props => {
 
           await seekToJumpTo(props.fileNameFromNav);
 
-          TrackPlayer.play();
+          await TrackPlayer.play();
 
           loadTrackNameToCtx();
 
@@ -246,8 +249,8 @@ const ControlCenter = props => {
             !props.isAlreadyDownloaded
           ) {
             Alert.alert(
-              'Ne mogu da pustim podkast',
-              'Proveri internet konekciju.',
+              t('control_center_error_title'),
+              t('control_center_error_check_internet'),
             );
 
             return;
@@ -260,8 +263,8 @@ const ControlCenter = props => {
             !props.isAlreadyDownloaded
           ) {
             Alert.alert(
-              'Ne mogu da pustim podkast.',
-              'U podešavanjima ove aplikacije je uključena opcija "Slušaj online podkast samo preko WiFi.\n\nIsključi tu opciju ako želiš da dozvoliš slušanje podkasta i preko mobilnog interneta.',
+              t('control_center_error_title'),
+              t('control_center_error_wifi_only'),
             );
 
             return;
@@ -271,7 +274,7 @@ const ControlCenter = props => {
 
           await seekToJumpTo(props.fileNameFromNav);
 
-          TrackPlayer.play();
+          await TrackPlayer.play();
 
           loadTrackNameToCtx();
 
@@ -330,8 +333,8 @@ const ControlCenter = props => {
             !props.isAlreadyDownloaded
           ) {
             Alert.alert(
-              'Ne mogu da pustim podkast',
-              'Proveri internet konekciju.',
+              t('control_center_error_title'),
+              t('control_center_error_check_internet'),
             );
 
             return;
@@ -344,8 +347,8 @@ const ControlCenter = props => {
             !props.isAlreadyDownloaded
           ) {
             Alert.alert(
-              'Ne mogu da pustim podkast.',
-              'U podešavanjima ove aplikacije je uključena opcija "Slušaj online podkast samo preko WiFi.\n\nIsključi tu opciju ako želiš da dozvoliš slušanje podkasta i preko mobilnog interneta.',
+              t('control_center_error_title'),
+              t('control_center_error_wifi_only'),
             );
 
             return;
@@ -355,7 +358,7 @@ const ControlCenter = props => {
 
           await seekToJumpTo(props.fileNameFromNav);
 
-          TrackPlayer.play();
+          await TrackPlayer.play();
 
           loadTrackNameToCtx();
 
@@ -439,7 +442,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 24,
   },
   pressedItem: {
-    opacity: 0.5,
+    opacity: 0.2,
   },
 });
 

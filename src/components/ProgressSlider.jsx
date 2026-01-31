@@ -30,10 +30,6 @@ const ProgressSlider = props => {
 
   const progressValueCalculate = () => {
     switch (true) {
-      // case playBackState === State.Paused ||
-      //   playBackState === State.Ready ||
-      //   playBackState === State.Stopped ||
-      //   playBackState === State.None ||
       case playBackState !== State.Playing:
         if (localStorage.getString('localProgressMap')) {
           const localStorageData = JSON.parse(

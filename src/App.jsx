@@ -1,29 +1,27 @@
 import React, {useState, useEffect, useCallback} from 'react';
 import GlobalContext from './util/context';
-import {
-  SafeAreaView,
-  StatusBar,
-  StyleSheet,
-  useWindowDimensions,
-  View,
-} from 'react-native';
+import {StatusBar, StyleSheet, useWindowDimensions, View} from 'react-native';
 import {DefaultTheme, NavigationContainer} from '@react-navigation/native';
-import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import TrackPlayer from 'react-native-track-player';
 import {setupPlayer, addTrack} from './util/musicPlayerServices';
 import Main from './components/Main';
 import Settings from './components/Settings';
-import SupportUs from './components/SupportUs';
-import IconMaterialCommunity from 'react-native-vector-icons/MaterialCommunityIcons';
+import AboutUs from './components/AboutUs';
+import IconMaterialCommunity from '@react-native-vector-icons/material-design-icons';
 import BootSplash from 'react-native-bootsplash';
-import FastImage from 'react-native-fast-image';
+import FastImage from '@d11/react-native-fast-image';
+import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
 
 import Loading from './components/Loading';
 import {localStorage} from './util/http';
 import {colorSchemeObj} from './util/colors';
+
 import daMl from './assets/da-ml.png';
 
-const TabBottom = createMaterialBottomTabNavigator();
+import {useTranslation} from 'react-i18next';
+
+const TabBottom = createBottomTabNavigator();
 
 function App() {
   const {width} = useWindowDimensions();
@@ -37,6 +35,8 @@ function App() {
       ? 'violet'
       : localStorage.getString('colorScheme'),
   );
+
+  const {t, i18n} = useTranslation();
 
   const setup = useCallback(async () => {
     let isSetup = await setupPlayer();
@@ -67,17 +67,28 @@ function App() {
   }, []);
 
   useEffect(() => {
-    StatusBar.setBackgroundColor(colorSchemeObj[colorScheme].light10);
-  }, [colorScheme]);
+    StatusBar.setTranslucent(true);
+    StatusBar.setBackgroundColor('transparent');
+  }, []);
+
+  useEffect(() => {
+    i18n.changeLanguage(
+      !localStorage.getString('language')
+        ? 'srp'
+        : localStorage.getString('language'),
+    );
+  }, []);
 
   if (!isPlayerReady) {
     return (
-      <SafeAreaView style={styles.container}>
+      <SafeAreaProvider style={styles.container}>
         <StatusBar />
-        <View style={styles.loadingContainer(colorScheme, width)}>
-          <Loading />
-        </View>
-      </SafeAreaView>
+        <SafeAreaView style={styles.container} edges={['top']}>
+          <View style={styles.loadingContainer(colorScheme, width)}>
+            <Loading />
+          </View>
+        </SafeAreaView>
+      </SafeAreaProvider>
     );
   }
 
@@ -101,21 +112,29 @@ function App() {
         colorSchemeValue: colorScheme,
         setColorSchemeFn: setColorScheme,
       }}>
-      <SafeAreaView style={styles.container}>
+      <SafeAreaProvider style={styles.container}>
         <StatusBar barStyle={'light-content'} />
 
         <NavigationContainer theme={navTheme}>
           <TabBottom.Navigator
             initialRouteName="Main"
             backBehavior="history"
-            activeColor={colorSchemeObj[colorScheme].light70}
-            inactiveColor={colorSchemeObj[colorScheme].light20}
-            barStyle={{backgroundColor: colorSchemeObj[colorScheme].dark90}}>
+            screenOptions={{
+              headerShown: false,
+              tabBarActiveTintColor: colorSchemeObj[colorScheme].light70,
+              tabBarInactiveTintColor: colorSchemeObj[colorScheme].light20,
+              tabBarActiveBackgroundColor: colorSchemeObj[colorScheme].dark30,
+              tabBarStyle: {
+                backgroundColor: colorSchemeObj[colorScheme].dark90,
+                borderTopWidth: 0,
+              },
+              animation: 'shift',
+            }}>
             <TabBottom.Screen
               name="Main"
               component={Main}
               options={{
-                title: 'Player',
+                title: t('app_player'),
                 tabBarIcon: () => (
                   <IconMaterialCommunity
                     style={styles.icon(colorScheme)}
@@ -126,10 +145,13 @@ function App() {
               }}
             />
             <TabBottom.Screen
-              name="SupportUs"
-              component={SupportUs}
+              name="AboutUs"
+              component={AboutUs}
               options={{
-                title: 'O nama',
+                title: t('app_about_us'),
+                tabBarIconStyle: {
+                  marginHorizontal: 10,
+                },
                 tabBarIcon: () => (
                   <FastImage
                     style={{
@@ -146,7 +168,7 @@ function App() {
               name="Settings"
               component={Settings}
               options={{
-                title: 'Podešavanja',
+                title: t('app_settings'),
                 tabBarIcon: () => (
                   <IconMaterialCommunity
                     style={styles.icon(colorScheme)}
@@ -158,7 +180,7 @@ function App() {
             />
           </TabBottom.Navigator>
         </NavigationContainer>
-      </SafeAreaView>
+      </SafeAreaProvider>
     </GlobalContext.Provider>
   );
 }

@@ -7,21 +7,27 @@ import {
   useWindowDimensions,
   Linking,
 } from 'react-native';
-import React, {useState, useEffect, useContext, useCallback} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import TrackPlayer, {
   State,
   usePlaybackState,
   Event,
   useProgress,
 } from 'react-native-track-player';
-import IconMaterialCommunity from 'react-native-vector-icons/MaterialCommunityIcons';
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import IconMaterialCommunity from '@react-native-vector-icons/material-design-icons';
+import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
+import {
+  faCommentSms,
+  height,
+} from '@fortawesome/free-solid-svg-icons/faCommentSms';
 import {useNetInfo} from '@react-native-community/netinfo';
 import GlobalContext from '../util/context';
 import {localStorage} from '../util/http';
 import NetInfo from '@react-native-community/netinfo';
-import FastImage from 'react-native-fast-image';
 import RadioGroup from 'react-native-radio-buttons-group';
+import {useTranslation} from 'react-i18next';
+import FastImage from '@d11/react-native-fast-image';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 import {fetchNumberOfListenersAutodj} from '../util/http';
 import {fetchNumberOfListenersLive} from '../util/http';
@@ -44,15 +50,21 @@ const Stream = () => {
   const {position} = useProgress();
   const netInfo = useNetInfo();
   const playBackState = usePlaybackState().state;
+  const {t} = useTranslation();
+  const insets = useSafeAreaInsets();
 
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [metaData, setMetaData] = useState({});
-  const [listenersCountAutodj, setListenersCountAutodj] =
-    useState('nedostupno');
-  const [listenersCountLive, setListenersCountLive] = useState('nedostupno');
-  const [listenersCountStream, setListenersCountStream] =
-    useState('nedostupno');
+  const [listenersCountAutodj, setListenersCountAutodj] = useState(
+    t('stream_count_unavailable'),
+  );
+  const [listenersCountLive, setListenersCountLive] = useState(
+    t('stream_count_unavailable'),
+  );
+  const [listenersCountStream, setListenersCountStream] = useState(
+    t('stream_count_unavailable'),
+  );
   const [selectedId, setSelectedId] = useState(
     localStorage.getString('selectedStream') ?? 'stream1',
   );
@@ -65,19 +77,23 @@ const Stream = () => {
         localStorage.getString('selectedStream') === undefined ||
         localStorage.getString('selectedStream') === 'stream1'
       ) {
-        urlToLoad = 'https://stream.daskoimladja.com:9000/stream';
+        urlToLoad = 'https://stream.daskoimladja.com/proxy/daskomladja/stream';
       } else if (localStorage.getString('selectedStream') === 'stream2') {
         urlToLoad = 'http://stream.daskoimladja.com:8000/stream';
       }
+
+      localStorage.set('infoDataCurrentUrl', urlToLoad);
+
       await TrackPlayer.add([
         {
           id: 'stream',
           title: 'Live Stream',
-          artist: 'Daško i Mlađa',
+          artist: 'Radio D&M',
           url: urlToLoad,
           artwork: artworkImgStream,
-          description: 'Radio Daško i Mlađa',
+          description: 'Daško i Mlađa',
           album: 'D&M',
+          isLiveStream: true,
         },
       ]);
 
@@ -151,12 +167,12 @@ const Stream = () => {
 
   useEffect(() => {
     TrackPlayer.addEventListener(
-      Event.MetadataCommonReceived,
+      Event.MetadataTimedReceived,
 
       async params => {
         setMetaData({
-          title: params.metadata?.title,
-          artist: params.metadata?.artist,
+          title: params.metadata[0]?.title,
+          artist: params.metadata[0]?.artist,
         });
       },
     );
@@ -197,8 +213,8 @@ const Stream = () => {
 
         if (netInfo.isInternetReachable === false) {
           Alert.alert(
-            'Ne mogu da pustim radio.',
-            'Proveri internet konekciju.',
+            t('stream_error_title'),
+            t('stream_error_check_internet'),
           );
           return;
         } else if (
@@ -206,10 +222,7 @@ const Stream = () => {
             localStorage.getBoolean('isWiFiOnlyEnabledForRadio') === true) &&
           netInfo.type !== 'wifi'
         ) {
-          Alert.alert(
-            'Ne mogu da pustim radio.',
-            'U podešavanjima ove aplikacije je uključena opcija "Slušaj live radio samo preko WiFi.\n\nIsključi tu opciju ako želiš da dozvoliš slušanje radija i preko mobilnog interneta.',
-          );
+          Alert.alert(t('stream_error_title'), t('stream_error_wifi_only'));
           return;
         }
 
@@ -234,8 +247,8 @@ const Stream = () => {
 
           if (netInfo.isInternetReachable === false) {
             Alert.alert(
-              'Ne mogu da pustim radio.',
-              'Proveri internet konekciju.',
+              t('stream_error_title'),
+              t('stream_error_check_internet'),
             );
             return;
           } else if (
@@ -244,10 +257,7 @@ const Stream = () => {
               localStorage.getBoolean('isWiFiOnlyEnabledForRadio') === true) &&
             netInfo.type !== 'wifi'
           ) {
-            Alert.alert(
-              'Ne mogu da pustim radio.',
-              'U podešavanjima ove aplikacije je uključena opcija "Slušaj live radio samo preko WiFi.\n\nIsključi tu opciju ako želiš da dozvoliš slušanje radija i preko mobilnog interneta.',
-            );
+            Alert.alert(t('stream_error_title'), t('stream_error_wifi_only'));
             return;
           }
 
@@ -266,8 +276,8 @@ const Stream = () => {
 
           if (netInfo.isInternetReachable === false) {
             Alert.alert(
-              'Ne mogu da pustim radio.',
-              'Proveri internet konekciju.',
+              t('stream_error_title'),
+              t('stream_error_check_internet'),
             );
             return;
           } else if (
@@ -276,10 +286,7 @@ const Stream = () => {
               localStorage.getBoolean('isWiFiOnlyEnabledForRadio') === true) &&
             netInfo.type !== 'wifi'
           ) {
-            Alert.alert(
-              'Ne mogu da pustim radio.',
-              'U podešavanjima ove aplikacije je uključena opcija "Slušaj live radio samo preko WiFi.\n\nIsključi tu opciju ako želiš da dozvoliš slušanje radija i preko mobilnog interneta.',
-            );
+            Alert.alert(t('stream_error_title'), t('stream_error_wifi_only'));
             return;
           }
 
@@ -296,27 +303,23 @@ const Stream = () => {
   };
 
   let streamInfoTitleToDisplay = 'Live Stream';
-  let streamInfoArtistToDisplay = 'Radio Daško i Mlađa';
   if (
     playBackState === State.Playing &&
     globalCtx.fileNameLoadedToTrackValue.endsWith('stream') &&
     listenersCountAutodj.trim() !== '0'
   ) {
     streamInfoTitleToDisplay = metaData.title || 'Live Stream';
-    streamInfoArtistToDisplay = metaData.artist || 'Radio Daško i Mlađa';
   } else if (
     playBackState === State.Playing &&
     !globalCtx.fileNameLoadedToTrackValue.endsWith('stream')
   ) {
     streamInfoTitleToDisplay = 'Live Stream';
-    streamInfoArtistToDisplay = 'Radio Daško i Mlađa';
   } else if (
     playBackState === State.Playing &&
     globalCtx.fileNameLoadedToTrackValue.endsWith('stream') &&
     listenersCountAutodj.trim() === '0'
   ) {
     streamInfoTitleToDisplay = 'Live Stream';
-    streamInfoArtistToDisplay = 'Radio Daško i Mlađa';
   }
 
   let iconName = 'play-circle-outline';
@@ -383,28 +386,35 @@ const Stream = () => {
   const infoTextOnScreenContainerComponent = (
     <View style={styles.infoTextOnScreenContainer(width, height)}>
       <Text style={styles.textHeading1(globalCtx.colorSchemeValue)}>
-        {streamInfoArtistToDisplay}
+        Radio Daško i Mlađa
       </Text>
+
+      {(playBackState !== State.Playing ||
+        (playBackState === State.Playing &&
+          !globalCtx.fileNameLoadedToTrackValue.endsWith('stream'))) && (
+        <Text
+          style={styles.textContent(width, height, globalCtx.colorSchemeValue)}>
+          Live Stream
+        </Text>
+      )}
 
       {playBackState === State.Playing &&
-        globalCtx.fileNameLoadedToTrackValue.endsWith('stream') &&
-        listenersCountAutodj.trim() !== '0' && (
-          <Text style={styles.textHeading2(globalCtx.colorSchemeValue)}>
-            Track Name:
-          </Text>
-        )}
-      <Text
-        style={styles.textContent(width, height, globalCtx.colorSchemeValue)}>
-        {streamInfoTitleToDisplay}
-      </Text>
+        globalCtx.fileNameLoadedToTrackValue.endsWith('stream') && (
+          <>
+            <Text style={styles.textHeading2(globalCtx.colorSchemeValue)}>
+              Track Name:
+            </Text>
 
-      {/* {playBackState === State.Playing &&
-        globalCtx.fileNameLoadedToTrackValue.endsWith('stream') &&
-        listenersCountAutodj.trim() !== '0' && (
-          <Text style={styles.textHeading1(globalCtx.colorSchemeValue)}>
-            Radio Daško i Mlađa
-          </Text>
-        )} */}
+            <Text
+              style={styles.textContent(
+                width,
+                height,
+                globalCtx.colorSchemeValue,
+              )}>
+              {streamInfoTitleToDisplay}
+            </Text>
+          </>
+        )}
     </View>
   );
 
@@ -501,7 +511,14 @@ const Stream = () => {
   return (
     <View style={styles.container(globalCtx.colorSchemeValue)}>
       <View style={styles.detailsContainer(width, height)}>
-        <View style={styles.headsContainer(width)}>
+        <View
+          style={[
+            styles.headsContainer(width),
+            {
+              paddingLeft: width > height ? insets.left + 50 : 0,
+              paddingRight: width > height ? insets.right + 50 : 0,
+            },
+          ]}>
           <FastImage
             style={{
               width: 70,
@@ -539,7 +556,7 @@ const Stream = () => {
       <View style={styles.smsListenersCountContainer(width, height)}>
         <View style={styles.listenersCountContainer}>
           <Text style={styles.textHeading(globalCtx.colorSchemeValue)}>
-            Online slušalaca:
+            {t('stream_count_listeners')}
           </Text>
           <Text style={styles.textlistenersCount(globalCtx.colorSchemeValue)}>
             {numberOfListenersValueToDisplay}
@@ -549,9 +566,9 @@ const Stream = () => {
         <Pressable
           onPress={() => Linking.openURL('sms:+38166442266')}
           style={({pressed}) => pressed && styles.pressedItem}>
-          <FontAwesome5
+          <FontAwesomeIcon
+            icon={faCommentSms}
             style={styles.icon(globalCtx.colorSchemeValue)}
-            name={'sms'}
             size={50}
           />
         </Pressable>
@@ -634,7 +651,7 @@ const styles = StyleSheet.create({
     };
   },
   pressedItem: {
-    opacity: 0.5,
+    opacity: 0.2,
   },
   smsListenersCountContainer: (screenWidth, screenHeight) => {
     return {
