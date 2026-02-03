@@ -647,7 +647,7 @@ const Settings = () => {
               {t('settings_about_app')}
             </Text>
             <Text style={styles.regularText(globalCtx.colorSchemeValue)}>
-              {t('settings_version')} 33.39.20260130
+              {t('settings_version')} 33.43.20260203
             </Text>
             <View style={styles.contactContainerAuthor}>
               <Text style={styles.regularText(globalCtx.colorSchemeValue)}>

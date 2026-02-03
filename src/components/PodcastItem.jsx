@@ -61,7 +61,7 @@ function PodcastItem(props) {
     !props.title
       .toLowerCase()
       .includes('Večernja škola rokenrola'.toLowerCase()) &&
-    !props.title.toLowerCase().includes('Tople Ljucke Priče'.toLowerCase()) &&
+    !props.title.toLowerCase().includes('Tople Ljucke Pri'.toLowerCase()) &&
     !props.url.toLowerCase().includes('unutrasnja_emigracija'.toLowerCase())
   ) {
     if (
@@ -186,13 +186,14 @@ function PodcastItem(props) {
   if (
     props.url.toLowerCase().endsWith('bm.mp3'.toLowerCase()) &&
     !props.url.toLowerCase().includes('provizorni_'.toLowerCase()) &&
-    !props.title.toLowerCase().includes('Ljudi iz podzemlja'.toLowerCase()) &&
+    !props.url.toLowerCase().includes('unutrasnja_emigracija'.toLowerCase()) &&
     !props.title
       .toLowerCase()
       .includes('Večernja škola rokenrola'.toLowerCase()) &&
-    !props.url.toLowerCase().includes('unutrasnja_emigracija'.toLowerCase()) &&
+    !props.title.toLowerCase().includes('Nepopularno mi'.toLowerCase()) &&
+    !props.title.toLowerCase().includes('Ljudi iz podzemlja'.toLowerCase()) &&
     !props.title.toLowerCase().includes('Sportski Pozdrav'.toLowerCase()) &&
-    !props.title.toLowerCase().includes('Tople Ljucke Priče'.toLowerCase()) &&
+    !props.title.toLowerCase().includes('Tople Ljucke Pri'.toLowerCase()) &&
     !props.title.toLowerCase().includes('Rastrojavanje'.toLowerCase()) &&
     !props.description
       .toLowerCase()
@@ -214,13 +215,14 @@ function PodcastItem(props) {
     );
   } else if (
     !props.url.toLowerCase().includes('provizorni_'.toLowerCase()) &&
-    !props.title.toLowerCase().includes('Ljudi iz podzemlja'.toLowerCase()) &&
+    !props.url.toLowerCase().includes('unutrasnja_emigracija'.toLowerCase()) &&
     !props.title
       .toLowerCase()
       .includes('Večernja škola rokenrola'.toLowerCase()) &&
-    !props.url.toLowerCase().includes('unutrasnja_emigracija'.toLowerCase()) &&
+    !props.title.toLowerCase().includes('Nepopularno mi'.toLowerCase()) &&
+    !props.title.toLowerCase().includes('Ljudi iz podzemlja'.toLowerCase()) &&
     !props.title.toLowerCase().includes('Sportski Pozdrav'.toLowerCase()) &&
-    !props.title.toLowerCase().includes('Tople Ljucke Priče'.toLowerCase()) &&
+    !props.title.toLowerCase().includes('Tople Ljucke Pri'.toLowerCase()) &&
     !props.title.toLowerCase().includes('Rastrojavanje'.toLowerCase()) &&
     !props.description
       .toLowerCase()

@@ -5,11 +5,40 @@ export const localStorage = createMMKV();
 
 const parser = new DOMParser();
 
-const url = 'https://podcast.daskoimladja.com/feed.xml';
+const url300 =
+  'https://cloudwebserver.ddns.net/daskoimladjaplayer/episodes.json';
+const urlAll = 'https://podcast.daskoimladja.com/feed.xml';
 
-export async function fetchEpisodes() {
+export async function fetchRecentEpisodes() {
   try {
-    const response = await axios.get(url, {
+    const response = await axios.get(url300, {
+      timeout: 30000,
+      headers: {
+        'Cache-Control': 'no-cache',
+        Pragma: 'no-cache',
+        Expires: '0',
+      },
+    });
+
+    const episodes = response.data.episodes;
+
+    for (let i = 0; i < response.data.episodes.length; i++) {
+      localStorage.set('title', episodes[i].title);
+      localStorage.set('artist', episodes[i].artist);
+      localStorage.set('url', episodes[i].url);
+      localStorage.set('duration', episodes[i].duration);
+      localStorage.set('pubDate', episodes[i].pubDate);
+    }
+
+    return episodes;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+}
+
+export async function fetchAllEpisodes() {
+  try {
+    const response = await axios.get(urlAll, {
       timeout: 30000,
       headers: {
         'Cache-Control': 'no-cache',

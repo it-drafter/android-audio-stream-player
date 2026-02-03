@@ -300,21 +300,24 @@ const EpisodePlay = ({route}) => {
   if (
     route.params.url.toLowerCase().endsWith('bm.mp3'.toLowerCase()) &&
     !route.params.url.toLowerCase().includes('provizorni_'.toLowerCase()) &&
-    !route.params.title
-      .toLowerCase()
-      .includes('Ljudi iz podzemlja'.toLowerCase()) &&
-    !route.params.title
-      .toLowerCase()
-      .includes('Večernja škola rokenrola'.toLowerCase()) &&
     !route.params.url
       .toLowerCase()
       .includes('unutrasnja_emigracija'.toLowerCase()) &&
     !route.params.title
       .toLowerCase()
+      .includes('Večernja škola rokenrola'.toLowerCase()) &&
+    !route.params.title
+      .toLowerCase()
+      .includes('Nepopularno mi'.toLowerCase()) &&
+    !route.params.title
+      .toLowerCase()
+      .includes('Ljudi iz podzemlja'.toLowerCase()) &&
+    !route.params.title
+      .toLowerCase()
       .includes('Sportski Pozdrav'.toLowerCase()) &&
     !route.params.title
       .toLowerCase()
-      .includes('Tople Ljucke Priče'.toLowerCase()) &&
+      .includes('Tople Ljucke Pri'.toLowerCase()) &&
     !route.params.title.toLowerCase().includes('Rastrojavanje'.toLowerCase()) &&
     !route.params.description
       .toLowerCase()
@@ -330,21 +333,24 @@ const EpisodePlay = ({route}) => {
     );
   } else if (
     !route.params.url.toLowerCase().includes('provizorni_'.toLowerCase()) &&
-    !route.params.title
-      .toLowerCase()
-      .includes('Ljudi iz podzemlja'.toLowerCase()) &&
-    !route.params.title
-      .toLowerCase()
-      .includes('Večernja škola rokenrola'.toLowerCase()) &&
     !route.params.url
       .toLowerCase()
       .includes('unutrasnja_emigracija'.toLowerCase()) &&
     !route.params.title
       .toLowerCase()
+      .includes('Večernja škola rokenrola'.toLowerCase()) &&
+    !route.params.title
+      .toLowerCase()
+      .includes('Nepopularno mi'.toLowerCase()) &&
+    !route.params.title
+      .toLowerCase()
+      .includes('Ljudi iz podzemlja'.toLowerCase()) &&
+    !route.params.title
+      .toLowerCase()
       .includes('Sportski Pozdrav'.toLowerCase()) &&
     !route.params.title
       .toLowerCase()
-      .includes('Tople Ljucke Priče'.toLowerCase()) &&
+      .includes('Tople Ljucke Pri'.toLowerCase()) &&
     !route.params.title.toLowerCase().includes('Rastrojavanje'.toLowerCase()) &&
     !route.params.description
       .toLowerCase()
@@ -448,9 +454,9 @@ const EpisodePlay = ({route}) => {
                 !globalCtx.fileNameDownloadingValue[fileName]?.[0]
                   ? 'delete'
                   : isAlreadyDownloaded &&
-                      globalCtx.fileNameDownloadingValue[fileName]?.[0]
-                    ? 'cancel'
-                    : 'download'
+                    globalCtx.fileNameDownloadingValue[fileName]?.[0]
+                  ? 'cancel'
+                  : 'download'
               }
               size={25}
             />
@@ -463,8 +469,8 @@ const EpisodePlay = ({route}) => {
               {globalCtx.fileNameDownloadingValue[fileName]?.[0]
                 ? t('episode_play_cancel_download')
                 : isAlreadyDownloaded
-                  ? t('episode_play_delete_podcast')
-                  : t('episode_play_download')}
+                ? t('episode_play_delete_podcast')
+                : t('episode_play_download')}
             </Text>
           </LinearGradient>
         </Pressable>

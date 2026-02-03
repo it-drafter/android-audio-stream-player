@@ -16,10 +16,7 @@ import TrackPlayer, {
 } from 'react-native-track-player';
 import IconMaterialCommunity from '@react-native-vector-icons/material-design-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {
-  faCommentSms,
-  height,
-} from '@fortawesome/free-solid-svg-icons/faCommentSms';
+import {faCommentSms} from '@fortawesome/free-solid-svg-icons/faCommentSms';
 import {useNetInfo} from '@react-native-community/netinfo';
 import GlobalContext from '../util/context';
 import {localStorage} from '../util/http';
@@ -553,7 +550,7 @@ const Stream = () => {
 
       {height > width && playButtonContainerComponent}
 
-      <View style={styles.smsListenersCountContainer(width, height)}>
+      <View style={styles.smsListenersCountContainer(width, height, insets)}>
         <View style={styles.listenersCountContainer}>
           <Text style={styles.textHeading(globalCtx.colorSchemeValue)}>
             {t('stream_count_listeners')}
@@ -653,9 +650,11 @@ const styles = StyleSheet.create({
   pressedItem: {
     opacity: 0.2,
   },
-  smsListenersCountContainer: (screenWidth, screenHeight) => {
+  smsListenersCountContainer: (screenWidth, screenHeight, screenInsets) => {
     return {
       width: screenWidth,
+      paddingLeft: screenWidth > screenHeight ? screenInsets.left + 60 : 0,
+      paddingRight: screenWidth > screenHeight ? screenInsets.right + 60 : 0,
       justifyContent: 'space-between',
       alignItems: 'center',
       flexDirection: 'row',
