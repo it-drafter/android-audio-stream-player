@@ -183,7 +183,11 @@ const EpisodePlay = ({route}) => {
       .includes('Sportski Pozdrav'.toLowerCase()) &&
     !route.params.title
       .toLowerCase()
-      .includes('Večernja škola rokenrola'.toLowerCase())
+      .includes('Večernja škola rokenrola'.toLowerCase()) &&
+    !route.params.title
+      .toLowerCase()
+      .includes('Tople Ljucke Pri'.toLowerCase()) &&
+    !route.params.author?.toLowerCase().includes('JBT'.toLowerCase())
   ) {
     if (
       i18n.language === 'srp' ||
@@ -319,6 +323,7 @@ const EpisodePlay = ({route}) => {
       .toLowerCase()
       .includes('Tople Ljucke Pri'.toLowerCase()) &&
     !route.params.title.toLowerCase().includes('Rastrojavanje'.toLowerCase()) &&
+    !route.params.author?.toLowerCase().includes('JBT'.toLowerCase()) &&
     !route.params.description
       .toLowerCase()
       .includes('Puna Usta Poezije'.toLowerCase()) &&
@@ -352,6 +357,7 @@ const EpisodePlay = ({route}) => {
       .toLowerCase()
       .includes('Tople Ljucke Pri'.toLowerCase()) &&
     !route.params.title.toLowerCase().includes('Rastrojavanje'.toLowerCase()) &&
+    !route.params.author?.toLowerCase().includes('JBT'.toLowerCase()) &&
     !route.params.description
       .toLowerCase()
       .includes('Puna Usta Poezije'.toLowerCase()) &&
@@ -409,7 +415,10 @@ const EpisodePlay = ({route}) => {
       </View>
 
       <Text style={styles.descriptionText(globalCtx.colorSchemeValue)}>
-        {route.params?.description} {musicOnOffInfo}
+        {route.params.author?.toLowerCase().includes('JBT'.toLowerCase())
+          ? 'Jovana, Boris i Tatjana'
+          : route.params?.description}{' '}
+        {musicOnOffInfo}
       </Text>
       <Text style={styles.insignificantDetailsText(globalCtx.colorSchemeValue)}>
         {route.params?.title}

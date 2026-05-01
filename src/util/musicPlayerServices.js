@@ -6,8 +6,6 @@ import TrackPlayer, {
   State,
 } from 'react-native-track-player';
 
-import {AppState, BackHandler} from 'react-native';
-
 import {localStorage} from '../util/http';
 import NetInfo from '@react-native-community/netinfo';
 
@@ -110,9 +108,9 @@ async function prepareStreamTrack() {
 
 export async function playbackService() {
   TrackPlayer.addEventListener(Event.RemotePause, async () => {
-    remoteProgressSave();
+    await remoteProgressSave();
     await TrackPlayer.pause();
-    prepareStreamTrack();
+    await prepareStreamTrack();
   });
 
   async function playFunction() {
@@ -199,7 +197,7 @@ export async function playbackService() {
 
           case connectionState.type !== 'wifi' &&
             !trackNameFromUrl.endsWith('stream') &&
-            infoData[0]?.url.startsWith('file://'):
+            infoDataUrl?.startsWith('file://'):
             await TrackPlayer.play();
             break;
 
@@ -214,7 +212,7 @@ export async function playbackService() {
         }
       } else if (
         !trackNameFromUrl.endsWith('stream') &&
-        infoData[0]?.url.startsWith('file://')
+        infoDataUrl?.startsWith('file://')
       ) {
         await TrackPlayer.play();
       }
@@ -222,52 +220,12 @@ export async function playbackService() {
   }
 
   TrackPlayer.addEventListener(Event.RemotePlay, async () => {
-    playFunction();
+    await playFunction();
   });
 
-  TrackPlayer.addEventListener(Event.RemoteDuck, async event => {
-    remoteProgressSave();
-    await TrackPlayer.pause();
-
-    const infoDataUrl = localStorage.getString('infoDataCurrentUrl');
-
-    try {
-      const infoDataUrlArr = infoDataUrl.split('/');
-
-      const trackNameFromUrl = infoDataUrlArr[infoDataUrlArr.length - 1];
-      if (trackNameFromUrl.endsWith('stream')) {
-        await TrackPlayer.reset();
-
-        if ((AppState.currentState = 'background')) {
-          BackHandler.exitApp();
-          return;
-        }
-
-        let urlToLoad;
-        if (
-          localStorage.getString('selectedStream') === undefined ||
-          localStorage.getString('selectedStream') === 'stream1'
-        ) {
-          urlToLoad =
-            'https://stream.daskoimladja.com/proxy/daskomladja/stream';
-        } else if (localStorage.getString('selectedStream') === 'stream2') {
-          urlToLoad = 'http://stream.daskoimladja.com:8000/stream';
-        }
-
-        await TrackPlayer.add([
-          {
-            id: 'stream',
-            title: 'Live Stream',
-            artist: 'Radio D&M',
-            url: urlToLoad,
-            artwork: artworkImgStream,
-            description: 'Daško i Mlađa',
-            album: 'D&M',
-            isLiveStream: true,
-          },
-        ]);
-      }
-    } catch (error) {}
+  TrackPlayer.addEventListener(Event.RemoteDuck, async () => {
+    await remoteProgressSave();
+    await TrackPlayer.stop();
   });
 
   TrackPlayer.addEventListener(
@@ -276,7 +234,7 @@ export async function playbackService() {
     async params => {
       try {
         const infoDataUrl = localStorage.getString('infoDataCurrentUrl');
-        const infoDataUrlArr = infoDataUrl.split('/');
+        const infoDataUrlArr = infoDataUrl ? infoDataUrl.split('/') : [];
         const trackNameFromUrl = infoDataUrlArr[infoDataUrlArr.length - 1];
 
         if (trackNameFromUrl.endsWith('stream')) {

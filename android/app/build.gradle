@@ -82,8 +82,8 @@ android {
         applicationId "com.mladjaidasko"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 43
-        versionName "33.43.20260203"
+        versionCode 50
+        versionName "36.50.20260501"
     }
     signingConfigs {
         debug {

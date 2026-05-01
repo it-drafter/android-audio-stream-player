@@ -35,6 +35,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import {SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context';
 
 import developerIcon from '../assets/developericon.png';
+import rfb from '../assets/rfb.jpg';
 
 import {useTranslation} from 'react-i18next';
 import {t} from 'i18next';
@@ -61,6 +62,7 @@ const Settings = () => {
   const [folderContent, setFolderContent] = useState([]);
   const [folderSize, setFolderSize] = useState(0);
   const [isCopiedContactEmail, setIsCopiedContactEmail] = useState(false);
+  const [isCopiedRfb, setIsCopiedRfb] = useState(false);
 
   const {i18n} = useTranslation();
   const selectedLanguageCode = i18n.language;
@@ -109,10 +111,16 @@ const Settings = () => {
         }, 1500);
       }
 
+      if (isCopiedRfb) {
+        timeout1 = setTimeout(() => {
+          setIsCopiedRfb(false);
+        }, 1500);
+      }
+
       return () => {
         clearTimeout(timeout1);
       };
-    }, [isCopiedContactEmail]),
+    }, [isCopiedContactEmail, isCopiedRfb]),
   );
 
   const toggleSwitchRadio = () =>
@@ -647,14 +655,11 @@ const Settings = () => {
               {t('settings_about_app')}
             </Text>
             <Text style={styles.regularText(globalCtx.colorSchemeValue)}>
-              {t('settings_version')} 33.43.20260203
+              {t('settings_version')} 36.50.20260501
             </Text>
             <View style={styles.contactContainerAuthor}>
               <Text style={styles.regularText(globalCtx.colorSchemeValue)}>
                 {t('settings_author')}&nbsp;
-              </Text>
-              <Text style={styles.regularText(globalCtx.colorSchemeValue)}>
-                &nbsp;Ivan Tančik a.k.a.&nbsp;
               </Text>
               <FastImage
                 style={{
@@ -712,6 +717,54 @@ const Settings = () => {
               </View>
             </View>
           </View>
+
+          {(localStorage.getString('language') === undefined ||
+            localStorage.getString('language') === 'srp') && (
+            <View
+              style={[styles.aboutContainer(width, height), {marginTop: 0}]}>
+              <Text style={styles.aboutTextHeading(globalCtx.colorSchemeValue)}>
+                Časti aplikatora:
+              </Text>
+              <View style={styles.contactContainerRfb}>
+                <Text style={styles.regularText(globalCtx.colorSchemeValue)}>
+                  {'- Dinarski račun:   '}
+                </Text>
+                <Pressable
+                  onPress={() => {
+                    Clipboard.setString('265-6164332-61');
+                    setIsCopiedRfb(true);
+                  }}
+                  style={({pressed}) => [
+                    pressed && styles.pressedItem,
+                    styles.contactContainer,
+                  ]}>
+                  <FastImage
+                    style={{
+                      width: 18,
+                      height: 18,
+                    }}
+                    source={rfb}
+                    resizeMode={FastImage.resizeMode.cover}
+                  />
+
+                  <Text style={[styles.textLink(globalCtx.colorSchemeValue)]}>
+                    265-6164332-61{' '}
+                  </Text>
+                  <IconMaterialCommunity
+                    style={styles.iconWithLessMargin(
+                      globalCtx.colorSchemeValue,
+                    )}
+                    name={'content-copy'}
+                    size={20}
+                  />
+                </Pressable>
+
+                <Text style={[styles.textTooltip(globalCtx.colorSchemeValue)]}>
+                  {`${isCopiedRfb ? t('settings_copied') : ''}`}
+                </Text>
+              </View>
+            </View>
+          )}
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -892,6 +945,12 @@ const styles = StyleSheet.create({
   contactContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  contactContainerRfb: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 3,
+    marginBottom: 3,
   },
   contactContainerAuthor: {
     flexDirection: 'row',

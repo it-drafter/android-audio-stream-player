@@ -33,7 +33,6 @@ const PodcastList = ({navigation}) => {
   const netInfo = useNetInfo();
   const {t, i18n} = useTranslation();
   const flatListRef = useRef(null);
-  const hasAutoScrolled = useRef(false);
   const lastPlayedPodcastName = localStorage.getString('lastPlayedPodcast');
 
   const [error, setError] = useState(null);
@@ -117,9 +116,15 @@ const PodcastList = ({navigation}) => {
       ? true
       : false,
   );
-  const [isCheckedRastrojavanje, setIsCheckedRastrojavanje] = useState(
-    localStorage.getBoolean('isCheckedRastrojavanje') === undefined ||
-      localStorage.getBoolean('isCheckedRastrojavanje') === true
+  // const [isCheckedRastrojavanje, setIsCheckedRastrojavanje] = useState(
+  //   localStorage.getBoolean('isCheckedRastrojavanje') === undefined ||
+  //     localStorage.getBoolean('isCheckedRastrojavanje') === true
+  //     ? true
+  //     : false,
+  // );
+  const [isCheckedJbtPodcast, setIsCheckedJbtPodcast] = useState(
+    localStorage.getBoolean('isCheckedJbtPodcast') === undefined ||
+      localStorage.getBoolean('isCheckedJbtPodcast') === true
       ? true
       : false,
   );
@@ -157,7 +162,8 @@ const PodcastList = ({navigation}) => {
         !episode.title
           .toLowerCase()
           .includes('Tople Ljucke Pri'.toLowerCase()) &&
-        !episode.title.toLowerCase().includes('Rastrojavanje'.toLowerCase()) &&
+        // !episode.title.toLowerCase().includes('Rastrojavanje'.toLowerCase()) &&
+        !episode.author?.toLowerCase().includes('JBT'.toLowerCase()) &&
         // && !episode.artist
         //   .toLowerCase()
         //   .includes('Puna Usta Poezije'.toLowerCase()) &&
@@ -186,7 +192,8 @@ const PodcastList = ({navigation}) => {
         !episode.title
           .toLowerCase()
           .includes('Tople Ljucke Pri'.toLowerCase()) &&
-        !episode.title.toLowerCase().includes('Rastrojavanje'.toLowerCase()) &&
+        // !episode.title.toLowerCase().includes('Rastrojavanje'.toLowerCase()) &&
+        !episode.author?.toLowerCase().includes('JBT'.toLowerCase()) &&
         // && !episode.artist
         //   .toLowerCase()
         //   .includes('Puna Usta Poezije'.toLowerCase()) &&
@@ -242,9 +249,15 @@ const PodcastList = ({navigation}) => {
     ),
   ];
 
-  const fetchedEpisodesOnlyRastrojavanje = [
+  // const fetchedEpisodesOnlyRastrojavanje = [
+  //   ...fetchedEpisodes.filter(episode =>
+  //     episode.title.toLowerCase().includes('Rastrojavanje'.toLowerCase()),
+  //   ),
+  // ];
+
+  const fetchedEpisodesOnlyJbtPodcast = [
     ...fetchedEpisodes.filter(episode =>
-      episode.title.toLowerCase().includes('Rastrojavanje'.toLowerCase()),
+      episode.author?.toLowerCase().includes('JBT'.toLowerCase()),
     ),
   ];
 
@@ -282,8 +295,10 @@ const PodcastList = ({navigation}) => {
     fetchedEpisodesUnsorted.push(...fetchedEpisodesOnlySportskiPozdrav);
   isCheckedTopleLjuckePrice &&
     fetchedEpisodesUnsorted.push(...fetchedEpisodesOnlyTopleLjuckePrice);
-  isCheckedRastrojavanje &&
-    fetchedEpisodesUnsorted.push(...fetchedEpisodesOnlyRastrojavanje);
+  // isCheckedRastrojavanje &&
+  //   fetchedEpisodesUnsorted.push(...fetchedEpisodesOnlyRastrojavanje);
+  isCheckedJbtPodcast &&
+    fetchedEpisodesUnsorted.push(...fetchedEpisodesOnlyJbtPodcast);
   // isCheckedPunaUstaPoezije &&
   //   fetchedEpisodesUnsorted.push(...fetchedEpisodesOnlyPunaUstaPoezije);
   isCheckedNaIviciOfsajda &&
@@ -372,27 +387,6 @@ const PodcastList = ({navigation}) => {
     [isRefreshing, lastPlayedPodcastName, fetchedEpisodesToDisplay],
   );
 
-  useFocusEffect(
-    useCallback(() => {
-      let timeout1;
-
-      if (hasAutoScrolled.current) {
-        return;
-      }
-
-      timeout1 = setTimeout(() => {
-        scrollToLastPlayed(true);
-      }, 50);
-
-      hasAutoScrolled.current = true;
-
-      return () => {
-        clearTimeout(timeout1);
-        hasAutoScrolled.current = false;
-      };
-    }, [scrollToLastPlayed]),
-  );
-
   if (isRefreshing) {
     return (
       <View
@@ -409,6 +403,7 @@ const PodcastList = ({navigation}) => {
         description={episode.item.artist}
         url={episode.item.url}
         duration={episode.item.duration}
+        author={episode.item.author}
         pubDate={episode.item.pubDate}
         navigation={navigation}
       />
@@ -875,7 +870,7 @@ const PodcastList = ({navigation}) => {
               }}
               style={{marginTop: 7}}
             />
-            <BouncyCheckbox
+            {/* <BouncyCheckbox
               size={width > height ? 17 : 20}
               fillColor={colorSchemeObj[globalCtx.colorSchemeValue].light50}
               unfillColor={colorSchemeObj[globalCtx.colorSchemeValue].light30}
@@ -900,6 +895,34 @@ const PodcastList = ({navigation}) => {
                 );
 
                 setIsCheckedRastrojavanje(!isCheckedRastrojavanje);
+              }}
+              textContainerStyle={{
+                marginLeft: 5,
+              }}
+              style={{marginTop: 7}}
+            /> */}
+            <BouncyCheckbox
+              size={width > height ? 17 : 20}
+              fillColor={colorSchemeObj[globalCtx.colorSchemeValue].light50}
+              unfillColor={colorSchemeObj[globalCtx.colorSchemeValue].light30}
+              text={t('podcast_list_filter_jbt_podcast')}
+              iconStyle={{
+                borderColor: colorSchemeObj[globalCtx.colorSchemeValue].base,
+              }}
+              innerIconStyle={{borderWidth: 2}}
+              textStyle={{
+                textDecorationLine: 'none',
+                fontSize: width > height ? 13 : 14,
+                color: isCheckedJbtPodcast
+                  ? colorSchemeObj[globalCtx.colorSchemeValue].light50
+                  : colorSchemeObj[globalCtx.colorSchemeValue].light30,
+              }}
+              isChecked={isCheckedJbtPodcast}
+              disableBuiltInState
+              onPress={() => {
+                localStorage.set('isCheckedJbtPodcast', !isCheckedJbtPodcast);
+
+                setIsCheckedJbtPodcast(!isCheckedJbtPodcast);
               }}
               textContainerStyle={{
                 marginLeft: 5,

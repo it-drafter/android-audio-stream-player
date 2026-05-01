@@ -27,6 +27,7 @@ export async function fetchRecentEpisodes() {
       localStorage.set('artist', episodes[i].artist);
       localStorage.set('url', episodes[i].url);
       localStorage.set('duration', episodes[i].duration);
+      localStorage.set('author', episodes[i].author);
       localStorage.set('pubDate', episodes[i].pubDate);
     }
 
@@ -65,6 +66,9 @@ export async function fetchAllEpisodes() {
         duration:
           podcastItemsXML[i].getElementsByTagName('itunes:duration')[0]
             .childNodes[0]?.nodeValue ?? '',
+        author:
+          podcastItemsXML[i].getElementsByTagName('author')[0].childNodes[0]
+            ?.nodeValue ?? '',
         pubDate:
           podcastItemsXML[i].getElementsByTagName('pubDate')[0].childNodes[0]
             ?.nodeValue ?? 'Nema datuma',
@@ -74,6 +78,7 @@ export async function fetchAllEpisodes() {
       localStorage.set('artist', episodeObj.artist);
       localStorage.set('url', episodeObj.url);
       localStorage.set('duration', episodeObj.duration);
+      localStorage.set('author', episodeObj.author);
       localStorage.set('pubDate', episodeObj.pubDate);
 
       episodes.push(episodeObj);

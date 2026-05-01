@@ -27,6 +27,7 @@ function PodcastItem(props) {
       description: props.description,
       url: props.url,
       duration: props.duration,
+      author: props.author,
       pubDate: props.pubDate,
     });
   };
@@ -62,7 +63,8 @@ function PodcastItem(props) {
       .toLowerCase()
       .includes('Večernja škola rokenrola'.toLowerCase()) &&
     !props.title.toLowerCase().includes('Tople Ljucke Pri'.toLowerCase()) &&
-    !props.url.toLowerCase().includes('unutrasnja_emigracija'.toLowerCase())
+    // !props.url.toLowerCase().includes('unutrasnja_emigracija'.toLowerCase())
+    !props.author?.toLowerCase().includes('JBT'.toLowerCase())
   ) {
     if (
       i18n.language === 'srp' ||
@@ -195,6 +197,7 @@ function PodcastItem(props) {
     !props.title.toLowerCase().includes('Sportski Pozdrav'.toLowerCase()) &&
     !props.title.toLowerCase().includes('Tople Ljucke Pri'.toLowerCase()) &&
     !props.title.toLowerCase().includes('Rastrojavanje'.toLowerCase()) &&
+    !props.author?.toLowerCase().includes('JBT'.toLowerCase()) &&
     !props.description
       .toLowerCase()
       .includes('Puna Usta Poezije'.toLowerCase()) &&
@@ -224,6 +227,7 @@ function PodcastItem(props) {
     !props.title.toLowerCase().includes('Sportski Pozdrav'.toLowerCase()) &&
     !props.title.toLowerCase().includes('Tople Ljucke Pri'.toLowerCase()) &&
     !props.title.toLowerCase().includes('Rastrojavanje'.toLowerCase()) &&
+    !props.author?.toLowerCase().includes('JBT'.toLowerCase()) &&
     !props.description
       .toLowerCase()
       .includes('Puna Usta Poezije'.toLowerCase()) &&
@@ -266,7 +270,9 @@ function PodcastItem(props) {
         style={[styles.podcastItem(globalCtx.colorSchemeValue, width, height)]}>
         <View>
           <Text style={styles.nameText(globalCtx.colorSchemeValue)}>
-            {props.description}
+            {props.author?.toLowerCase().includes('JBT'.toLowerCase())
+              ? 'Jovana, Boris i Tatjana'
+              : props.description}
           </Text>
         </View>
         <View style={styles.detailsContainer}>

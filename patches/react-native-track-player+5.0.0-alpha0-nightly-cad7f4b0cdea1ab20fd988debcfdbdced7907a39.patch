@@ -1,0 +1,38 @@
+diff --git a/node_modules/react-native-track-player/android/src/main/java/com/doublesymmetry/trackplayer/service/MusicService.kt b/node_modules/react-native-track-player/android/src/main/java/com/doublesymmetry/trackplayer/service/MusicService.kt
+index b495b5a..e7080c9 100644
+--- a/node_modules/react-native-track-player/android/src/main/java/com/doublesymmetry/trackplayer/service/MusicService.kt
++++ b/node_modules/react-native-track-player/android/src/main/java/com/doublesymmetry/trackplayer/service/MusicService.kt
+@@ -161,20 +161,14 @@ class MusicService : HeadlessJsMediaService() {
+         }
+ 
+     private var latestOptions: Bundle? = null
+-    private var commandStarted = false
+ 
+     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+         onStartCommandIntentValid = intent != null
+         Timber.d("onStartCommand: ${intent?.action}, ${intent?.`package`}")
+         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+-            // HACK: this is not supposed to be here. I definitely screwed up. but Why?
+             onMediaKeyEvent(intent)
+         }
+-        // HACK: Why is onPlay triggering onStartCommand??
+-        if (!commandStarted) {
+-            commandStarted = true
+-            super.onStartCommand(intent, flags, startId)
+-        }
++        super.onStartCommand(intent, flags, startId)
+         return START_STICKY
+     }
+ 
+@@ -948,6 +942,11 @@ class MusicService : HeadlessJsMediaService() {
+             controllerInfo: MediaSession.ControllerInfo,
+             intent: Intent
+         ): Boolean {
++            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
++                onMediaKeyEvent(intent)
++                return super.onMediaButtonEvent(session, controllerInfo, intent)
++            }
++
+             return onMediaKeyEvent(intent) ?: super.onMediaButtonEvent(
+                 session,
+                 controllerInfo,
